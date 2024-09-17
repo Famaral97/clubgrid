@@ -1,0 +1,172 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f4f4f9;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(4, 100px); /* 4 columns: 1 for conditions + 3 for cells */
+  grid-template-rows: repeat(4, 100px);    /* 4 rows: 1 for conditions + 3 for cells */
+  gap: 5px; /* Space between cells */
+}
+
+.condition, .grid-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+.grid-cell {
+  cursor: pointer;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &.selected {
+    background-color: gray;
+  }
+}
+
+.wrong {
+  animation: blinkred 2s 1;
+}
+
+@keyframes blinkred
+{
+  0%      {background:white;}
+  50%     {background:red;}
+  100%    {background:white;}
+}
+
+.condition {
+  font-weight: bold;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content */
+.modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Search input in the modal */
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Dropdown container in the modal */
+.dropdown-container {
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+/* Dropdown option styles */
+.dropdown-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &.disabled {
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+    color: #555;
+  }
+}
+
+
+/* Close button */
+.close-modal {
+  display: block;
+  margin: 0 auto;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Close button hover */
+.close-modal:hover {
+  background-color: #0056b3;
+}
+
+/* Blur effect for background */
+.blurred {
+  filter: blur(5px);
+}
+
+
+
+
+@keyframes pow {
+  0% {
+      opacity: 1;
+      transform: scale(1);
+  }
+  100% {
+      opacity: 0;
+      transform: scale(3);
+  }
+}
+
+.pow-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.pow-text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: red;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px black;
+  animation: pow 1s ease-out forwards;
+}
+

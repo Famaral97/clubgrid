@@ -1,0 +1,40 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: flaskdb
+      MYSQL_USER: flaskuser
+      MYSQL_PASSWORD: flaskpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - flaskapp-network
+
+  flask:
+    build: .
+    container_name: flask
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      FLASK_ENV: development
+      DATABASE_URI: "mysql+mysqlconnector://flaskuser:flaskpassword@mysql/flaskdb"
+    networks:
+      - flaskapp-network
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+
+networks:
+  flaskapp-network:
+    driver: bridge
