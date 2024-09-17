@@ -54,7 +54,7 @@ def check_answer():
 
     club = Club.query.get(club_id)
 
-    result = eval(f'club{condition_1_expression}') and eval(f'club{condition_2_expression}')
+    result = eval(condition_1_expression) and eval(condition_2_expression)
 
     return jsonify({"correct": result, "clubName": club.name, "logo": club.logo })
 
