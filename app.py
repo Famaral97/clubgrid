@@ -20,7 +20,7 @@ create_default_conditions(db, app)
 create_default_clubs(db, app)
 
 
-@app.route('/grid', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
 
     conditions = Condition.query.limit(6).all()

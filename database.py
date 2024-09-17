@@ -12,7 +12,7 @@ def create_default_conditions(db, app):
         Condition(id=5, description="Logo doesn't have Blue", expression="club.has_color_blue == False"),
         Condition(id=6, description="Name starts with A, B or C",
                   expression="club.name.lower().startswith('a') or club.name.lower().startswith('b') or club.name.lower().startswith('c')"),
-        Condition(id=6, description="Logo doesn't have stars", expression="club.stars_number == 0")
+        Condition(id=7, description="Logo doesn't have stars", expression="club.stars_number == 0")
     ]
     with app.app_context():
         db.session.add_all(conditions)

@@ -121,18 +121,7 @@ function listOptions() {
         }
         selectButton.textContent = 'Select';
         selectButton.onclick = () => {
-
-            submitClub(club.id).then( () => {
-                console.log(club.name)
-                hideModal()
-                guesses_left -= 1
-                document.getElementById("guesses").innerHTML = guesses_left
-                if (used_clubs.length == 9) {
-                    showFinalModal("Congratulations! You won!")
-                } else if (guesses_left == 0) {
-                    showFinalModal("You lost 😭")
-                }
-            })
+            submitClub(club.id)
         }
 
         // Append to option container
@@ -166,7 +155,6 @@ async function submitClub(clubId) {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             if (data.correct) {
                 selectedCell.style.backgroundImage = `url(${data.logo})`
                 selectedCell.style.cursor = 'default'
@@ -175,6 +163,15 @@ async function submitClub(clubId) {
             }
             else {
                 applyPowEffect(selectedCell)
+            }
+
+            hideModal()
+            guesses_left -= 1
+            document.getElementById("guesses").innerHTML = guesses_left
+            if (used_clubs.length == 9) {
+                showFinalModal("Congratulations! You won!")
+            } else if (guesses_left == 0) {
+                showFinalModal("You lost 😭")
             }
                 // selectedCell.animate(
                 //     [
