@@ -78,7 +78,7 @@ body {
 }
 
 /* Modal content */
-.modal {
+.modal, .final-modal {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
@@ -150,6 +150,10 @@ body {
 /* Blur effect for background */
 .blurred {
   filter: blur(5px);
+}
+
+.view-results {
+  display: none;
 }
 
 

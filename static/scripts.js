@@ -34,10 +34,10 @@ window.onload = () => {
 
     document.getElementById("guesses").innerHTML = guesses_left
 
-    modalOverlay = document.querySelector('.modal-overlay');
-    searchInput = document.querySelector('.search-input');
-    dropdownContainer = document.querySelector('.dropdown-container');
-    gridContainer = document.querySelector('.grid-container');
+    modalOverlay = document.querySelector('.modal-overlay')
+    searchInput = document.querySelector('.search-input')
+    dropdownContainer = document.querySelector('.dropdown-container')
+    gridContainer = document.querySelector('.grid-container')
 };
 
 // Function to show modal
@@ -46,14 +46,42 @@ function showModal(cell) {
 
     conditions = [cell.getAttribute('rowCond'), cell.getAttribute('colCond')]
 
-    modalOverlay.style.display = 'flex';
-    searchInput.focus(); // Focus on the input field for better user experience
+    modalOverlay.style.display = 'flex'
+    searchInput.focus() // Focus on the input field for better user experience
+}
+
+function showFinalModal(message) {
+    modalOverlay.style.display = 'flex'
+
+    modalOverlay.querySelector('.modal').style.display = 'none'
+
+    finalModal = document.createElement("div")
+    finalModal.innerHTML = message
+    finalModal.classList.add("final-modal")
+
+    modalOverlay.appendChild(finalModal)
+    modalOverlay.onclick = exitFinalMode
 }
 
 function exitSubmitMode(e) {
     if (e.target === modalOverlay) {
-        hideModal();
+        hideModal()
     }
+}
+
+
+function exitFinalMode(e) {
+    if (e.target === modalOverlay) {
+        modalOverlay.style.display = 'none'
+        const viewResultsButton = document.querySelector('.view-results')
+        viewResultsButton.style.display = 'block'
+        viewResultsButton.onclick = () => modalOverlay.style.display = 'flex'
+    }
+
+    document.querySelectorAll('.grid-cell').forEach(cell => {
+        cell.onclick = null
+        cell.style.cursor = 'default'
+    })
 }
 
 // Function to hide modal
@@ -62,9 +90,9 @@ function hideModal() {
     document.querySelector('.grid-cell.selected').classList.remove('selected')
     conditions = []
 
-    modalOverlay.style.display = 'none';
-    searchInput.value = ''; // Clear search input
-    dropdownContainer.innerHTML = ''; // Clear previous dropdown options
+    modalOverlay.style.display = 'none'
+    searchInput.value = '' // Clear search input
+    dropdownContainer.innerHTML = '' // Clear previous dropdown options
 }
 
 // Function to filter and display clubs
@@ -100,9 +128,9 @@ function listOptions() {
                 guesses_left -= 1
                 document.getElementById("guesses").innerHTML = guesses_left
                 if (used_clubs.length == 9) {
-                    alert("Congratulations! You won!")
+                    showFinalModal("Congratulations! You won!")
                 } else if (guesses_left == 0) {
-                    alert("You lost 😭")
+                    showFinalModal("You lost 😭")
                 }
             })
         }
