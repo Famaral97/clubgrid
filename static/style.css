@@ -71,17 +71,22 @@ body {
   background: #fff;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
+  width: 30vw;
+  min-width: 300px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 /* Search input in the modal */
 .search-input {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  align-self: center;
 }
 
 /* Dropdown container in the modal */
