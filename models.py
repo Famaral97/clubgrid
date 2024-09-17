@@ -12,8 +12,9 @@ class Condition(db.Model):
 
 class Club(db.Model):
     __tablename__ = 'clubs'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(255), primary_key=True)
     name = db.Column(db.String(255))
+    country = db.Column(db.String(255))
     logo = db.Column(db.String(255))
     league = db.Column(db.String(255))
 
