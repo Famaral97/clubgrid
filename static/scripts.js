@@ -8,6 +8,7 @@ let gridContainer = ''
 let conditions = []
 
 let used_clubs = []
+let guesses_left = 10
 
 async function getData() {
     const url = "/clubs";
@@ -30,6 +31,8 @@ async function getData() {
 window.onload = () => {
     getData();
     console.log(clubs)
+
+    document.getElementById("guesses").innerHTML = guesses_left
 
     modalOverlay = document.querySelector('.modal-overlay');
     searchInput = document.querySelector('.search-input');
@@ -94,8 +97,14 @@ function listOptions() {
             submitClub(club.id).then( () => {
                 console.log(club.name)
                 hideModal()
-            })            
-
+                guesses_left -= 1
+                document.getElementById("guesses").innerHTML = guesses_left
+                if (used_clubs.length == 9) {
+                    alert("Congratulations! You won!")
+                } else if (guesses_left == 0) {
+                    alert("You lost 😭")
+                }
+            })
         }
 
         // Append to option container
