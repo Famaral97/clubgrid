@@ -33,7 +33,7 @@ def load_clubs():
                     id=club_row["ID"],
                     name=name,
                     country=country,
-                    logo=f"https://github.com/luukhopman/football-logos/blob/master/logos/{country}%20-%20{league}/{name}.png?raw=true".replace(" ", "%20"),
+                    logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{country}%20-%20{league}/{name}.png?raw=true".replace(" ", "%20"),
                     league=league,
                     has_animal=club_row["Animal"]=="YES",
                     has_winged_animal=club_row["Winged Animal"]=="YES",
