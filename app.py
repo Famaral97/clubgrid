@@ -1,13 +1,22 @@
 from dataclasses import dataclass
+from dotenv import dotenv_values
 
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, jsonify, request
 
 from database import create_default_conditions, create_default_clubs
 from models import db, Condition, Club
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://flaskuser:flaskpassword@mysql/flaskdb"
+
+config = dotenv_values()
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
+    username=config["DB_USERNAME"],
+    password=config["DB_PASSWORD"],
+    hostname=config["DB_HOSTNAME"],
+    databasename=config["DB_NAME"]
+)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
