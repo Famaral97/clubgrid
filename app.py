@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from dotenv import dotenv_values
+from dotenv import load_dotenv
+import os
 
 from flask import Flask, render_template, jsonify, request
 
@@ -8,13 +9,13 @@ from models import db, Condition, Club
 
 app = Flask(__name__)
 
-config = dotenv_values()
+load_dotenv()
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
-    username=config["DB_USERNAME"],
-    password=config["DB_PASSWORD"],
-    hostname=config["DB_HOSTNAME"],
-    databasename=config["DB_NAME"]
+    username=os.getenv("DB_USERNAME"),
+    password=os.getenv("DB_PASSWORD"),
+    hostname=os.getenv("DB_HOSTNAME"),
+    databasename=os.getenv("DB_NAME")
 )
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
