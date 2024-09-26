@@ -10,6 +10,7 @@ class Condition(db.Model):
     description = db.Column(db.String(255)) 
     expression = db.Column(db.String(255))
 
+
 class Club(db.Model):
     __tablename__ = 'clubs'
     id = db.Column(db.String(255), primary_key=True)
@@ -27,3 +28,15 @@ class Club(db.Model):
     has_numbers = db.Column(db.Boolean)
     has_color_red = db.Column(db.Boolean)
     has_color_blue = db.Column(db.Boolean)
+
+
+class Grid(db.Model):
+    __tablename__ = 'grids'
+    id = db.Column(db.Integer, primary_key=True)
+    row_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
+    row_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
+    row_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
+    column_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
+    column_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
+    column_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
+    starting_date = db.Column(db.Date)

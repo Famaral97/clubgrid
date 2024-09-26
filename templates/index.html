@@ -12,31 +12,32 @@
   <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 
   <div>
-      
+    <h3>Grid #{{ grid_id }}</h3>
+
     <div class="container">
       <!-- Top-left corner is empty for the grid layout -->
       <div class="empty-cell"></div>
-      <div class="condition">{{ conditions[0].description }}</div>
-      <div class="condition">{{ conditions[1].description }}</div>
-      <div class="condition">{{ conditions[2].description }}</div>
+      <div class="condition">{{ col_conditions[0].description }}</div>
+      <div class="condition">{{ col_conditions[1].description }}</div>
+      <div class="condition">{{ col_conditions[2].description }}</div>
 
       <!-- Row 1 -->
-      <div class="condition">{{ conditions[3].description }}</div>
-      <div rowCond="{{ conditions[3].id }}" colCond="{{ conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ conditions[3].id }}" colCond="{{ conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ conditions[3].id }}" colCond="{{ conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div class="condition">{{ row_conditions[0].description }}</div>
+      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
 
       <!-- Row 2 -->
-      <div class="condition">{{ conditions[4].description }}</div>
-      <div rowCond="{{ conditions[4].id }}" colCond="{{ conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ conditions[4].id }}" colCond="{{ conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ conditions[4].id }}" colCond="{{ conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div class="condition">{{ row_conditions[1].description }}</div>
+      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
 
       <!-- Row 3 -->
-      <div class="condition">{{ conditions[5].description }}</div>
-      <div rowCond="{{ conditions[5].id }}" colCond="{{ conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ conditions[5].id }}" colCond="{{ conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ conditions[5].id }}" colCond="{{ conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div class="condition">{{ row_conditions[2].description }}</div>
+      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
     </div>
 
     <h3>Guesses Left: <span id="guesses"></span></h3>

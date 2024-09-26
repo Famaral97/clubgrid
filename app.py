@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from dotenv import load_dotenv
 import os
+from sqlalchemy import desc
 
 from flask import Flask, render_template, jsonify, request
 
-from database import create_default_conditions, create_default_clubs
-from models import db, Condition, Club
+from database import create_default_conditions, create_default_clubs, create_default_grids
+from models import db, Condition, Club, Grid
 
 app = Flask(__name__)
 
@@ -28,19 +29,34 @@ with app.app_context():
 
 create_default_conditions(db, app)
 create_default_clubs(db, app)
+create_default_grids(db, app)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    grid = Grid.query.order_by(desc(Grid.starting_date)).first()
 
-    conditions = Condition.query.limit(6).all()
+    row_conditions = [
+        Condition.query.get(grid.row_condition_1),
+        Condition.query.get(grid.row_condition_2),
+        Condition.query.get(grid.row_condition_3),
+    ]
 
-    return render_template('index.html', conditions=conditions)
+    col_conditions = [
+        Condition.query.get(grid.column_condition_1),
+        Condition.query.get(grid.column_condition_2),
+        Condition.query.get(grid.column_condition_3),
+    ]
+
+    return render_template('index.html',
+                           row_conditions=row_conditions,
+                           col_conditions=col_conditions,
+                           grid_id=grid.id
+                           )
 
 
 @app.route('/clubs', methods=['GET', 'POST'])
 def get_clubs():
-
     clubs = Club.query.all()
 
     clubs_basic_info = [
@@ -52,7 +68,6 @@ def get_clubs():
 
 @app.route('/answer', methods=['POST'])
 def check_answer():
-
     data = request.get_json()
 
     club_id = data["club-id"]
@@ -66,7 +81,7 @@ def check_answer():
 
     result = eval(condition_1_expression) and eval(condition_2_expression)
 
-    return jsonify({"correct": result, "clubName": club.name, "logo": club.logo })
+    return jsonify({"correct": result, "clubName": club.name, "logo": club.logo})
 
 
 @dataclass

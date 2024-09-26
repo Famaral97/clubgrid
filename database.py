@@ -1,6 +1,7 @@
 import csv
+import datetime
 
-from models import Condition, Club
+from models import Condition, Club, Grid
 
 
 def create_default_conditions(db, app):
@@ -17,6 +18,23 @@ def create_default_conditions(db, app):
     with app.app_context():
         db.session.add_all(conditions)
         db.session.commit()
+
+
+def create_default_grids(db, app):
+    grid = Grid(
+        id=1,
+        row_condition_1=1,
+        row_condition_2=2,
+        row_condition_3=3,
+        column_condition_1=4,
+        column_condition_2=7,
+        column_condition_3=6,
+        starting_date=datetime.datetime.now()
+    )
+    with app.app_context():
+        db.session.add_all([grid])
+        db.session.commit()
+
 
 
 def load_clubs():
