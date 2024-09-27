@@ -9,7 +9,7 @@ let gridContainer = ''
 let conditions = []
 
 let used_clubs = []
-let guesses_left = 10
+let guesses_left = 15
 
 async function getData() {
     const url = "/clubs";
