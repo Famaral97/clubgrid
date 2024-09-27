@@ -32,9 +32,13 @@ create_default_clubs(db, app)
 create_default_grids(db, app)
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    grid = Grid.query.order_by(desc(Grid.starting_date)).first()
+@app.route('/', methods=['GET'])
+@app.route('/grid/<grid_id>', methods=['GET'])
+def index(grid_id=None):
+    if grid_id is None:
+        grid = Grid.query.order_by(desc(Grid.id)).first()
+    else:
+        grid = Grid.query.get(grid_id)
 
     row_conditions = [
         Condition.query.get(grid.row_condition_1),
@@ -55,8 +59,23 @@ def index():
                            )
 
 
-@app.route('/clubs', methods=['GET', 'POST'])
+@app.route("/grids", methods=['GET'])
+def get_grids():
+    grids = Grid.query.order_by(desc(Grid.id)).all()
+
+    grids_ids = [grid.id for grid in grids]
+
+    return jsonify(grids_ids)
+
+
+@app.route('/clubs', methods=['GET'])
 def get_clubs():
+    @dataclass
+    class ClubRepresenter():
+        id: int
+        name: str
+        logo: str
+
     clubs = Club.query.all()
 
     clubs_basic_info = [
@@ -84,8 +103,4 @@ def check_answer():
     return jsonify({"correct": result, "clubName": club.name, "logo": club.logo})
 
 
-@dataclass
-class ClubRepresenter():
-    id: int
-    name: str
-    logo: str
+

@@ -39,4 +39,3 @@ class Grid(db.Model):
     column_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     column_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     column_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-    starting_date = db.Column(db.Date)

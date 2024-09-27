@@ -8,11 +8,15 @@
 </head>
 
 <body>
-
+  <script>let grids = {{ grids }}</script>
   <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 
   <div>
-    <h3>Grid #{{ grid_id }}</h3>
+      <div>
+        <h3>Grid #{{ grid_id }}</h3>
+        <button onclick="showGridSelectionModal()">Show Previous Grids</button>
+      </div>
+
 
     <div class="container">
       <!-- Top-left corner is empty for the grid layout -->
@@ -23,21 +27,21 @@
 
       <!-- Row 1 -->
       <div class="condition">{{ row_conditions[0].description }}</div>
-      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[0].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[1].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[2].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
 
       <!-- Row 2 -->
       <div class="condition">{{ row_conditions[1].description }}</div>
-      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[0].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[1].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[2].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
 
       <!-- Row 3 -->
       <div class="condition">{{ row_conditions[2].description }}</div>
-      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[0].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[1].id }}" onclick="showModal(this)" class="grid-cell"></div>
-      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[2].id }}" onclick="showModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[0].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[1].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
+      <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[2].id }}" onclick="showClubSelectionModal(this)" class="grid-cell"></div>
     </div>
 
     <h3>Guesses Left: <span id="guesses"></span></h3>

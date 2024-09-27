@@ -1,4 +1,5 @@
 let clubs = []
+let gridIds = []
 
 let modalOverlay = ''
 let searchInput = ''
@@ -17,7 +18,7 @@ async function getData() {
             if (!response.ok) {
                 throw new Error('Failed to fetch clubs');
             }
-            return response.json();
+            return response.json()
         })
         .then(data => {
             clubs = data
@@ -27,10 +28,26 @@ async function getData() {
         });
 }
 
+async function getGridsIds() {
+    fetch("/grids").then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch grids');
+        }
+        return response.json()
+    })
+        .then(data => {
+            gridIds = data
+        })
+        .catch(error => {
+            console.error('Error fetching clubs:', error);
+        });
+}
+
 
 window.onload = () => {
-    getData();
+    getData()
     console.log(clubs)
+    getGridsIds()
 
     document.getElementById("guesses").innerHTML = guesses_left
 
@@ -40,8 +57,49 @@ window.onload = () => {
     gridContainer = document.querySelector('.grid-container')
 };
 
-// Function to show modal
-function showModal(cell) {
+function hideAllModals() {
+
+    for (const child of modalOverlay.children) {
+      child.style.display = 'none'
+    }
+}
+
+function showGridSelectionModal() {
+    hideAllModals()
+
+    modalOverlay.style.display = 'flex'
+
+    gridSelectionModal = document.createElement("div")
+    gridSelectionModal.classList.add("grid-selection-modal")
+
+    gridIds.forEach(gridId => {
+        const gridOptionContainer = document.createElement('div')
+        gridOptionContainer.className = 'dropdown-option'
+
+        const gridName = document.createElement('span')
+        gridName.textContent = `Grid #${gridId}`
+
+        const selectGridButton = document.createElement('button')
+
+        selectGridButton.textContent = 'Play!'
+        selectGridButton.onclick = () => {
+            location.replace(`/grid/${gridId}`)
+        }
+
+        gridOptionContainer.appendChild(gridName)
+        gridOptionContainer.appendChild(selectGridButton)
+
+        gridSelectionModal.appendChild(gridOptionContainer)
+    })
+
+    modalOverlay.appendChild(gridSelectionModal)
+
+}
+
+
+function showClubSelectionModal(cell) {
+    hideAllModals()
+
     cell.classList.add('selected')
 
     conditions = [cell.getAttribute('rowCond'), cell.getAttribute('colCond')]
@@ -51,9 +109,9 @@ function showModal(cell) {
 }
 
 function showFinalModal(message) {
-    modalOverlay.style.display = 'flex'
+    hideAllModals()
 
-    modalOverlay.querySelector('.modal').style.display = 'none'
+    modalOverlay.style.display = 'flex'
 
     finalModal = document.createElement("div")
     finalModal.innerHTML = message
@@ -106,29 +164,29 @@ function listOptions() {
     const filteredClubs = clubs.filter(club => club.name.toLowerCase().includes(searchString));
 
     filteredClubs.forEach(club => {
-        const optionContainer = document.createElement('div');
-        optionContainer.className = 'dropdown-option';
+        const optionContainer = document.createElement('div')
+        optionContainer.className = 'dropdown-option'
 
         // Club name
-        const clubName = document.createElement('span');
+        const clubName = document.createElement('span')
         clubName.textContent = club.name;
 
         // Select button
-        const selectButton = document.createElement('button');
+        const selectButton = document.createElement('button')
         if (used_clubs.includes(club.name)) {
             optionContainer.classList.add('disabled')
             selectButton.disabled = true
         }
-        selectButton.textContent = 'Select';
+        selectButton.textContent = 'Select'
         selectButton.onclick = () => {
             submitClub(club.id)
         }
 
         // Append to option container
-        optionContainer.appendChild(clubName);
-        optionContainer.appendChild(selectButton);
+        optionContainer.appendChild(clubName)
+        optionContainer.appendChild(selectButton)
 
-        dropdownContainer.appendChild(optionContainer);
+        dropdownContainer.appendChild(optionContainer)
     });
 }
 
@@ -138,30 +196,24 @@ async function submitClub(clubId) {
     const url = "/answer";
     let selectedCell = document.querySelector('.selected')
     fetch(url, {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            "club-id": clubId,
-            "condition-id-1": conditions[0],
-            "condition-id-2": conditions[1]
+        method: "POST", headers: {
+            'Accept': 'application/json', "Content-Type": "application/json"
+        }, body: JSON.stringify({
+            "club-id": clubId, "condition-id-1": conditions[0], "condition-id-2": conditions[1]
         })
     }).then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to check club');
-            }
-            return response.json();
-        })
+        if (!response.ok) {
+            throw new Error('Failed to check club');
+        }
+        return response.json();
+    })
         .then(data => {
             if (data.correct) {
                 selectedCell.style.backgroundImage = `url(${data.logo})`
                 selectedCell.style.cursor = 'default'
                 used_clubs.push(data.clubName)
                 selectedCell.onclick = null
-            }
-            else {
+            } else {
                 applyPowEffect(selectedCell)
             }
 
@@ -173,14 +225,14 @@ async function submitClub(clubId) {
             } else if (guesses_left == 0) {
                 showFinalModal("You lost 😭")
             }
-                // selectedCell.animate(
-                //     [
-                //       { backgroundColor: 'red', offset: 0.3 },
-                //     ], {
-                //       duration: 2000,
-                //       iterations: 1
-                //     }
-                // );
+            // selectedCell.animate(
+            //     [
+            //       { backgroundColor: 'red', offset: 0.3 },
+            //     ], {
+            //       duration: 2000,
+            //       iterations: 1
+            //     }
+            // );
         });
 }
 
