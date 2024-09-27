@@ -5,18 +5,18 @@ from models import Condition, Club, Grid
 
 def create_default_conditions(db, app):
     conditions = [
-        Condition(id=1, description="Logo has animal", expression="club.has_animal == True"),
-        Condition(id=2, description="In Premier League", expression="club.league == 'Premier League'"),
-        Condition(id=3, description="Logo has only 2 colors", expression="club.colors_number == '2'"),
-        Condition(id=4, description="Logo has Red", expression="club.has_color_red == True" ),
-        Condition(id=5, description="Logo doesn't have Blue", expression="club.has_color_blue == False"),
+        Condition(id=1, description="Logo has animal", expression="clubs.has_animal = True"),
+        Condition(id=2, description="In Premier League", expression="clubs.league = 'Premier League'"),
+        Condition(id=3, description="Logo has only 2 colors", expression="clubs.colors_number = '2'"),
+        Condition(id=4, description="Logo has Red", expression="clubs.has_color_red = True" ),
+        Condition(id=5, description="Logo doesn't have Blue", expression="clubs.has_color_blue = False"),
         Condition(id=6, description="Name starts with A, B or C",
-                  expression="club.name.lower().startswith('a') or club.name.lower().startswith('b') or club.name.lower().startswith('c')"),
-        Condition(id=7, description="Logo doesn't have stars", expression="club.stars_number == 0"),
-        Condition(id=8, description="Has at least 1 League Title", expression="club.league_titles > 0"),
+                  expression="(clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')"),
+        Condition(id=7, description="Logo doesn't have stars", expression="clubs.stars_number = 0"),
+        Condition(id=8, description="Has at least 1 League Title", expression="clubs.league_titles > 0"),
         Condition(id=9, description="Name starts with R or S",
-                  expression="club.name.lower().startswith('r') or club.name.lower().startswith('s')"),
-        Condition(id=10, description="In Liga Portugal", expression="club.league == 'Liga Portugal'"),
+                  expression="(clubs.name like 'r%' or clubs.name like 's%')"),
+        Condition(id=10, description="In Liga Portugal", expression="clubs.league = 'Liga Portugal'"),
 
     ]
     with app.app_context():

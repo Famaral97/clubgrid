@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from dotenv import load_dotenv
 import os
-from sqlalchemy import desc
+from sqlalchemy import desc, text
 
 from flask import Flask, render_template, jsonify, request
 
@@ -98,7 +98,9 @@ def check_answer():
 
     club = Club.query.get(club_id)
 
-    result = eval(condition_1_expression) and eval(condition_2_expression)
+    solution_clubs = Club.query.filter(Club.id == club_id, text(condition_1_expression), text(condition_2_expression)).all()
+
+    result = len(solution_clubs) == 1
 
     return jsonify({"correct": result, "clubName": club.name, "logo": club.logo})
 
