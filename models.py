@@ -28,6 +28,7 @@ class Club(db.Model):
     has_numbers = db.Column(db.Boolean)
     has_color_red = db.Column(db.Boolean)
     has_color_blue = db.Column(db.Boolean)
+    league_titles = db.Column(db.Integer)
 
 
 class Grid(db.Model):

@@ -12,7 +12,12 @@ def create_default_conditions(db, app):
         Condition(id=5, description="Logo doesn't have Blue", expression="club.has_color_blue == False"),
         Condition(id=6, description="Name starts with A, B or C",
                   expression="club.name.lower().startswith('a') or club.name.lower().startswith('b') or club.name.lower().startswith('c')"),
-        Condition(id=7, description="Logo doesn't have stars", expression="club.stars_number == 0")
+        Condition(id=7, description="Logo doesn't have stars", expression="club.stars_number == 0"),
+        Condition(id=8, description="Has at least 1 League Title", expression="club.league_titles > 0"),
+        Condition(id=9, description="Name starts with R or S",
+                  expression="club.name.lower().startswith('r') or club.name.lower().startswith('s')"),
+        Condition(id=10, description="In Liga Portugal", expression="club.league == 'Liga Portugal'"),
+
     ]
     with app.app_context():
         db.session.add_all(conditions)
@@ -21,6 +26,15 @@ def create_default_conditions(db, app):
 
 def create_default_grids(db, app):
     grids = [
+        Grid(
+            id=3,
+            row_condition_1=10,
+            row_condition_2=8,
+            row_condition_3=9,
+            column_condition_1=5,
+            column_condition_2=1,
+            column_condition_3=3,
+        ),
         Grid(
             id=2,
             row_condition_1=1,
@@ -71,7 +85,8 @@ def load_clubs():
                     colors_number=club_row["# Colors"],
                     has_numbers=club_row["Numbers"]=="YES",
                     has_color_red=club_row["Red"]=="YES",
-                    has_color_blue=club_row["Blue"]=="YES"
+                    has_color_blue=club_row["Blue"]=="YES",
+                    league_titles=club_row["League Titles (2024)"]
                 )
             )
 
