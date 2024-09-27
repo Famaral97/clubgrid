@@ -7,7 +7,7 @@ def create_default_conditions(db, app):
     conditions = [
         Condition(id=1, description="Logo has animal", expression="club.has_animal == True"),
         Condition(id=2, description="In Premier League", expression="club.league == 'Premier League'"),
-        Condition(id=3, description="Logo has 2 colors", expression="int(club.colors_number) == 2"),
+        Condition(id=3, description="Logo has only 2 colors", expression="club.colors_number == '2'"),
         Condition(id=4, description="Logo has Red", expression="club.has_color_red == True" ),
         Condition(id=5, description="Logo doesn't have Blue", expression="club.has_color_blue == False"),
         Condition(id=6, description="Name starts with A, B or C",
