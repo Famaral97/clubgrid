@@ -98,13 +98,13 @@ function showGridSelectionModal() {
 
 
 function showClubSelectionModal(cell) {
-    hideAllModals()
 
     cell.classList.add('selected')
 
     conditions = [cell.getAttribute('rowCond'), cell.getAttribute('colCond')]
 
     modalOverlay.style.display = 'flex'
+    modalOverlay.querySelector(".modal").style.display = 'flex'
     searchInput.focus() // Focus on the input field for better user experience
 }
 
@@ -144,8 +144,11 @@ function exitFinalMode(e) {
 
 // Function to hide modal
 function hideModal() {
+    hideAllModals()
 
-    document.querySelector('.grid-cell.selected').classList.remove('selected')
+    selectedCell = document.querySelector('.grid-cell.selected')
+    if (selectedCell !== null) selectedCell.classList.remove('selected')
+
     conditions = []
 
     modalOverlay.style.display = 'none'
