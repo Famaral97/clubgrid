@@ -136,12 +136,12 @@ def load_clubs():
                     has_color_red=club_row["Red"]=="YES",
                     has_color_blue=club_row["Blue"]=="YES",
                     league_titles=club_row["League Titles (2024)"],
-                    has_crown=club_row["Has Crown"],
+                    has_crown=club_row["Has Crown"]=="YES",
                     champions_league_titles=club_row["Champions League Titles"],
-                    champions_league_runner_up=club_row["Champions League Runner Up"],
+                    champions_league_runner_up=club_row["Champions League Runner-Up"],
                     europa_league_titles=club_row["Europa League Titles"],
-                    europa_league_runner_up=club_row["Europa League Runner Up)"],
-                    in_capital=club_row["In Capital City"],
+                    europa_league_runner_up=club_row["Europa League Runner-Up"],
+                    in_capital=club_row["In Capital City"]=="YES",
                 )
             )
 
