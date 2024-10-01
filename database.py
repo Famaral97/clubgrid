@@ -27,8 +27,8 @@ def create_default_conditions(db, app):
         Condition(id=15, description="Logo doesn't have stars", expression="clubs.stars_number = 0"),
         Condition(id=16, description="Logo has stars", expression="clubs.stars_number != 0"),
         
-        Condition(id=17, description="Logo has only 2 colors", expression="clubs.colors_number = '2'"),
-        Condition(id=18, description="Logo has only 3 colors", expression="clubs.colors_number = '3'"),
+        Condition(id=17, description="Logo has exactly 1 or 2 colors", expression="(clubs.colors_number = '1' or clubs.colors_number = '2')"),
+        Condition(id=18, description="Logo has exactly 3 colors", expression="clubs.colors_number = '3'"),
         Condition(id=19, description="Logo has 4 or more colors", expression="clubs.colors_number = '4+'"),
 
         Condition(id=20, description="Logo has numbers", expression="clubs.numbers = True"),
