@@ -16,14 +16,12 @@ body {
 }
 
 @media (min-width:800px) {
-
   .container {
     display: grid;
     grid-template-columns: repeat(4, 150px); /* 4 columns: 1 for conditions + 3 for cells */
     grid-template-rows: repeat(4, 150px);    /* 4 rows: 1 for conditions + 3 for cells */
     gap: 5px; /* Space between cells */
   }
-
 }
 
 .condition, .grid-cell {
@@ -77,17 +75,25 @@ body {
   z-index: 1000;
 }
 
-/* Modal content */
-.modal, .final-modal, .grid-selection-modal {
+.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal {
   background: #fff;
-  padding: 20px;
   border-radius: 8px;
   width: 30vw;
   min-width: 300px;
+  max-height: 80%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   flex-direction: column;
+
+  > div {
+    padding: 20px;
+    overflow: auto;
+  }
+}
+
+.info-modal, .club-selection-modal {
+      width: 50vw;
 }
 
 /* Search input in the modal */

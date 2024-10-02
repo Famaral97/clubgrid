@@ -72,6 +72,8 @@ function showGridSelectionModal() {
     gridSelectionModal = document.createElement("div")
     gridSelectionModal.classList.add("grid-selection-modal")
 
+    gridSelectionModalContainer = document.createElement("div")
+
     gridIds.forEach(gridId => {
         const gridOptionContainer = document.createElement('div')
         gridOptionContainer.className = 'dropdown-option'
@@ -89,13 +91,28 @@ function showGridSelectionModal() {
         gridOptionContainer.appendChild(gridName)
         gridOptionContainer.appendChild(selectGridButton)
 
-        gridSelectionModal.appendChild(gridOptionContainer)
+        gridSelectionModalContainer.appendChild(gridOptionContainer)
     })
+
+    gridSelectionModal.appendChild(gridSelectionModalContainer)
 
     modalOverlay.appendChild(gridSelectionModal)
 
 }
 
+function showInfoModal() {
+    hideAllModals()
+
+    modalOverlay.style.display = 'flex'
+
+    infoModal = document.createElement("div")
+    infoModal.classList.add("info-modal")
+
+    infoModal.innerHTML = document.getElementById("club-grid-info").innerHTML
+
+    modalOverlay.appendChild(infoModal)
+
+}
 
 function showClubSelectionModal(cell) {
 
@@ -104,7 +121,7 @@ function showClubSelectionModal(cell) {
     conditions = [cell.getAttribute('rowCond'), cell.getAttribute('colCond')]
 
     modalOverlay.style.display = 'flex'
-    modalOverlay.querySelector(".modal").style.display = 'flex'
+    modalOverlay.querySelector(".club-selection-modal").style.display = 'flex'
     searchInput.focus() // Focus on the input field for better user experience
 }
 
@@ -126,7 +143,6 @@ function exitSubmitMode(e) {
         hideModal()
     }
 }
-
 
 function exitFinalMode(e) {
     if (e.target === modalOverlay) {
@@ -192,7 +208,6 @@ function listOptions() {
         dropdownContainer.appendChild(optionContainer)
     });
 }
-
 
 async function submitClub(clubId) {
     console.log(conditions)
