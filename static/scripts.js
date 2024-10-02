@@ -43,7 +43,6 @@ async function getGridsIds() {
         });
 }
 
-
 async function getGridSolution(gridId) {
     return fetch(`/grid/${gridId}/end`).then(response => {
         if (!response.ok) {
@@ -58,7 +57,6 @@ async function getGridSolution(gridId) {
             console.error('Error fetching grids:', error);
         });
 }
-
 
 window.onload = () => {
     getData()
@@ -120,13 +118,9 @@ function showInfoModal() {
 
     modalOverlay.style.display = 'flex'
 
-    infoModal = document.createElement("div")
-    infoModal.classList.add("info-modal")
-
-    infoModal.innerHTML = document.getElementById("club-grid-info").innerHTML
+    let infoModal = displayInfo()
 
     modalOverlay.appendChild(infoModal)
-
 }
 
 function showClubSelectionModal(cell) {

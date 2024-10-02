@@ -78,8 +78,8 @@ body {
 .club-selection-modal, .final-modal, .grid-selection-modal, .info-modal {
   background: #fff;
   border-radius: 8px;
-  width: 30vw;
-  min-width: 300px;
+  width: 60vw;
+  min-width: 400px;
   max-height: 80%;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -92,8 +92,8 @@ body {
   }
 }
 
-.info-modal, .club-selection-modal {
-      width: 50vw;
+.club-selection-modal {
+      width: 30vw;
 }
 
 /* Search input in the modal */
@@ -134,7 +134,6 @@ body {
   }
 }
 
-
 /* Close button */
 .close-modal {
   display: block;
@@ -161,9 +160,6 @@ body {
 .view-results {
   display: none;
 }
-
-
-
 
 @keyframes pow {
   0% {

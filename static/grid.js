@@ -4,8 +4,6 @@ function makeGrid(container, solutions, row_conditions_descriptions, col_conditi
 
     all_solutions = solutions
 
-
-
     container.innerHTML = `
     <div class="container">
         <!-- Top-left corner is empty for the grid layout -->
