@@ -39,14 +39,29 @@ async function getGridsIds() {
             gridIds = data
         })
         .catch(error => {
-            console.error('Error fetching clubs:', error);
+            console.error('Error fetching grids:', error);
+        });
+}
+
+
+async function getGridSolution(gridId) {
+    return fetch(`/grid/${gridId}/end`).then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch grids');
+        }
+        return response.json()
+    })
+        .then(data => {
+            return data
+        })
+        .catch(error => {
+            console.error('Error fetching grids:', error);
         });
 }
 
 
 window.onload = () => {
     getData()
-    console.log(clubs)
     getGridsIds()
 
     document.getElementById("guesses").innerHTML = guesses_left
@@ -60,7 +75,7 @@ window.onload = () => {
 function hideAllModals() {
 
     for (const child of modalOverlay.children) {
-      child.style.display = 'none'
+        child.style.display = 'none'
     }
 }
 
@@ -125,13 +140,19 @@ function showClubSelectionModal(cell) {
     searchInput.focus() // Focus on the input field for better user experience
 }
 
-function showFinalModal(message) {
+async function showFinalModal() {
     hideAllModals()
 
     modalOverlay.style.display = 'flex'
 
+    const gridId = document.querySelector('.grid-title').getAttribute('gridId')
+
+    const {solutions, row_conditions_descriptions, col_conditions_descriptions} = await getGridSolution(gridId)
+
     finalModal = document.createElement("div")
-    finalModal.innerHTML = message
+
+    makeGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions)
+
     finalModal.classList.add("final-modal")
 
     modalOverlay.appendChild(finalModal)
@@ -210,7 +231,6 @@ function listOptions() {
 }
 
 async function submitClub(clubId) {
-    console.log(conditions)
     const url = "/answer";
     let selectedCell = document.querySelector('.selected')
     fetch(url, {
@@ -238,10 +258,8 @@ async function submitClub(clubId) {
             hideModal()
             guesses_left -= 1
             document.getElementById("guesses").innerHTML = guesses_left
-            if (used_clubs.length == 9) {
-                showFinalModal("Congratulations! You won!")
-            } else if (guesses_left == 0) {
-                showFinalModal("You lost 😭")
+            if (used_clubs.length == 9 || guesses_left == 0) {
+                showFinalModal()
             }
             // selectedCell.animate(
             //     [

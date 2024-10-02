@@ -98,11 +98,61 @@ def check_answer():
 
     club = Club.query.get(club_id)
 
-    solution_clubs = Club.query.filter(Club.id == club_id, text(condition_1_expression), text(condition_2_expression)).all()
+    solution_clubs = Club.query.filter(Club.id == club_id, text(condition_1_expression),
+                                       text(condition_2_expression)).all()
 
     result = len(solution_clubs) == 1
 
     return jsonify({"correct": result, "clubName": club.name, "logo": club.logo})
 
 
+@app.route('/grid/<grid_id>/end', methods=['GET'])
+def get_grid_solution(grid_id):
+    grid = Grid.query.get(grid_id)
 
+    solutions = [
+        [
+            get_solution(grid.row_condition_1, grid.column_condition_1),
+            get_solution(grid.row_condition_1, grid.column_condition_2),
+            get_solution(grid.row_condition_1, grid.column_condition_3)
+        ],
+        [
+            get_solution(grid.row_condition_2, grid.column_condition_1),
+            get_solution(grid.row_condition_2, grid.column_condition_2),
+            get_solution(grid.row_condition_2, grid.column_condition_3)
+        ],
+        [
+            get_solution(grid.row_condition_3, grid.column_condition_1),
+            get_solution(grid.row_condition_3, grid.column_condition_2),
+            get_solution(grid.row_condition_3, grid.column_condition_3)
+        ]
+    ]
+
+    row_conditions = [
+        Condition.query.get(grid.row_condition_1).description,
+        Condition.query.get(grid.row_condition_2).description,
+        Condition.query.get(grid.row_condition_3).description,
+    ]
+
+    col_conditions = [
+        Condition.query.get(grid.column_condition_1).description,
+        Condition.query.get(grid.column_condition_2).description,
+        Condition.query.get(grid.column_condition_3).description,
+    ]
+
+    return jsonify({"solutions": solutions, "row_conditions_descriptions": row_conditions, "col_conditions_descriptions": col_conditions})
+
+
+def get_solution(row_condition_id, col_condition_id):
+    @dataclass
+    class ClubRepresenter():
+        id: int
+        name: str
+        logo: str
+
+    row_condition = Condition.query.get(row_condition_id)
+    col_condition = Condition.query.get(col_condition_id)
+
+    solution_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
+
+    return [ClubRepresenter(id=club.id, name=club.name, logo=club.logo) for club in solution_clubs]
