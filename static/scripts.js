@@ -2,6 +2,7 @@ let clubs = []
 let gridIds = []
 
 let modalOverlay = ''
+let extraModelOverlay = ''
 let searchInput = ''
 let dropdownContainer = ''
 let gridContainer = ''
@@ -65,6 +66,7 @@ window.onload = () => {
     document.getElementById("guesses").innerHTML = guesses_left
 
     modalOverlay = document.querySelector('.modal-overlay')
+    extraModelOverlay = document.querySelector('.modal-overlay-extra')
     searchInput = document.querySelector('.search-input')
     dropdownContainer = document.querySelector('.dropdown-container')
     gridContainer = document.querySelector('.grid-container')
@@ -153,9 +155,12 @@ async function showFinalModal() {
     modalOverlay.onclick = exitFinalMode
 }
 
-function exitSubmitMode(e) {
+function exitModal(e) {
     if (e.target === modalOverlay) {
         hideModal()
+    } else if (e.target === extraModelOverlay) {
+        extraModelOverlay.style.display = 'none'
+        document.querySelector(".solutions-modal").remove()
     }
 }
 
@@ -167,13 +172,12 @@ function exitFinalMode(e) {
         viewResultsButton.onclick = () => modalOverlay.style.display = 'flex'
     }
 
-    document.querySelectorAll('.grid-cell').forEach(cell => {
+    document.querySelectorAll('.container .grid-cell').forEach(cell => {
         cell.onclick = null
         cell.style.cursor = 'default'
     })
 }
 
-// Function to hide modal
 function hideModal() {
     hideAllModals()
 

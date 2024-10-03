@@ -15,11 +15,26 @@ body {
   gap: 5px; /* Space between cells */
 }
 
+.container-solutions {
+  display: grid;
+  grid-template-columns: repeat(4, 15vw); /* 4 columns: 1 for conditions + 3 for cells */
+  grid-template-rows: repeat(4, 15vw);    /* 4 rows: 1 for conditions + 3 for cells */
+  gap: 5px; /* Space between cells */
+  align-self: center;
+}
+
 @media (min-width:800px) {
   .container {
     display: grid;
     grid-template-columns: repeat(4, 150px); /* 4 columns: 1 for conditions + 3 for cells */
     grid-template-rows: repeat(4, 150px);    /* 4 rows: 1 for conditions + 3 for cells */
+    gap: 5px; /* Space between cells */
+  }
+
+  .container-solutions {
+    display: grid;
+    grid-template-columns: repeat(4, 120px); /* 4 columns: 1 for conditions + 3 for cells */
+    grid-template-rows: repeat(4, 120px);    /* 4 rows: 1 for conditions + 3 for cells */
     gap: 5px; /* Space between cells */
   }
 }
@@ -62,7 +77,7 @@ body {
 }
 
 
-.modal-overlay {
+.modal-overlay, .modal-overlay-extra {
   position: fixed;
   top: 0;
   left: 0;
@@ -75,7 +90,7 @@ body {
   z-index: 1000;
 }
 
-.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal {
+.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .solutions-modal {
   background: #fff;
   border-radius: 8px;
   width: 60vw;
@@ -85,11 +100,18 @@ body {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  overflow-y: auto;
 
   > div {
     padding: 20px;
-    overflow: auto;
+    overflow: hidden;
   }
+}
+
+.final-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .club-selection-modal {
@@ -126,6 +148,7 @@ body {
   margin-bottom: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
+  overflow-y: hidden;
 
   &.disabled {
     cursor: not-allowed;

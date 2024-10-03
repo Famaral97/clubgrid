@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Football Club Grid Game</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
 </head>
 
@@ -60,7 +61,7 @@
     <button class="view-results">View Results</button>
 </div>
 
-<div onclick="exitSubmitMode(event)" class="modal-overlay">
+<div onclick="exitModal(event)" class="modal-overlay">
     <div class="club-selection-modal">
         <div>
             <input oninput="listOptions()" type="text" class="search-input" placeholder="Search...">
@@ -68,6 +69,8 @@
         </div>
     </div>
 </div>
+
+<div onclick="exitModal(event)" class="modal-overlay-extra"></div>
 </body>
 
 </html>

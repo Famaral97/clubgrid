@@ -5,7 +5,9 @@ function makeGrid(container, solutions, row_conditions_descriptions, col_conditi
     all_solutions = solutions
 
     container.innerHTML = `
-    <div class="container">
+    <h1>Solutions</h1>
+    <p>Click on a cell to check all possible clubs</p>
+    <div class="container-solutions">
         <!-- Top-left corner is empty for the grid layout -->
         <div class="empty-cell"></div>
         <div class="condition">${col_conditions_descriptions[0]}</div>
@@ -33,5 +35,33 @@ function makeGrid(container, solutions, row_conditions_descriptions, col_conditi
 }
 
 function showSolutionModal(row, col) {
-    console.log(all_solutions[row][col])
+    const solutions = all_solutions[row][col]
+    extraModelOverlay.style.display = 'flex'
+
+    let solutionsModal = document.createElement("div")
+    solutionsModal.classList.add("solutions-modal")
+
+    solutions.forEach((solution) => {
+        const solutionContainer = document.createElement("div")
+        solutionContainer.classList.add("dropdown-option")
+        solutionContainer.style.height = '110px'
+
+        const clubName = document.createElement("div")
+        clubName.innerHTML = solution.name
+        solutionContainer.appendChild(clubName)
+
+        const clubLogo = document.createElement("div")
+        clubLogo.style.width = '100px'
+        clubLogo.style.height = '100px'
+        clubLogo.style.backgroundSize = 'contain'
+        clubLogo.style.backgroundRepeat = 'no-repeat'
+        clubLogo.style.backgroundPosition = 'center'
+        clubLogo.style.backgroundImage = `url(${solution.logo})`
+        solutionContainer.appendChild(clubLogo)
+
+        solutionsModal.appendChild(solutionContainer)
+    })
+
+    extraModelOverlay.appendChild(solutionsModal)
 }
+
