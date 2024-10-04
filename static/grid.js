@@ -51,11 +51,7 @@ function showSolutionModal(row, col) {
         solutionContainer.appendChild(clubName)
 
         const clubLogo = document.createElement("div")
-        clubLogo.style.width = '100px'
-        clubLogo.style.height = '100px'
-        clubLogo.style.backgroundSize = 'contain'
-        clubLogo.style.backgroundRepeat = 'no-repeat'
-        clubLogo.style.backgroundPosition = 'center'
+        clubLogo.classList.add("solutions-club-logo")
         clubLogo.style.backgroundImage = `url(${solution.logo})`
         solutionContainer.appendChild(clubLogo)
 
