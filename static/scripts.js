@@ -194,10 +194,9 @@ function hideModal() {
 // Function to filter and display clubs
 function listOptions() {
     const searchString = searchInput.value.toLowerCase();
+    dropdownContainer.innerHTML = '';
 
     if (searchString.length < 3) return
-
-    dropdownContainer.innerHTML = ''; // Clear previous results
 
     const filteredClubs = clubs.filter(club => club.name.toLowerCase().includes(searchString));
 

@@ -21,8 +21,8 @@ def create_default_conditions(db, app):
         Condition(id=11, description="Logo has person", expression="clubs.has_person = True"),
         Condition(id=12, description="Logo doesn't have person", expression="clubs.has_person = False"),
 
-        Condition(id=13, description="Logo has a ball", expression="clubs.has_ball = True"),
-        Condition(id=14, description="Logo doesn't a ball", expression="clubs.has_ball = False"),
+        Condition(id=13, description="Logo has a football", expression="clubs.has_football = True"),
+        Condition(id=14, description="Logo doesn't a football", expression="clubs.has_football = False"),
 
         Condition(id=15, description="Logo doesn't have stars", expression="clubs.stars_number = 0"),
         Condition(id=16, description="Logo has stars", expression="clubs.stars_number != 0"),
@@ -50,29 +50,29 @@ def create_default_conditions(db, app):
         Condition(id=30, description="Logo has crown", expression="clubs.has_crown = True"),
         Condition(id=31, description="Logo doesn't have crown", expression="clubs.has_crown = False"),
 
-        Condition(id=32, description="Never won UEFA Champions League/European Cup",
+        Condition(id=32, description="Never won UEFA Champions League / European Cup",
                   expression="clubs.champions_league_titles = 0"),
-        Condition(id=33, description="Won UEFA Champions League/European Cup",
+        Condition(id=33, description="Won UEFA Champions League / European Cup",
                   expression="clubs.champions_league_titles > 0"),
-        Condition(id=34, description="Was UEFA Champions League/European Cup Runner-Up",
+        Condition(id=34, description="Was UEFA Champions League / European Cup Runner-Up",
                   expression="clubs.champions_league_runner_up > 0"),
-        Condition(id=35, description="Was in UEFA Champions League/European Cup Final",
+        Condition(id=35, description="Was in UEFA Champions League / European Cup Final",
                   expression="(clubs.champions_league_titles > 0 or clubs.champions_league_runner_up > 0)"),
 
-        Condition(id=36, description="Never won UEFA Europa League/UEFA Cup",
+        Condition(id=36, description="Never won UEFA Europa League / UEFA Cup",
                   expression="clubs.europa_league_titles = 0"),
-        Condition(id=37, description="Won UEFA Europa League/UEFA Cup",
+        Condition(id=37, description="Won UEFA Europa League / UEFA Cup",
                   expression="clubs.europa_league_titles > 0"),
-        Condition(id=38, description="Was UEFA Europa League/UEFA Cup Runner-Up",
+        Condition(id=38, description="Was UEFA Europa League / UEFA Cup Runner-Up",
                   expression="clubs.europa_league_runner_up > 0"),
-        Condition(id=39, description="Was in UEFA Europa League/UEFA Cup Final",
+        Condition(id=39, description="Was in UEFA Europa League / UEFA Cup Final",
                   expression="(clubs.europa_league_titles > 0 or clubs.europa_league_runner_up > 0)"),
 
         Condition(id=40, description="Based in capital city", expression="clubs.in_capital = True"),
         Condition(id=41, description="Not based in capital", expression="clubs.in_capital = False"),
         
         Condition(id=42, description="Name starts with A, B or C",
-                  expression="(clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')"),        
+                  expression="(clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')"),
         Condition(id=43, description="Name starts with R or S",
                   expression="(clubs.name like 'r%' or clubs.name like 's%')"),
     ]
@@ -84,6 +84,24 @@ def create_default_conditions(db, app):
 
 def create_default_grids(db, app):
     grids = [
+        Grid(
+            id=5,
+            row_condition_1=30,
+            row_condition_2=13,
+            row_condition_3=16,
+            column_condition_1=10,
+            column_condition_2=19,
+            column_condition_3=41,
+        ),
+        Grid(
+            id=4,
+            row_condition_1=32,
+            row_condition_2=22,
+            row_condition_3=7,
+            column_condition_1=15,
+            column_condition_2=25,
+            column_condition_3=9,
+        ),
         Grid(
             id=3,
             row_condition_1=1,

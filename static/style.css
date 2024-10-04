@@ -8,6 +8,17 @@ body {
   background-color: #f4f4f9;
 }
 
+.horizontal-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  button {
+    height: 22px;
+    align-self: center;
+  }
+}
+
 .container {
   display: grid;
   grid-template-columns: repeat(4, 20vw); /* 4 columns: 1 for conditions + 3 for cells */
@@ -23,21 +34,7 @@ body {
   align-self: center;
 }
 
-@media (min-width:800px) {
-  .container {
-    display: grid;
-    grid-template-columns: repeat(4, 150px); /* 4 columns: 1 for conditions + 3 for cells */
-    grid-template-rows: repeat(4, 150px);    /* 4 rows: 1 for conditions + 3 for cells */
-    gap: 5px; /* Space between cells */
-  }
 
-  .container-solutions {
-    display: grid;
-    grid-template-columns: repeat(4, 120px); /* 4 columns: 1 for conditions + 3 for cells */
-    grid-template-rows: repeat(4, 120px);    /* 4 rows: 1 for conditions + 3 for cells */
-    gap: 5px; /* Space between cells */
-  }
-}
 
 .condition, .grid-cell {
   display: flex;
@@ -45,6 +42,9 @@ body {
   align-items: center;
   border: 1px solid #ddd;
   background-color: #fff;
+  font-size: 11px;
+  padding: 3px;
+  text-align: center;
 }
 
 .grid-cell {
@@ -71,8 +71,6 @@ body {
 }
 
 .condition {
-  font-weight: bold;
-  padding: 10px;
   background-color: #f9f9f9;
 }
 
@@ -101,6 +99,7 @@ body {
 
   > div {
     padding: 20px;
+    overflow-y: auto;
   }
 }
 
@@ -231,3 +230,23 @@ body {
   animation: pow 1s ease-out forwards;
 }
 
+@media (min-width:600px) {
+  .container {
+    display: grid;
+    grid-template-columns: repeat(4, 150px); /* 4 columns: 1 for conditions + 3 for cells */
+    grid-template-rows: repeat(4, 150px);    /* 4 rows: 1 for conditions + 3 for cells */
+    gap: 5px; /* Space between cells */
+  }
+
+  .container-solutions {
+    display: grid;
+    grid-template-columns: repeat(4, 120px); /* 4 columns: 1 for conditions + 3 for cells */
+    grid-template-rows: repeat(4, 120px);    /* 4 rows: 1 for conditions + 3 for cells */
+    gap: 5px; /* Space between cells */
+  }
+
+  .condition, .grid-cell {
+    font-size: larger;
+    padding: 10px;
+  }
+}
