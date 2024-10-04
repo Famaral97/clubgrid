@@ -144,6 +144,7 @@ def load_clubs():
                     has_numbers=club_row["Numbers"]=="YES",
                     has_color_red=club_row["Red"]=="YES",
                     has_color_blue=club_row["Blue"]=="YES",
+                    has_color_green=club_row["Green"]=="YES",
                     league_titles=club_row["League Titles (2024)"],
                     has_crown=club_row["Has Crown"]=="YES",
                     champions_league_titles=club_row["Champions League Titles"],
