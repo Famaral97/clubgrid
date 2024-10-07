@@ -7,7 +7,7 @@ let searchInput = ''
 let dropdownContainer = ''
 let gridContainer = ''
 
-let conditions = []
+let conditions = {}
 
 let used_clubs = []
 let guesses_left = 15
@@ -129,7 +129,10 @@ function showClubSelectionModal(cell) {
 
     cell.classList.add('selected')
 
-    conditions = [cell.getAttribute('rowCond'), cell.getAttribute('colCond')]
+    conditions = {
+        row: cell.getAttribute('rowCond'),
+        column: cell.getAttribute('colCond')
+    }
 
     modalOverlay.style.display = 'flex'
     modalOverlay.querySelector(".club-selection-modal").style.display = 'flex'
@@ -184,7 +187,7 @@ function hideModal() {
     selectedCell = document.querySelector('.grid-cell.selected')
     if (selectedCell !== null) selectedCell.classList.remove('selected')
 
-    conditions = []
+    conditions = {}
 
     modalOverlay.style.display = 'none'
     searchInput.value = '' // Clear search input
@@ -229,12 +232,18 @@ function listOptions() {
 
 async function submitClub(clubId) {
     const url = "/answer";
+
+    const gridId = document.querySelector('.grid-title').getAttribute('gridId')
+
     let selectedCell = document.querySelector('.selected')
     fetch(url, {
         method: "POST", headers: {
             'Accept': 'application/json', "Content-Type": "application/json"
         }, body: JSON.stringify({
-            "club-id": clubId, "condition-id-1": conditions[0], "condition-id-2": conditions[1]
+            "grid-id": gridId,
+            "club-id": clubId,
+            "row-condition-id": conditions.row,
+            "column-condition-id": conditions.column
         })
     }).then(response => {
         if (!response.ok) {

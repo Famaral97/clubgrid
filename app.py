@@ -6,7 +6,9 @@ from sqlalchemy import desc, text
 from flask import Flask, render_template, jsonify, request
 
 from database import create_default_conditions, create_default_clubs, create_default_grids
-from models import db, Condition, Club, Grid
+from models import db, Condition, Club, Grid, Answer
+
+from sqlalchemy.dialects.mysql import insert
 
 app = Flask(__name__)
 
@@ -90,11 +92,12 @@ def check_answer():
     data = request.get_json()
 
     club_id = data["club-id"]
-    condition_1_id = data["condition-id-1"]
-    condition_2_id = data["condition-id-2"]
+    row_condition_id = int(data["row-condition-id"])
+    column_condition_id = int(data["column-condition-id"])
+    grid_id = int(data["grid-id"])
 
-    condition_1_expression = Condition.query.get(int(condition_1_id)).expression
-    condition_2_expression = Condition.query.get(int(condition_2_id)).expression
+    condition_1_expression = Condition.query.get(row_condition_id).expression
+    condition_2_expression = Condition.query.get(column_condition_id).expression
 
     club = Club.query.get(club_id)
 
@@ -102,6 +105,20 @@ def check_answer():
                                        text(condition_2_expression)).all()
 
     result = len(solution_clubs) == 1
+
+    stmt = insert(Answer).values(
+        grid_id=grid_id,
+        club_id=club.id,
+        row_condition_id=row_condition_id,
+        column_condition_id=column_condition_id,
+        count=1,
+    )
+
+    stmt = stmt.on_duplicate_key_update(count=Answer.count + 1)
+
+    with app.app_context():
+        db.session.execute(stmt)
+        db.session.commit()
 
     return jsonify({"correct": result, "clubName": club.name, "logo": club.logo})
 
@@ -140,7 +157,13 @@ def get_grid_solution(grid_id):
         Condition.query.get(grid.column_condition_3).description,
     ]
 
-    return jsonify({"solutions": solutions, "row_conditions_descriptions": row_conditions, "col_conditions_descriptions": col_conditions})
+    return jsonify(
+        {
+            "solutions": solutions,
+            "row_conditions_descriptions": row_conditions,
+            "col_conditions_descriptions": col_conditions
+        }
+    )
 
 
 def get_solution(row_condition_id, col_condition_id):
