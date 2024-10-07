@@ -129,19 +129,19 @@ def get_grid_solution(grid_id):
 
     solutions = [
         [
-            get_solution(grid.row_condition_1, grid.column_condition_1),
-            get_solution(grid.row_condition_1, grid.column_condition_2),
-            get_solution(grid.row_condition_1, grid.column_condition_3)
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3)
         ],
         [
-            get_solution(grid.row_condition_2, grid.column_condition_1),
-            get_solution(grid.row_condition_2, grid.column_condition_2),
-            get_solution(grid.row_condition_2, grid.column_condition_3)
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3)
         ],
         [
-            get_solution(grid.row_condition_3, grid.column_condition_1),
-            get_solution(grid.row_condition_3, grid.column_condition_2),
-            get_solution(grid.row_condition_3, grid.column_condition_3)
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3)
         ]
     ]
 
@@ -166,16 +166,37 @@ def get_grid_solution(grid_id):
     )
 
 
-def get_solution(row_condition_id, col_condition_id):
+def get_solution(grid_id, row_condition_id, col_condition_id):
     @dataclass
     class ClubRepresenter():
         id: int
         name: str
         logo: str
+        answer_count: int
 
     row_condition = Condition.query.get(row_condition_id)
     col_condition = Condition.query.get(col_condition_id)
 
     solution_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
 
-    return [ClubRepresenter(id=club.id, name=club.name, logo=club.logo) for club in solution_clubs]
+    clubs_representers = []
+
+    total_guesses = 0
+
+    for club in solution_clubs:
+        answer = Answer.query.filter(
+            Answer.grid_id == grid_id,
+            Answer.club_id == club.id,
+            Answer.row_condition_id == row_condition_id,
+            Answer.column_condition_id == col_condition_id,
+        ).one_or_none()
+
+        answer_count = answer.count if answer is not None else 0
+
+        clubs_representers.append(
+            ClubRepresenter(id=club.id, name=club.name, logo=club.logo, answer_count=answer_count)
+        )
+
+        total_guesses += answer_count
+
+    return {"clubs": clubs_representers, "total_guesses": total_guesses}
