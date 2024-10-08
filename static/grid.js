@@ -35,7 +35,7 @@ function makeGrid(container, solutions, row_conditions_descriptions, col_conditi
 }
 
 function showSolutionModal(row, col) {
-    const {clubs, total_guesses} = all_solutions[row][col]
+    const {clubs, total_correct_answers} = all_solutions[row][col]
 
     extraModelOverlay.style.display = 'flex'
 
@@ -48,9 +48,10 @@ function showSolutionModal(row, col) {
         solutionContainer.style.height = '110px'
 
         const clubName = document.createElement("div")
+        let rarity_score = Math.floor(100*club.total_club_answered/total_correct_answers)
         clubName.innerHTML = `
             <h3>${club.name}</h3>
-            <p>Total guesses: ${club.answer_count} (${Math.floor(100*club.answer_count/total_guesses)}%)</p>
+            <p>Total guesses: ${club.total_club_answered} (${rarity_score > 0 ? rarity_score : 0}%)</p>
         `
         solutionContainer.appendChild(clubName)
 

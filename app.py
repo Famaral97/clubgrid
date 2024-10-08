@@ -185,7 +185,7 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
         id: int
         name: str
         logo: str
-        answer_count: int
+        total_club_answered: int
 
     row_condition = Condition.query.get(row_condition_id)
     col_condition = Condition.query.get(col_condition_id)
@@ -194,7 +194,7 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
 
     clubs_representers = []
 
-    total_guesses = 0
+    total_correct_answers = 0
 
     for club in solution_clubs:
         answer = Answer.query.filter(
@@ -204,12 +204,12 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
             Answer.column_condition_id == col_condition_id,
         ).one_or_none()
 
-        answer_count = answer.count if answer is not None else 0
+        total_club_answered = answer.count if answer is not None else 0
 
         clubs_representers.append(
-            ClubRepresenter(id=club.id, name=club.name, logo=club.logo, answer_count=answer_count)
+            ClubRepresenter(id=club.id, name=club.name, logo=club.logo, total_club_answered=total_club_answered)
         )
 
-        total_guesses += answer_count
+        total_correct_answers += total_club_answered
 
-    return {"clubs": clubs_representers, "total_guesses": total_guesses}
+    return {"clubs": clubs_representers, "total_correct_answers": total_correct_answers}
