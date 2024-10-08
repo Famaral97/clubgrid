@@ -10,7 +10,7 @@ let gridContainer = ''
 let conditions = {}
 
 let used_clubs = []
-let guesses_left = 15
+let guesses_left = 2
 
 async function getData() {
     const url = "/clubs";
@@ -255,9 +255,12 @@ async function submitClub(clubId) {
             if (data.correct) {
                 selectedCell.style.cursor = 'default'
                 selectedCell.onclick = null
+                selectedCell.classList.add('correct')
+
 
                 const clubName = document.createElement("div")
                 clubName.textContent = data.clubName;
+                clubName.classList.add('answer-club-details')
                 selectedCell.appendChild(clubName)
 
                 const clubLogo = document.createElement("div")
@@ -270,6 +273,7 @@ async function submitClub(clubId) {
                 const rarity = document.createElement("div")
                 let rarity_score = Math.floor(100 * data.total_club_answered / data.total_correct_answers)
                 rarity.textContent = `${rarity_score > 0 ? rarity_score : 0}%`
+                rarity.classList.add('answer-club-details')
 
                 selectedCell.appendChild(rarity)
 

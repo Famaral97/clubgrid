@@ -51,6 +51,21 @@ body {
   cursor: pointer;
   flex-direction: column;
 
+  &.correct {
+    border: 2px solid #3a862c;
+    border-radius: 5px;
+    padding: 0;
+  }
+
+  > .answer-club-details {
+    font-size: 11px;
+    width: 100%;
+    border: 2px solid #3a862c;
+    border-radius: 5px;
+    background-color: #3a862c;
+    color: white;
+  }
+
   > .answer-club-logo {
     background-size: contain;
     background-repeat: no-repeat;
