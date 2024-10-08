@@ -56,13 +56,5 @@ class Answer(db.Model):
     row_condition_id = db.Column(db.Integer, db.ForeignKey('conditions.id'), primary_key=True)
     column_condition_id = db.Column(db.Integer, db.ForeignKey('conditions.id'), primary_key=True)
     club_id = db.Column(db.String(255), db.ForeignKey('clubs.id'), primary_key=True)
+    is_solution = db.Column(db.Boolean)
     count = db.Column(db.Integer)
-
-
-class Solution(db.Model):
-    __tablename__ = 'solutions'
-
-    grid_id = db.Column(db.Integer, db.ForeignKey('grids.id'), primary_key=True)
-    row_condition_id = db.Column(db.Integer, db.ForeignKey('conditions.id'), primary_key=True)
-    column_condition_id = db.Column(db.Integer, db.ForeignKey('conditions.id'), primary_key=True)
-    club_id = db.Column(db.String(255), db.ForeignKey('clubs.id'), primary_key=True)

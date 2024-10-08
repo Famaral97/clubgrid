@@ -2,7 +2,7 @@ import csv
 
 from sqlalchemy import text
 
-from models import Condition, Club, Grid, Solution
+from models import Condition, Club, Grid, Answer
 
 
 def create_default_conditions(db, app):
@@ -133,25 +133,26 @@ def create_default_grids(db, app):
         )
     ]
 
-    solutions = []
+    answers = []
     for grid in grids:
-        solutions.extend(get_solutions(grid, grid.column_condition_1, grid.row_condition_1, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_1, grid.row_condition_2, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_1, grid.row_condition_3, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_2, grid.row_condition_1, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_2, grid.row_condition_2, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_2, grid.row_condition_3, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_3, grid.row_condition_1, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_3, grid.row_condition_2, app))
-        solutions.extend(get_solutions(grid, grid.column_condition_3, grid.row_condition_3, app))
+        answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_1, app))
+        answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_2, app))
+        answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_3, app))
+        answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_1, app))
+        answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_2, app))
+        answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_3, app))
+        answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_1, app))
+        answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_2, app))
+        answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_3, app))
 
     with app.app_context():
         db.session.add_all(grids)
-        db.session.add_all(solutions)
+        db.session.commit()
+        db.session.add_all(answers)
         db.session.commit()
 
 
-def get_solutions(grid, column_condition_id, row_condition_id, app):
+def get_answers(grid, column_condition_id, row_condition_id, app):
     with app.app_context():
         row_condition_expression = Condition.query.get(column_condition_id).expression
         column_condition_expression = Condition.query.get(row_condition_id).expression
@@ -160,11 +161,13 @@ def get_solutions(grid, column_condition_id, row_condition_id, app):
             text(row_condition_expression),
             text(column_condition_expression)).all()
 
-    return [Solution(
+    return [Answer(
         grid_id=grid.id,
         column_condition_id=column_condition_id,
         row_condition_id=row_condition_id,
-        club_id=club.id
+        club_id=club.id,
+        is_solution=True,
+        count=0,
     ) for club in solution_clubs]
 
 

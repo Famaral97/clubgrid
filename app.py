@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from dotenv import load_dotenv
 import os
-from sqlalchemy import desc, text
+from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, request
 
@@ -96,15 +96,22 @@ def check_answer():
     column_condition_id = int(data["column-condition-id"])
     grid_id = int(data["grid-id"])
 
-    condition_1_expression = Condition.query.get(row_condition_id).expression
-    condition_2_expression = Condition.query.get(column_condition_id).expression
-
     club = Club.query.get(club_id)
 
-    solution_clubs = Club.query.filter(Club.id == club_id, text(condition_1_expression),
-                                       text(condition_2_expression)).all()
+    answer = Answer.query.get((grid_id, row_condition_id, column_condition_id, club.id))
 
-    result = len(solution_clubs) == 1
+    is_correct = answer.is_solution if answer is not None else False
+
+    total_correct_answers = -1
+    total_club_answered = -1
+    if is_correct:
+        total_club_answered = answer.count
+        total_correct_answers = int(Answer.query.with_entities(func.sum(Answer.count)).filter(
+            Answer.grid_id == grid_id,
+            Answer.row_condition_id == row_condition_id,
+            Answer.column_condition_id == column_condition_id,
+            Answer.is_solution is True,
+        ).scalar())
 
     stmt = insert(Answer).values(
         grid_id=grid_id,
@@ -120,7 +127,13 @@ def check_answer():
         db.session.execute(stmt)
         db.session.commit()
 
-    return jsonify({"correct": result, "clubName": club.name, "logo": club.logo})
+    return jsonify({
+        "correct": is_correct,
+        "clubName": club.name,
+        "logo": club.logo,
+        "total_club_answered": total_club_answered,
+        "total_correct_answers": total_correct_answers
+    })
 
 
 @app.route('/grid/<grid_id>/end', methods=['GET'])
