@@ -257,6 +257,15 @@ async function submitClub(clubId) {
                 selectedCell.style.cursor = 'default'
                 used_clubs.push(data.clubName)
                 selectedCell.onclick = null
+
+                const rarity = document.createElement("div")
+                let rarity_score = Math.floor(100*data.total_club_answered/data.total_correct_answers)
+                rarity.innerHTML = `
+                    <h3>${data.clubName}</h3>
+                    <p>${rarity_score > 0 ? rarity_score : 0}%</p>
+                `
+                selectedCell.appendChild(rarity)
+
             } else {
                 applyPowEffect(selectedCell)
             }
