@@ -253,17 +253,24 @@ async function submitClub(clubId) {
     })
         .then(data => {
             if (data.correct) {
-                selectedCell.style.backgroundImage = `url(${data.logo})`
                 selectedCell.style.cursor = 'default'
-                used_clubs.push(data.clubName)
                 selectedCell.onclick = null
 
+                const clubName = document.createElement("div")
+                clubName.textContent = data.clubName;
+                selectedCell.appendChild(clubName)
+
+                const clubLogo = document.createElement("div")
+                clubLogo.style.backgroundImage = `url(${data.logo})`
+                clubLogo.classList.add('answer-club-logo');
+
+                selectedCell.appendChild(clubLogo)
+                used_clubs.push(data.clubName)
+
                 const rarity = document.createElement("div")
-                let rarity_score = Math.floor(100*data.total_club_answered/data.total_correct_answers)
-                rarity.innerHTML = `
-                    <h3>${data.clubName}</h3>
-                    <p>${rarity_score > 0 ? rarity_score : 0}%</p>
-                `
+                let rarity_score = Math.floor(100 * data.total_club_answered / data.total_correct_answers)
+                rarity.textContent = `${rarity_score > 0 ? rarity_score : 0}%`
+
                 selectedCell.appendChild(rarity)
 
             } else {
