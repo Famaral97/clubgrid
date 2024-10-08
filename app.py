@@ -110,7 +110,7 @@ def check_answer():
             Answer.grid_id == grid_id,
             Answer.row_condition_id == row_condition_id,
             Answer.column_condition_id == column_condition_id,
-            Answer.is_solution is True,
+            Answer.is_solution.is_(True),
         ).scalar())
 
     stmt = insert(Answer).values(
