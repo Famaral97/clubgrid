@@ -1,20 +1,22 @@
 import csv
 
-from models import Condition, Club, Grid
+from sqlalchemy import text
+
+from models import Condition, Club, Grid, Solution
 
 
 def create_default_conditions(db, app):
     conditions = [
         Condition(id=1, description="Logo has animal", expression="clubs.has_animal = True"),
         Condition(id=2, description="Logo doesn't have animal", expression="clubs.has_animal = False"),
-        
+
         Condition(id=3, description="In Premier League", expression="clubs.league = 'Premier League'"),
         Condition(id=4, description="In La Liga", expression="clubs.league = 'La Liga'"),
         Condition(id=5, description="In Liga Portugal", expression="clubs.league = 'Liga Portugal'"),
         Condition(id=6, description="In Ligue 1", expression="clubs.league = 'Ligue 1'"),
         Condition(id=7, description="In Bundesliga", expression="clubs.league = 'Bundesliga'"),
         Condition(id=8, description="In Italian Serie A", expression="clubs.league = 'Serie A'"),
-        
+
         Condition(id=9, description="Logo has winged animal", expression="clubs.has_winged_animal = True"),
         Condition(id=10, description="Logo doesn't have winged animal", expression="clubs.has_winged_animal = False"),
 
@@ -26,7 +28,7 @@ def create_default_conditions(db, app):
 
         Condition(id=15, description="Logo doesn't have stars", expression="clubs.stars_number = 0"),
         Condition(id=16, description="Logo has stars", expression="clubs.stars_number != 0"),
-        
+
         Condition(id=17, description="Logo has exactly 1 or 2 colors",
                   expression="(clubs.colors_number = '1' or clubs.colors_number = '2')"),
         Condition(id=18, description="Logo has exactly 3 colors", expression="clubs.colors_number = '3'"),
@@ -40,10 +42,10 @@ def create_default_conditions(db, app):
 
         Condition(id=24, description="Logo has blue", expression="clubs.has_color_blue = True"),
         Condition(id=25, description="Logo doesn't have blue", expression="clubs.has_color_blue = False"),
-    
+
         Condition(id=26, description="Logo has green", expression="clubs.has_color_green = True"),
         Condition(id=27, description="Logo doesn't have green", expression="clubs.has_color_green = False"),
-        
+
         Condition(id=28, description="Has at least 1 league title", expression="clubs.league_titles > 0"),
         Condition(id=29, description="Never won a league title", expression="clubs.league_titles = 0"),
 
@@ -70,13 +72,13 @@ def create_default_conditions(db, app):
 
         Condition(id=40, description="Based in capital city", expression="clubs.in_capital = True"),
         Condition(id=41, description="Not based in capital", expression="clubs.in_capital = False"),
-        
+
         Condition(id=42, description="Name starts with A, B or C",
                   expression="(clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')"),
         Condition(id=43, description="Name starts with R or S",
                   expression="(clubs.name like 'r%' or clubs.name like 's%')"),
     ]
-    
+
     with app.app_context():
         db.session.add_all(conditions)
         db.session.commit()
@@ -105,7 +107,7 @@ def create_default_grids(db, app):
         Grid(
             id=3,
             row_condition_1=1,
-            row_condition_2=3, 
+            row_condition_2=3,
             row_condition_3=17,
             column_condition_1=20,
             column_condition_2=28,
@@ -130,13 +132,43 @@ def create_default_grids(db, app):
             column_condition_3=40,
         )
     ]
+
+    solutions = []
+    for grid in grids:
+        solutions.extend(get_solutions(grid, grid.column_condition_1, grid.row_condition_1, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_1, grid.row_condition_2, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_1, grid.row_condition_3, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_2, grid.row_condition_1, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_2, grid.row_condition_2, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_2, grid.row_condition_3, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_3, grid.row_condition_1, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_3, grid.row_condition_2, app))
+        solutions.extend(get_solutions(grid, grid.column_condition_3, grid.row_condition_3, app))
+
     with app.app_context():
         db.session.add_all(grids)
+        db.session.add_all(solutions)
         db.session.commit()
 
 
-def load_clubs():
+def get_solutions(grid, column_condition_id, row_condition_id, app):
+    with app.app_context():
+        row_condition_expression = Condition.query.get(column_condition_id).expression
+        column_condition_expression = Condition.query.get(row_condition_id).expression
 
+        solution_clubs = Club.query.filter(
+            text(row_condition_expression),
+            text(column_condition_expression)).all()
+
+    return [Solution(
+        grid_id=grid.id,
+        column_condition_id=column_condition_id,
+        row_condition_id=row_condition_id,
+        club_id=club.id
+    ) for club in solution_clubs]
+
+
+def load_clubs():
     clubs = []
 
     with open('./data/data.csv') as csvfile:
@@ -151,25 +183,26 @@ def load_clubs():
                     id=club_row["ID"],
                     name=name,
                     country=country,
-                    logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{country}%20-%20{league}/{name}.png?raw=true".replace(" ", "%20"),
+                    logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{country}%20-%20{league}/{name}.png?raw=true".replace(
+                        " ", "%20"),
                     league=league,
-                    has_animal=club_row["Animal"]=="YES",
-                    has_winged_animal=club_row["Winged Animal"]=="YES",
-                    has_person=club_row["Person"]=="YES",
-                    has_football=club_row["Ball"]=="YES",
+                    has_animal=club_row["Animal"] == "YES",
+                    has_winged_animal=club_row["Winged Animal"] == "YES",
+                    has_person=club_row["Person"] == "YES",
+                    has_football=club_row["Ball"] == "YES",
                     stars_number=club_row["# Stars"],
                     colors_number=club_row["# Colors"],
-                    has_numbers=club_row["Numbers"]=="YES",
-                    has_color_red=club_row["Red"]=="YES",
-                    has_color_blue=club_row["Blue"]=="YES",
-                    has_color_green=club_row["Green"]=="YES",
+                    has_numbers=club_row["Numbers"] == "YES",
+                    has_color_red=club_row["Red"] == "YES",
+                    has_color_blue=club_row["Blue"] == "YES",
+                    has_color_green=club_row["Green"] == "YES",
                     league_titles=club_row["League Titles (2024)"],
-                    has_crown=club_row["Has Crown"]=="YES",
+                    has_crown=club_row["Has Crown"] == "YES",
                     champions_league_titles=club_row["Champions League Titles"],
                     champions_league_runner_up=club_row["Champions League Runner-Up"],
                     europa_league_titles=club_row["Europa League Titles"],
                     europa_league_runner_up=club_row["Europa League Runner-Up"],
-                    in_capital=club_row["In Capital City"]=="YES",
+                    in_capital=club_row["In Capital City"] == "YES",
                 )
             )
 
