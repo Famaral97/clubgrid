@@ -2,7 +2,7 @@ let clubs = []
 let gridIds = []
 
 let modalOverlay = ''
-let extraModelOverlay = ''
+let extraModalOverlay = ''
 let searchInput = ''
 let dropdownContainer = ''
 let gridContainer = ''
@@ -10,7 +10,7 @@ let gridContainer = ''
 let conditions = {}
 
 let used_clubs = []
-let guesses_left = 2
+let guesses_left = 15
 
 async function getData() {
     const url = "/clubs";
@@ -66,7 +66,7 @@ window.onload = () => {
     document.getElementById("guesses").innerHTML = guesses_left
 
     modalOverlay = document.querySelector('.modal-overlay')
-    extraModelOverlay = document.querySelector('.modal-overlay-extra')
+    extraModalOverlay = document.querySelector('.modal-overlay-extra')
     searchInput = document.querySelector('.search-input')
     dropdownContainer = document.querySelector('.dropdown-container')
     gridContainer = document.querySelector('.grid-container')
@@ -161,8 +161,8 @@ async function showFinalModal() {
 function exitModal(e) {
     if (e.target === modalOverlay) {
         hideModal()
-    } else if (e.target === extraModelOverlay) {
-        extraModelOverlay.style.display = 'none'
+    } else if (e.target === extraModalOverlay) {
+        extraModalOverlay.style.display = 'none'
         document.querySelector(".solutions-modal").remove()
     }
 }
