@@ -37,7 +37,7 @@ function makeGrid(container, solutions, row_conditions_descriptions, col_conditi
 function showSolutionModal(row, col) {
     const {clubs, total_correct_answers} = all_solutions[row][col]
 
-    extraModelOverlay.style.display = 'flex'
+    extraModalOverlay.style.display = 'flex'
 
     let solutionsModal = document.createElement("div")
     solutionsModal.classList.add("solutions-modal")
@@ -63,6 +63,6 @@ function showSolutionModal(row, col) {
         solutionsModal.appendChild(solutionContainer)
     })
 
-    extraModelOverlay.appendChild(solutionsModal)
+    extraModalOverlay.appendChild(solutionsModal)
 }
 

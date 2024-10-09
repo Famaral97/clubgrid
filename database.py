@@ -77,6 +77,17 @@ def create_default_conditions(db, app):
                   expression="(clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')"),
         Condition(id=43, description="Name starts with R or S",
                   expression="(clubs.name like 'r%' or clubs.name like 's%')"),
+
+        Condition(id=44, description="Logo is circular", expression="clubs.is_circular = True"),
+
+        Condition(id=45, description="Never won a domestic Cup", expression="clubs.cup_titles = 0"),
+        Condition(id=46, description="Never a domestic Cup finalist",
+                  expression="(clubs.cup_titles = 0 and clubs.cup_runner_up = 0)"),
+        Condition(id=47, description="Won a domestic Cup", expression="clubs.cup_titles > 0"),
+        Condition(id=48, description="Won domestic Cup 5 or more times", expression="clubs.cup_titles >= 5"),
+        Condition(id=49, description="Domestic Cup finalist but never won",
+                  expression="(clubs.cup_titles = 0 and clubs.cup_runner_up > 0)"),
+
     ]
 
     with app.app_context():
@@ -206,6 +217,9 @@ def load_clubs():
                     europa_league_titles=club_row["Europa League Titles"],
                     europa_league_runner_up=club_row["Europa League Runner-Up"],
                     in_capital=club_row["In Capital City"] == "YES",
+                    cup_titles=club_row["Domestic Cup Titles"],
+                    cup_runner_up=club_row["Domestic Cup Runner-Up"],
+                    is_circular=club_row["Is Circular"] == "YES",
                 )
             )
 
