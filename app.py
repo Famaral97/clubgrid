@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 from sqlalchemy import desc, text, func
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, redirect,  request
 
 from database import create_default_conditions, create_default_clubs, create_default_grids
 from models import db, Condition, Club, Grid, Answer
@@ -35,12 +35,15 @@ create_default_grids(db, app)
 
 
 @app.route('/', methods=['GET'])
+def redirect_home():
+    latest_grid_id = Grid.query.order_by(desc(Grid.id)).first().id
+    return redirect(f"/grid/{latest_grid_id}", code=302)
+
+
 @app.route('/grid/<grid_id>', methods=['GET'])
-def index(grid_id=None):
-    if grid_id is None:
-        grid = Grid.query.order_by(desc(Grid.id)).first()
-    else:
-        grid = Grid.query.get(grid_id)
+def index(grid_id):
+
+    grid = Grid.query.get(grid_id)
 
     row_conditions = [
         Condition.query.get(grid.row_condition_1),

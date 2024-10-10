@@ -9,12 +9,12 @@ let gridContainer = ''
 
 let conditions = {}
 
-let used_clubs = []
-let guesses_left = 15
+let gridAnswers
+let guessesLeft
 
 async function getData() {
     const url = "/clubs";
-    fetch(url) // Replace with the actual API URL
+    await fetch(url) // Replace with the actual API URL
         .then(response => {
             if (!response.ok) {
                 throw new Error('Failed to fetch clubs');
@@ -59,11 +59,32 @@ async function getGridSolution(gridId) {
         });
 }
 
-window.onload = () => {
-    getData()
+window.onload = async () => {
+    await getData()
     getGridsIds()
 
-    document.getElementById("guesses").innerHTML = guesses_left
+    gridAnswersCookieValue = getCookie("grid_answers")
+
+    gridAnswers = gridAnswersCookieValue ? JSON.parse(gridAnswersCookieValue) : [
+        {}, {}, {},
+        {}, {}, {},
+        {}, {}, {}
+    ]
+
+    gridAnswers.forEach((gridAnswer, i) => {
+        if (Object.keys(gridAnswer).length === 0) return
+        const cell = document.getElementById(i + 1)
+
+        console.log("loading answers")
+        const club = clubs.filter(c => c.id === gridAnswer.id)[0]
+
+        fillCell(cell, club.name, club.logo, gridAnswer.score)
+    })
+
+    guessesLeftCookieValue = getCookie("guessesLeft")
+    guessesLeft = guessesLeftCookieValue ? parseInt(guessesLeftCookieValue) : 15
+
+    document.getElementById("guesses").innerHTML = guessesLeft
 
     modalOverlay = document.querySelector('.modal-overlay')
     extraModalOverlay = document.querySelector('.modal-overlay-extra')
@@ -207,13 +228,11 @@ function listOptions() {
         const optionContainer = document.createElement('div')
         optionContainer.className = 'dropdown-option'
 
-        // Club name
         const clubName = document.createElement('span')
         clubName.textContent = club.name;
 
-        // Select button
         const selectButton = document.createElement('button')
-        if (used_clubs.includes(club.name)) {
+        if (gridAnswers.includes(club.id)) {
             optionContainer.classList.add('disabled')
             selectButton.disabled = true
         }
@@ -222,7 +241,6 @@ function listOptions() {
             submitClub(club.id)
         }
 
-        // Append to option container
         optionContainer.appendChild(clubName)
         optionContainer.appendChild(selectButton)
 
@@ -253,48 +271,29 @@ async function submitClub(clubId) {
     })
         .then(data => {
             if (data.correct) {
-                selectedCell.style.cursor = 'default'
-                selectedCell.onclick = null
-                selectedCell.classList.add('correct')
-
-
-                const clubName = document.createElement("div")
-                clubName.textContent = data.clubName;
-                clubName.classList.add('answer-club-details')
-                selectedCell.appendChild(clubName)
-
-                const clubLogo = document.createElement("div")
-                clubLogo.style.backgroundImage = `url(${data.logo})`
-                clubLogo.classList.add('answer-club-logo');
-
-                selectedCell.appendChild(clubLogo)
-                used_clubs.push(data.clubName)
-
-                const rarity = document.createElement("div")
                 let rarity_score = Math.floor(100 * data.total_club_answered / data.total_correct_answers)
-                rarity.textContent = `${rarity_score > 0 ? rarity_score : 0}%`
-                rarity.classList.add('answer-club-details')
 
-                selectedCell.appendChild(rarity)
+                fillCell(selectedCell, data.clubName, data.logo, rarity_score)
 
+                gridAnswers[selectedCell.id - 1] = {"id": clubId, "score": isNaN(rarity_score) ? 0 : rarity_score}
+                document.cookie = `grid_answers=${JSON.stringify(gridAnswers)}; path=/grid/${gridId};`
             } else {
                 applyPowEffect(selectedCell)
+                selectedCell.animate(
+                    [{backgroundColor: 'darkred', offset: 0.3}],
+                    {duration: 1000, iterations: 1}
+                );
             }
 
             hideModal()
-            guesses_left -= 1
-            document.getElementById("guesses").innerHTML = guesses_left
-            if (used_clubs.length == 9 || guesses_left == 0) {
+            guessesLeft -= 1
+            document.cookie = `guessesLeft=${guessesLeft}; path=/grid/${gridId};`
+
+            document.getElementById("guesses").innerHTML = guessesLeft
+            if (gridAnswers.filter(c => Object.keys(c).length !== 0).length == 9 || guessesLeft == 0) {
                 showFinalModal()
             }
-            // selectedCell.animate(
-            //     [
-            //       { backgroundColor: 'red', offset: 0.3 },
-            //     ], {
-            //       duration: 2000,
-            //       iterations: 1
-            //     }
-            // );
+
         });
 }
 
@@ -314,5 +313,4 @@ function applyPowEffect(cell) {
         cell.innerHTML = ''; // Clear the cell content
     }, 1000); // Match the animation duration
 }
-
 

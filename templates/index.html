@@ -9,7 +9,9 @@
 </head>
 
 <body>
+<script src="{{ url_for('static', filename='cell.js') }}"></script>
 <script src="{{ url_for('static', filename='grid.js') }}"></script>
+<script src="{{ url_for('static', filename='cookies.js') }}"></script>
 <script src="{{ url_for('static', filename='info.js') }}"></script>
 <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 
@@ -34,29 +36,29 @@
 
         <!-- Row 1 -->
         <div class="condition">{{ row_conditions[0].description }}</div>
-        <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[0].id }}"
+        <div id=1 rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[0].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
-        <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[1].id }}"
+        <div id=2 rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[1].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
-        <div rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[2].id }}"
+        <div id=3 rowCond="{{ row_conditions[0].id }}" colCond="{{ col_conditions[2].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
 
         <!-- Row 2 -->
         <div class="condition">{{ row_conditions[1].description }}</div>
-        <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[0].id }}"
+        <div id=4 rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[0].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
-        <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[1].id }}"
+        <div id=5 rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[1].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
-        <div rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[2].id }}"
+        <div id=6 rowCond="{{ row_conditions[1].id }}" colCond="{{ col_conditions[2].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
 
         <!-- Row 3 -->
         <div class="condition">{{ row_conditions[2].description }}</div>
-        <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[0].id }}"
+        <div id=7 rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[0].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
-        <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[1].id }}"
+        <div id=8 rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[1].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
-        <div rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[2].id }}"
+        <div id=9 rowCond="{{ row_conditions[2].id }}" colCond="{{ col_conditions[2].id }}"
              onclick="showClubSelectionModal(this)" class="grid-cell"></div>
     </div>
 

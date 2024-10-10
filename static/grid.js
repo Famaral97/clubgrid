@@ -1,7 +1,6 @@
 let all_solutions = []
 
 function makeGrid(container, solutions, row_conditions_descriptions, col_conditions_descriptions) {
-
     all_solutions = solutions
 
     container.innerHTML = `
