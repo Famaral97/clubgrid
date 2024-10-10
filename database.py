@@ -88,6 +88,8 @@ def create_default_conditions(db, app):
         Condition(id=49, description="Domestic Cup finalist but never won",
                   expression="(clubs.cup_titles = 0 and clubs.cup_runner_up > 0)"),
 
+        Condition(id=50, description="Logo has black", expression="clubs.has_color_black = True"),
+        Condition(id=51, description="Logo doesn't have black", expression="clubs.has_color_black = False"),
     ]
 
     with app.app_context():
@@ -210,6 +212,7 @@ def load_clubs():
                     has_color_red=club_row["Red"] == "YES",
                     has_color_blue=club_row["Blue"] == "YES",
                     has_color_green=club_row["Green"] == "YES",
+                    has_color_black=club_row["Black"] == "YES",
                     league_titles=club_row["League Titles (2024)"],
                     has_crown=club_row["Has Crown"] == "YES",
                     champions_league_titles=club_row["Champions League Titles"],
