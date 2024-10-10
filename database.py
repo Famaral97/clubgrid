@@ -70,8 +70,8 @@ def create_default_conditions(db, app):
         Condition(id=39, description="Was in UEFA Europa League / UEFA Cup Final",
                   expression="(clubs.europa_league_titles > 0 or clubs.europa_league_runner_up > 0)"),
 
-        Condition(id=40, description="Based in capital city", expression="clubs.in_capital = True"),
-        Condition(id=41, description="Not based in capital", expression="clubs.in_capital = False"),
+        Condition(id=40, description="Based in a capital city", expression="clubs.in_capital = True"),
+        Condition(id=41, description="Not based in a capital", expression="clubs.in_capital = False"),
 
         Condition(id=42, description="Name starts with A, B or C",
                   expression="(clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')"),
