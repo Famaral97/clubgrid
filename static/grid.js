@@ -1,11 +1,13 @@
 let all_solutions = []
 
-function makeGrid(container, solutions, row_conditions_descriptions, col_conditions_descriptions) {
+function makeGrid(container, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId) {
     all_solutions = solutions
 
     container.innerHTML = `
     <h1>Solutions</h1>
     <p>Click on a cell to check all possible clubs</p>
+    <button id="share" onclick="copyResultToClipboard(`+gridId+`)">Share</button>
+
     <div class="container-solutions">
         <!-- Top-left corner is empty for the grid layout -->
         <div class="empty-cell"></div>
@@ -24,6 +26,7 @@ function makeGrid(container, solutions, row_conditions_descriptions, col_conditi
         <div onclick="showSolutionModal(1,0)" class="grid-cell">${solutions[1][0].clubs.length} answers</div>
         <div onclick="showSolutionModal(1,1)" class="grid-cell">${solutions[1][1].clubs.length} answers</div>
         <div onclick="showSolutionModal(1,2)" class="grid-cell">${solutions[1][2].clubs.length} answers</div>
+        
         <!-- Row 3 -->
         <div class="condition">${row_conditions_descriptions[2]}</div>
         <div onclick="showSolutionModal(2,0)" class="grid-cell">${solutions[2][0].clubs.length} answers</div>
@@ -47,7 +50,7 @@ function showSolutionModal(row, col) {
         solutionContainer.style.height = '110px'
 
         const clubName = document.createElement("div")
-        let rarity_score = Math.floor(100*club.total_club_answered/total_correct_answers)
+        let rarity_score = Math.floor(100 * club.total_club_answered / total_correct_answers)
         clubName.innerHTML = `
             <h3>${club.name}</h3>
             <p>Total guesses: ${club.total_club_answered} (${rarity_score > 0 ? rarity_score : 0}%)</p>
@@ -65,3 +68,21 @@ function showSolutionModal(row, col) {
     extraModalOverlay.appendChild(solutionsModal)
 }
 
+function copyResultToClipboard(gridId) {
+    let sharedResult = `Club Grid #${gridId}\n`
+
+    gridAnswers.forEach(((answer, i) => {
+        if (Object.keys(answer).length !== 0) sharedResult += "✅"
+        else sharedResult += "❌"
+        if ((i+1) % 3 === 0) sharedResult += "\n"
+    }))
+
+    sharedResult += `\nGuesses left: ${GUESSES_NUMBER - allGuesses.length}\n`
+
+    sharedResult += `https://clubgrid.pythonanywhere.com/grid/${gridId}`
+
+    navigator.clipboard.writeText(sharedResult);
+
+    let shareButtonElement = document.getElementById("share");
+    shareButtonElement.textContent = "Copied to clipboard!";
+}

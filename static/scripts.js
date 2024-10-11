@@ -173,7 +173,7 @@ async function showFinalModal() {
 
     finalModal = document.createElement("div")
 
-    makeGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions)
+    makeGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId)
 
     finalModal.classList.add("final-modal")
 
