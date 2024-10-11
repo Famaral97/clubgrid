@@ -2,6 +2,7 @@ function fillCell(selectedCell, clubName, clubLogo, rarityScore) {
     selectedCell.style.cursor = 'default'
     selectedCell.onclick = null
     selectedCell.classList.add('correct')
+    selectedCell.classList.remove("grid-cell-active")
 
     const clubNameElement = document.createElement("div")
     clubNameElement.textContent = clubName;
