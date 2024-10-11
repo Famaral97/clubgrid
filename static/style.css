@@ -47,13 +47,16 @@ body {
   text-align: center;
 }
 
-.grid-cell {
+.grid-cell-active{
   cursor: pointer;
-  flex-direction: column;
 
   &:hover {
     background-color: #efefef;
   }
+}
+
+.grid-cell {
+  flex-direction: column;
 
   &.correct {
     border: 2px solid #3a862c;

@@ -17,21 +17,21 @@ function makeSolutionsGrid(container, solutions, row_conditions_descriptions, co
 
         <!-- Row 1 -->
         <div class="condition">${row_conditions_descriptions[0]}</div>
-        <div onclick="showSolutionModal(0,0)" class="grid-cell">${solutions[0][0].clubs.length} answers</div>
-        <div onclick="showSolutionModal(0,1)" class="grid-cell">${solutions[0][1].clubs.length} answers</div>
-        <div onclick="showSolutionModal(0,2)" class="grid-cell">${solutions[0][2].clubs.length} answers</div>
+        <div onclick="showSolutionModal(0,0)" class="grid-cell grid-cell-active">${solutions[0][0].clubs.length} answers</div>
+        <div onclick="showSolutionModal(0,1)" class="grid-cell grid-cell-active">${solutions[0][1].clubs.length} answers</div>
+        <div onclick="showSolutionModal(0,2)" class="grid-cell grid-cell-active">${solutions[0][2].clubs.length} answers</div>
 
         <!-- Row 2 -->
         <div class="condition">${row_conditions_descriptions[1]}</div>
-        <div onclick="showSolutionModal(1,0)" class="grid-cell">${solutions[1][0].clubs.length} answers</div>
-        <div onclick="showSolutionModal(1,1)" class="grid-cell">${solutions[1][1].clubs.length} answers</div>
-        <div onclick="showSolutionModal(1,2)" class="grid-cell">${solutions[1][2].clubs.length} answers</div>
+        <div onclick="showSolutionModal(1,0)" class="grid-cell grid-cell-active">${solutions[1][0].clubs.length} answers</div>
+        <div onclick="showSolutionModal(1,1)" class="grid-cell grid-cell-active">${solutions[1][1].clubs.length} answers</div>
+        <div onclick="showSolutionModal(1,2)" class="grid-cell grid-cell-active">${solutions[1][2].clubs.length} answers</div>
         
         <!-- Row 3 -->
         <div class="condition">${row_conditions_descriptions[2]}</div>
-        <div onclick="showSolutionModal(2,0)" class="grid-cell">${solutions[2][0].clubs.length} answers</div>
-        <div onclick="showSolutionModal(2,1)" class="grid-cell">${solutions[2][1].clubs.length} answers</div>
-        <div onclick="showSolutionModal(2,2)" class="grid-cell">${solutions[2][2].clubs.length} answers</div>
+        <div onclick="showSolutionModal(2,0)" class="grid-cell grid-cell-active">${solutions[2][0].clubs.length} answers</div>
+        <div onclick="showSolutionModal(2,1)" class="grid-cell grid-cell-active">${solutions[2][1].clubs.length} answers</div>
+        <div onclick="showSolutionModal(2,2)" class="grid-cell grid-cell-active">${solutions[2][2].clubs.length} answers</div>
     </div>
     `
 }
@@ -90,6 +90,10 @@ function copyResultToClipboard(gridId) {
 function lockGrid() {
     document.querySelectorAll('.container .grid-cell').forEach(cell => {
         cell.onclick = null
-        cell.style.cursor = 'default'
+        cell.classList.remove("grid-cell-active")
     })
+}
+
+function gridIsComplete() {
+    return gridAnswers.filter(c => Object.keys(c).length !== 0).length === 9 || allGuesses.length === GUESSES_NUMBER
 }

@@ -41,6 +41,11 @@ window.onload = async () => {
 
     document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
 
+    if (gridIsComplete()) {
+        showViewResultsButton()
+        lockGrid()
+    }
+
     modalOverlay = document.querySelector('.modal-overlay')
     extraModalOverlay = document.querySelector('.modal-overlay-extra')
     searchInput = document.querySelector('.search-input')
@@ -245,10 +250,9 @@ async function submitClub(clubId) {
             document.cookie = `allGuesses=${JSON.stringify(allGuesses)}; path=/grid/${gridId};`
 
             document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
-            if (gridAnswers.filter(c => Object.keys(c).length !== 0).length === 9 || allGuesses.length === GUESSES_NUMBER) {
+            if (gridIsComplete()) {
                 showFinalModal()
             }
-
         });
 }
 
