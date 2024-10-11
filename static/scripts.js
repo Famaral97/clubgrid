@@ -14,53 +14,6 @@ let conditions = {}
 let gridAnswers
 let allGuesses
 
-async function getData() {
-    const url = "/clubs";
-    await fetch(url) // Replace with the actual API URL
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch clubs');
-            }
-            return response.json()
-        })
-        .then(data => {
-            clubs = data
-        })
-        .catch(error => {
-            console.error('Error fetching clubs:', error);
-        });
-}
-
-async function getGridsIds() {
-    fetch("/grids").then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch grids');
-        }
-        return response.json()
-    })
-        .then(data => {
-            gridIds = data
-        })
-        .catch(error => {
-            console.error('Error fetching grids:', error);
-        });
-}
-
-async function getGridSolution(gridId) {
-    return fetch(`/grid/${gridId}/end`).then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch grids');
-        }
-        return response.json()
-    })
-        .then(data => {
-            return data
-        })
-        .catch(error => {
-            console.error('Error fetching grids:', error);
-        });
-}
-
 window.onload = async () => {
     await getData()
     getGridsIds()
@@ -96,7 +49,6 @@ window.onload = async () => {
 };
 
 function hideAllModals() {
-
     for (const child of modalOverlay.children) {
         child.style.display = 'none'
     }
@@ -149,7 +101,6 @@ function showInfoModal() {
 }
 
 function showClubSelectionModal(cell) {
-
     cell.classList.add('selected')
 
     conditions = {
@@ -171,9 +122,9 @@ async function showFinalModal() {
 
     const {solutions, row_conditions_descriptions, col_conditions_descriptions} = await getGridSolution(gridId)
 
-    finalModal = document.createElement("div")
+    let finalModal = document.createElement("div")
 
-    makeGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId)
+    makeSolutionsGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId)
 
     finalModal.classList.add("final-modal")
 
@@ -193,15 +144,15 @@ function exitModal(e) {
 function exitFinalMode(e) {
     if (e.target === modalOverlay) {
         modalOverlay.style.display = 'none'
-        const viewResultsButton = document.querySelector('.view-results')
-        viewResultsButton.style.display = 'block'
-        viewResultsButton.onclick = () => modalOverlay.style.display = 'flex'
+        showViewResultsButton()
     }
+    lockGrid()
+}
 
-    document.querySelectorAll('.container .grid-cell').forEach(cell => {
-        cell.onclick = null
-        cell.style.cursor = 'default'
-    })
+function showViewResultsButton() {
+    const viewResultsButton = document.querySelector('.view-results')
+    viewResultsButton.style.display = 'block'
+    viewResultsButton.onclick = () => showFinalModal()
 }
 
 function hideModal() {
@@ -290,11 +241,11 @@ async function submitClub(clubId) {
             }
 
             hideModal()
-            allGuesses.push({id: clubId, cell: selectedCell.id })
+            allGuesses.push({id: clubId, cell: selectedCell.id})
             document.cookie = `allGuesses=${JSON.stringify(allGuesses)}; path=/grid/${gridId};`
 
             document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
-            if (gridAnswers.filter(c => Object.keys(c).length !== 0).length === 9 || allGuesses.length === GUESSES_NUMBER ) {
+            if (gridAnswers.filter(c => Object.keys(c).length !== 0).length === 9 || allGuesses.length === GUESSES_NUMBER) {
                 showFinalModal()
             }
 

@@ -1,6 +1,6 @@
 let all_solutions = []
 
-function makeGrid(container, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId) {
+function makeSolutionsGrid(container, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId) {
     all_solutions = solutions
 
     container.innerHTML = `
@@ -85,4 +85,11 @@ function copyResultToClipboard(gridId) {
 
     let shareButtonElement = document.getElementById("share");
     shareButtonElement.textContent = "Copied to clipboard!";
+}
+
+function lockGrid() {
+    document.querySelectorAll('.container .grid-cell').forEach(cell => {
+        cell.onclick = null
+        cell.style.cursor = 'default'
+    })
 }
