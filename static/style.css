@@ -65,7 +65,7 @@ body {
   }
 
   > .answer-club-details {
-    font-size: 11px;
+    font-size: 8px;
     width: 100%;
     border: 2px solid #3a862c;
     border-radius: 5px;
@@ -274,5 +274,9 @@ body {
   .condition, .grid-cell {
     font-size: larger;
     padding: 10px;
+  }
+
+  .grid-cell > .answer-club-details {
+    font-size: 14px;
   }
 }
