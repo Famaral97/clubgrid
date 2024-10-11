@@ -3,35 +3,46 @@ let all_solutions = []
 function makeSolutionsGrid(container, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId) {
     all_solutions = solutions
 
+    let resultAsText = getGridResultText()
+
     container.innerHTML = `
-    <h1>Solutions</h1>
-    <p>Click on a cell to check all possible clubs</p>
-    <button id="share" onclick="copyResultToClipboard(`+gridId+`)">Share</button>
-
-    <div class="container-solutions">
-        <!-- Top-left corner is empty for the grid layout -->
-        <div class="empty-cell"></div>
-        <div class="condition">${col_conditions_descriptions[0]}</div>
-        <div class="condition">${col_conditions_descriptions[1]}</div>
-        <div class="condition">${col_conditions_descriptions[2]}</div>
-
-        <!-- Row 1 -->
-        <div class="condition">${row_conditions_descriptions[0]}</div>
-        <div onclick="showSolutionModal(0,0)" class="grid-cell grid-cell-active">${solutions[0][0].clubs.length} answers</div>
-        <div onclick="showSolutionModal(0,1)" class="grid-cell grid-cell-active">${solutions[0][1].clubs.length} answers</div>
-        <div onclick="showSolutionModal(0,2)" class="grid-cell grid-cell-active">${solutions[0][2].clubs.length} answers</div>
-
-        <!-- Row 2 -->
-        <div class="condition">${row_conditions_descriptions[1]}</div>
-        <div onclick="showSolutionModal(1,0)" class="grid-cell grid-cell-active">${solutions[1][0].clubs.length} answers</div>
-        <div onclick="showSolutionModal(1,1)" class="grid-cell grid-cell-active">${solutions[1][1].clubs.length} answers</div>
-        <div onclick="showSolutionModal(1,2)" class="grid-cell grid-cell-active">${solutions[1][2].clubs.length} answers</div>
+    <div>
+        <h1>Results</h1>
+        <div>
+            <span style="white-space: pre-line; font-size: x-large">${resultAsText}</span>
+            <span>Guesses left: ${GUESSES_NUMBER - allGuesses.length}</span>
+        </div>
+        <br>
+        <button id="share" onclick="copyResultToClipboard(`+gridId+`)" style="font-size: x-large">📢 Share</button>
         
-        <!-- Row 3 -->
-        <div class="condition">${row_conditions_descriptions[2]}</div>
-        <div onclick="showSolutionModal(2,0)" class="grid-cell grid-cell-active">${solutions[2][0].clubs.length} answers</div>
-        <div onclick="showSolutionModal(2,1)" class="grid-cell grid-cell-active">${solutions[2][1].clubs.length} answers</div>
-        <div onclick="showSolutionModal(2,2)" class="grid-cell grid-cell-active">${solutions[2][2].clubs.length} answers</div>
+        <h1>Solutions</h1>
+        <p>Click on a cell to check all possible clubs</p>
+    
+        <div class="container-solutions">
+            <!-- Top-left corner is empty for the grid layout -->
+            <div class="empty-cell"></div>
+            <div class="condition">${col_conditions_descriptions[0]}</div>
+            <div class="condition">${col_conditions_descriptions[1]}</div>
+            <div class="condition">${col_conditions_descriptions[2]}</div>
+    
+            <!-- Row 1 -->
+            <div class="condition">${row_conditions_descriptions[0]}</div>
+            <div onclick="showSolutionModal(0,0)" class="grid-cell grid-cell-active">${solutions[0][0].clubs.length} answers</div>
+            <div onclick="showSolutionModal(0,1)" class="grid-cell grid-cell-active">${solutions[0][1].clubs.length} answers</div>
+            <div onclick="showSolutionModal(0,2)" class="grid-cell grid-cell-active">${solutions[0][2].clubs.length} answers</div>
+    
+            <!-- Row 2 -->
+            <div class="condition">${row_conditions_descriptions[1]}</div>
+            <div onclick="showSolutionModal(1,0)" class="grid-cell grid-cell-active">${solutions[1][0].clubs.length} answers</div>
+            <div onclick="showSolutionModal(1,1)" class="grid-cell grid-cell-active">${solutions[1][1].clubs.length} answers</div>
+            <div onclick="showSolutionModal(1,2)" class="grid-cell grid-cell-active">${solutions[1][2].clubs.length} answers</div>
+            
+            <!-- Row 3 -->
+            <div class="condition">${row_conditions_descriptions[2]}</div>
+            <div onclick="showSolutionModal(2,0)" class="grid-cell grid-cell-active">${solutions[2][0].clubs.length} answers</div>
+            <div onclick="showSolutionModal(2,1)" class="grid-cell grid-cell-active">${solutions[2][1].clubs.length} answers</div>
+            <div onclick="showSolutionModal(2,2)" class="grid-cell grid-cell-active">${solutions[2][2].clubs.length} answers</div>
+        </div>
     </div>
     `
 }
@@ -71,20 +82,28 @@ function showSolutionModal(row, col) {
 function copyResultToClipboard(gridId) {
     let sharedResult = `Club Grid #${gridId}\n`
 
-    gridAnswers.forEach(((answer, i) => {
-        if (Object.keys(answer).length !== 0) sharedResult += "✅"
-        else sharedResult += "❌"
-        if ((i+1) % 3 === 0) sharedResult += "\n"
-    }))
+    sharedResult += getGridResultText()
 
-    sharedResult += `\nGuesses left: ${GUESSES_NUMBER - allGuesses.length}\n`
+    sharedResult += `\nGuesses left: ${GUESSES_NUMBER - allGuesses.length}`
 
-    sharedResult += `https://clubgrid.pythonanywhere.com/grid/${gridId}`
+    sharedResult += `\nhttps://clubgrid.pythonanywhere.com/grid/${gridId}`
 
     navigator.clipboard.writeText(sharedResult);
 
     let shareButtonElement = document.getElementById("share");
     shareButtonElement.textContent = "Copied to clipboard!";
+}
+
+function getGridResultText() {
+    let resultAsText = ""
+
+    gridAnswers.forEach(((answer, i) => {
+        if (Object.keys(answer).length !== 0) resultAsText += "✅"
+        else resultAsText += "❌"
+        if ((i+1) % 3 === 0) resultAsText += "\n"
+    }))
+
+    return resultAsText
 }
 
 function lockGrid() {
