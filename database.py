@@ -101,12 +101,12 @@ def create_default_grids(db, app):
     grids = [
         Grid(
             id=5,
-            row_condition_1=30,
-            row_condition_2=13,
-            row_condition_3=16,
-            column_condition_1=10,
-            column_condition_2=19,
-            column_condition_3=41,
+            row_condition_1=5,
+            row_condition_2=23,
+            row_condition_3=24,
+            column_condition_1=32,
+            column_condition_2=29,
+            column_condition_3=43,
         ),
         Grid(
             id=4,
@@ -128,12 +128,12 @@ def create_default_grids(db, app):
         ),
         Grid(
             id=2,
-            row_condition_1=5,
-            row_condition_2=23,
-            row_condition_3=24,
-            column_condition_1=32,
-            column_condition_2=29,
-            column_condition_3=43,
+            row_condition_1=30,
+            row_condition_2=13,
+            row_condition_3=16,
+            column_condition_1=10,
+            column_condition_2=19,
+            column_condition_3=41,
         ),
         Grid(
             id=1,
