@@ -1,4 +1,4 @@
-const GUESSES_NUMBER = 15
+const GUESSES_NUMBER = 12
 
 let clubs = []
 let gridIds = []

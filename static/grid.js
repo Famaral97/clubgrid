@@ -13,7 +13,7 @@ function makeSolutionsGrid(container, solutions, row_conditions_descriptions, co
             <span>Guesses left: ${GUESSES_NUMBER - allGuesses.length}</span>
         </div>
         <br>
-        <button id="share" onclick="copyResultToClipboard(`+gridId+`)" style="font-size: x-large">📢 Share</button>
+        <button id="share" onclick="copyResultToClipboard(`+gridId+`)">📢 Share</button>
         
         <h1>Solutions</h1>
         <p>Click on a cell to check all possible clubs</p>
