@@ -215,4 +215,6 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
 
         total_correct_answers += total_club_answered
 
-    return {"clubs": clubs_representers, "total_correct_answers": total_correct_answers}
+    sorted_club_representers = sorted(clubs_representers, key=lambda c: c.total_club_answered, reverse=True)
+
+    return {"clubs": sorted_club_representers, "total_correct_answers": total_correct_answers}
