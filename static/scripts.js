@@ -1,3 +1,5 @@
+const GUESSES_NUMBER = 15
+
 let clubs = []
 let gridIds = []
 
@@ -10,7 +12,7 @@ let gridContainer = ''
 let conditions = {}
 
 let gridAnswers
-let guessesLeft
+let allGuesses
 
 async function getData() {
     const url = "/clubs";
@@ -81,10 +83,10 @@ window.onload = async () => {
         fillCell(cell, club.name, club.logo, gridAnswer.score)
     })
 
-    guessesLeftCookieValue = getCookie("guessesLeft")
-    guessesLeft = guessesLeftCookieValue ? parseInt(guessesLeftCookieValue) : 15
+    allGuessesCookieValue = getCookie("allGuesses")
+    allGuesses = allGuessesCookieValue ? JSON.parse(allGuessesCookieValue) : []
 
-    document.getElementById("guesses").innerHTML = guessesLeft
+    document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
 
     modalOverlay = document.querySelector('.modal-overlay')
     extraModalOverlay = document.querySelector('.modal-overlay-extra')
@@ -222,6 +224,8 @@ function listOptions() {
 
     if (searchString.length < 3) return
 
+    let selectedCell = document.querySelector('.selected')
+
     const filteredClubs = clubs.filter(club => club.name.toLowerCase().includes(searchString));
 
     filteredClubs.forEach(club => {
@@ -232,7 +236,7 @@ function listOptions() {
         clubName.textContent = club.name;
 
         const selectButton = document.createElement('button')
-        if (gridAnswers.includes(club.id)) {
+        if (gridAnswers.some(c => c.id === club.id) || allGuesses.some(c => c.id === club.id && c.cell === selectedCell.id)) {
             optionContainer.classList.add('disabled')
             selectButton.disabled = true
         }
@@ -286,11 +290,11 @@ async function submitClub(clubId) {
             }
 
             hideModal()
-            guessesLeft -= 1
-            document.cookie = `guessesLeft=${guessesLeft}; path=/grid/${gridId};`
+            allGuesses.push({id: clubId, cell: selectedCell.id })
+            document.cookie = `allGuesses=${JSON.stringify(allGuesses)}; path=/grid/${gridId};`
 
-            document.getElementById("guesses").innerHTML = guessesLeft
-            if (gridAnswers.filter(c => Object.keys(c).length !== 0).length == 9 || guessesLeft == 0) {
+            document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
+            if (gridAnswers.filter(c => Object.keys(c).length !== 0).length === 9 || allGuesses.length === GUESSES_NUMBER ) {
                 showFinalModal()
             }
 
