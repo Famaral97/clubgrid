@@ -1,6 +1,5 @@
-version: '3'
 services:
-  mysql:
+  db:
     image: mysql:8.0
     container_name: mysql
     restart: always
@@ -26,10 +25,14 @@ services:
       - .:/app
     environment:
       FLASK_ENV: development
+      DB_USERNAME: flaskuser
+      DB_PASSWORD: flaskpassword
+      DB_HOSTNAME: db
+      DB_NAME: flaskdb
     networks:
       - flaskapp-network
     depends_on:
-      - mysql
+      - db
 
 volumes:
   mysql_data:

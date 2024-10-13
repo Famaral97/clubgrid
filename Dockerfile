@@ -16,5 +16,5 @@ EXPOSE 5000
 # Define environment variable
 ENV FLASK_APP=app.py
 
-# Run the Flask app
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# Run migrations and then the Flask app
+CMD alembic upgrade head ; python3 -m flask run --host=0.0.0.0

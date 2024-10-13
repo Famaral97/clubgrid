@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from dotenv import load_dotenv
 import os
+
 from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect,  request
@@ -24,15 +25,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+mysqlconnector://{username}:{pass
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
-with app.app_context():
-    db.drop_all()
-    db.create_all()
-    print(db.metadata)
-
 create_default_conditions(db, app)
 create_default_clubs(db, app)
 create_default_grids(db, app)
-
 
 @app.route('/', methods=['GET'])
 def redirect_home():
