@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -27,7 +28,7 @@ target_metadata = models.db.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-
+load_dotenv()
 url = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
     username=os.getenv("DB_USERNAME") if os.getenv("FLASK_ENV") == "development" else "flaskuser",
     password=os.getenv("DB_PASSWORD") if os.getenv("FLASK_ENV") == "development" else "flaskpassword",
