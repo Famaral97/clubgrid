@@ -116,6 +116,7 @@ def check_answer():
         club_id=club.id,
         row_condition_id=row_condition_id,
         column_condition_id=column_condition_id,
+        is_solution=is_correct,
         count=1,
     )
 
