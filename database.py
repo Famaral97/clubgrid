@@ -1,6 +1,7 @@
 import csv
 
-from sqlalchemy import text
+from sqlalchemy import text, inspect
+from sqlalchemy.dialects.mysql import insert
 
 from models import Condition, Club, Grid, Answer
 
@@ -93,7 +94,12 @@ def create_default_conditions(db, app):
     ]
 
     with app.app_context():
-        db.session.add_all(conditions)
+        stmt = insert(Condition).values([to_dict(condition) for condition in conditions])
+        stmt = stmt.on_duplicate_key_update(
+            description=stmt.inserted.description,
+            expression=stmt.inserted.expression
+        )
+        db.session.execute(stmt)
         db.session.commit()
 
 
@@ -159,9 +165,23 @@ def create_default_grids(db, app):
         answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_3, app))
 
     with app.app_context():
-        db.session.add_all(grids)
-        db.session.commit()
-        db.session.add_all(answers)
+        stmt = insert(Grid).values([to_dict(grid) for grid in grids])
+        stmt = stmt.on_duplicate_key_update(
+            row_condition_1=stmt.inserted.row_condition_1,
+            row_condition_2=stmt.inserted.row_condition_2,
+            row_condition_3=stmt.inserted.row_condition_3,
+            column_condition_1=stmt.inserted.column_condition_1,
+            column_condition_2=stmt.inserted.column_condition_2,
+            column_condition_3=stmt.inserted.column_condition_3,
+        )
+        db.session.execute(stmt)
+
+        stmt = insert(Answer).values([to_dict(answer) for answer in answers])
+        stmt = stmt.on_duplicate_key_update(
+            grid_id=stmt.inserted.grid_id
+        )
+        db.session.execute(stmt)
+
         db.session.commit()
 
 
@@ -233,5 +253,38 @@ def create_default_clubs(db, app):
     clubs = load_clubs()
 
     with app.app_context():
-        db.session.add_all(clubs)
+        stmt = insert(Club).values([to_dict(club) for club in clubs])
+        stmt = stmt.on_duplicate_key_update(
+            id=stmt.inserted.id,
+            name=stmt.inserted.name,
+            country=stmt.inserted.country,
+            logo=stmt.inserted.logo,
+            league=stmt.inserted.league,
+            has_animal=stmt.inserted.has_animal,
+            has_winged_animal=stmt.inserted.has_winged_animal,
+            has_person=stmt.inserted.has_person,
+            has_football=stmt.inserted.has_football,
+            stars_number=stmt.inserted.stars_number,
+            colors_number=stmt.inserted.colors_number,
+            has_numbers=stmt.inserted.has_numbers,
+            has_color_red=stmt.inserted.has_color_red,
+            has_color_blue=stmt.inserted.has_color_blue,
+            has_color_green=stmt.inserted.has_color_green,
+            has_color_black=stmt.inserted.has_color_black,
+            league_titles=stmt.inserted.league_titles,
+            has_crown=stmt.inserted.has_crown,
+            champions_league_titles=stmt.inserted.champions_league_titles,
+            champions_league_runner_up=stmt.inserted.champions_league_runner_up,
+            europa_league_titles=stmt.inserted.europa_league_titles,
+            europa_league_runner_up=stmt.inserted.europa_league_runner_up,
+            in_capital=stmt.inserted.in_capital,
+            cup_titles=stmt.inserted.cup_titles,
+            cup_runner_up=stmt.inserted.cup_runner_up,
+            is_circular=stmt.inserted.is_circular,
+        )
+        db.session.execute(stmt)
         db.session.commit()
+
+
+def to_dict(obj):
+    return {c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs}
