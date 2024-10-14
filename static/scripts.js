@@ -18,9 +18,10 @@ window.onload = async () => {
     await getData()
     getGridsIds()
 
-    gridAnswersCookieValue = getCookie("grid_answers")
+    const gridId = document.querySelector('.grid-title').getAttribute('gridId')
 
-    gridAnswers = gridAnswersCookieValue ? JSON.parse(gridAnswersCookieValue) : [
+    let gridAnswersStoredValue = window.localStorage.getItem(`grid_answers_${gridId}`)
+    gridAnswers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : [
         {}, {}, {},
         {}, {}, {},
         {}, {}, {}
@@ -36,8 +37,8 @@ window.onload = async () => {
         fillCell(cell, club.name, club.logo, gridAnswer.score)
     })
 
-    allGuessesCookieValue = getCookie("allGuesses")
-    allGuesses = allGuessesCookieValue ? JSON.parse(allGuessesCookieValue) : []
+    let allGuessesStoredValue = window.localStorage.getItem(`all_guesses__${gridId}`)
+    allGuesses = allGuessesStoredValue ? JSON.parse(allGuessesStoredValue) : []
 
     document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
 
@@ -236,7 +237,7 @@ async function submitClub(clubId) {
                 fillCell(selectedCell, data.clubName, data.logo, rarity_score)
 
                 gridAnswers[selectedCell.id - 1] = {"id": clubId, "score": isNaN(rarity_score) ? 0 : rarity_score}
-                document.cookie = `grid_answers=${JSON.stringify(gridAnswers)}; path=/grid/${gridId};`
+                window.localStorage.setItem(`grid_answers_${gridId}`, JSON.stringify(gridAnswers))
             } else {
                 applyPowEffect(selectedCell)
                 selectedCell.animate(
@@ -247,7 +248,8 @@ async function submitClub(clubId) {
 
             hideModal()
             allGuesses.push({id: clubId, cell: selectedCell.id})
-            document.cookie = `allGuesses=${JSON.stringify(allGuesses)}; path=/grid/${gridId};`
+
+            window.localStorage.setItem(`allGuesses_${gridId}`, JSON.stringify(allGuesses))
 
             document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
             if (gridIsComplete()) {
