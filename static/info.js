@@ -29,6 +29,15 @@ function displayInfo() {
             <h2>Conditions info and sources</h2>
             <p>Unless specified otherwise, all conditions refer to the main male football team of the club.</p>
             
+            <h3>Logos</h3>
+            <ul>
+                    <li><strong>Logo has animal:</strong> any intentional representation of an animal, or part of an animal, humans included.</li>
+                    <li><strong>Logo has a football:</strong> any intentional representation of football, modern or antique.</li>
+                    <li><strong>Logo has X colors:</strong> borders and different shades count as different colors.</li>
+                    <li><strong>Based in a capital city:</strong> the city where the club is based on is the capital.</li>
+                    <li><strong>Logo is circular:</strong> logos that are almost perfect circles (e.g. if they have a crown on top, they do NOT qualify).</li>
+            </ul>
+            
             <h3>League titles</h3>
             <p>First division titles won</p>
             <ul>
@@ -99,14 +108,33 @@ function displayInfo() {
                 </li>
             </ul>
             
-            <h3>Logos</h3>
+            <h3>Stadiums</h3>
+            <p>Stadium where the team was currently playing, according to:</p>
             <ul>
-                    <li><strong>Logo has animal:</strong> any intentional representation of an animal, or part of an animal, humans included.</li>
-                    <li><strong>Logo has a football:</strong> any intentional representation of football, modern or antique.</li>
-                    <li><strong>Logo has X colors:</strong> borders and different shades count as different colors.</li>
-                    <li><strong>Based in a capital city:</strong> the city where the club is based on is the capital.</li>
-                    <li><strong>Logo is circular:</strong> logos that are almost perfect circles (e.g. if they have a crown on top, they do NOT qualify).</li>
-                
+                <li>
+                    🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League 
+                    <a href="https://www.transfermarkt.com/premier-league/stadien/wettbewerb/GB1" target="_blank" >Source</a>
+               </li>
+                <li>
+                    🇩🇪 Bundesliga 
+                    <a href="https://www.transfermarkt.co.uk/bundesliga/stadien/wettbewerb/L1" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇵🇹 Liga Portugal 
+                    <a href="https://www.transfermarkt.com/liga-portugal/stadien/wettbewerb/PO1/plus/1" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇪🇸 La Liga 
+                    <a href="https://www.transfermarkt.com/laliga/stadien/wettbewerb/ES1" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇮🇹 Serie A 
+                    <a href="https://www.transfermarkt.com/serie-a/stadien/wettbewerb/IT1" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇫🇷 Ligue 1
+                    <a href="https://www.transfermarkt.com/laliga/stadien/wettbewerb/FR1" target="_blank" >Source</a>
+                </li>
             </ul>
         </div>
     `

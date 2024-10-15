@@ -33,7 +33,6 @@ window.onload = async () => {
         if (Object.keys(gridAnswer).length === 0) return
         const cell = document.getElementById(i + 1)
 
-        console.log("loading answers")
         const club = clubs.filter(c => c.id === gridAnswer.id)[0]
 
         fillCell(cell, club.name, club.logo, gridAnswer.score)

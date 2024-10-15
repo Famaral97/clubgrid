@@ -39,6 +39,7 @@ class Club(db.Model):
     cup_titles = db.Column(db.Integer)
     cup_runner_up = db.Column(db.Integer)
     is_circular = db.Column(db.Boolean)
+    stadium_capacity = db.Column(db.Integer)
 
 
 class Grid(db.Model):
