@@ -1,26 +1,28 @@
-const GUESSES_NUMBER = 12
-
+// global data
+const GUESSES_NUMBER = 3
 let clubs = []
 let gridIds = []
 
+// modals
 let modalOverlay = ''
 let extraModalOverlay = ''
 let searchInput = ''
 let dropdownContainer = ''
 let gridContainer = ''
 
+// current grid
 let conditions = {}
-
 let gridAnswers
 let allGuesses
+let currentGridId
 
 window.onload = async () => {
     await getData()
     getGridsIds()
 
-    const gridId = document.querySelector('.grid-title').getAttribute('gridId')
+    currentGridId = document.querySelector('.grid-title').getAttribute('gridId')
 
-    let gridAnswersStoredValue = window.localStorage.getItem(`grid_answers_${gridId}`)
+    let gridAnswersStoredValue = window.localStorage.getItem(`grid_answers_${currentGridId}`)
     gridAnswers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : [
         {}, {}, {},
         {}, {}, {},
@@ -37,7 +39,7 @@ window.onload = async () => {
         fillCell(cell, club.name, club.logo, gridAnswer.score)
     })
 
-    let allGuessesStoredValue = window.localStorage.getItem(`all_guesses__${gridId}`)
+    let allGuessesStoredValue = window.localStorage.getItem(`all_guesses__${currentGridId}`)
     allGuesses = allGuessesStoredValue ? JSON.parse(allGuessesStoredValue) : []
 
     document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
@@ -124,13 +126,11 @@ async function showFinalModal() {
 
     modalOverlay.style.display = 'flex'
 
-    const gridId = document.querySelector('.grid-title').getAttribute('gridId')
-
-    const {solutions, row_conditions_descriptions, col_conditions_descriptions} = await getGridSolution(gridId)
+    const {solutions, row_conditions_descriptions, col_conditions_descriptions} = await getGridSolution(currentGridId)
 
     let finalModal = document.createElement("div")
 
-    makeSolutionsGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId)
+    makeSolutionsGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, currentGridId)
 
     finalModal.classList.add("final-modal")
 
@@ -212,14 +212,12 @@ function listOptions() {
 async function submitClub(clubId) {
     const url = "/answer";
 
-    const gridId = document.querySelector('.grid-title').getAttribute('gridId')
-
     let selectedCell = document.querySelector('.selected')
     fetch(url, {
         method: "POST", headers: {
             'Accept': 'application/json', "Content-Type": "application/json"
         }, body: JSON.stringify({
-            "grid-id": gridId,
+            "grid-id": currentGridId,
             "club-id": clubId,
             "row-condition-id": conditions.row,
             "column-condition-id": conditions.column
@@ -237,7 +235,7 @@ async function submitClub(clubId) {
                 fillCell(selectedCell, data.clubName, data.logo, rarity_score)
 
                 gridAnswers[selectedCell.id - 1] = {"id": clubId, "score": isNaN(rarity_score) ? 0 : rarity_score}
-                window.localStorage.setItem(`grid_answers_${gridId}`, JSON.stringify(gridAnswers))
+                window.localStorage.setItem(`grid_answers_${currentGridId}`, JSON.stringify(gridAnswers))
             } else {
                 applyPowEffect(selectedCell)
                 selectedCell.animate(
@@ -249,7 +247,7 @@ async function submitClub(clubId) {
             hideModal()
             allGuesses.push({id: clubId, cell: selectedCell.id})
 
-            window.localStorage.setItem(`allGuesses_${gridId}`, JSON.stringify(allGuesses))
+            window.localStorage.setItem(`allGuesses_${currentGridId}`, JSON.stringify(allGuesses))
 
             document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
             if (gridIsComplete()) {
