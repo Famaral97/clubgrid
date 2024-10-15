@@ -1,5 +1,5 @@
 const rarities = {
-    sundayLeague: { rarityClass: 'sunday-league', rarityName: 'Sunday League'},
+    amateur: { rarityClass: 'amateur', rarityName: 'Amateur'},
     semiPro: { rarityClass: 'semi-pro', rarityName: 'Semi Pro'},
     pro: { rarityClass: 'pro', rarityName: 'Pro'},
     legend: { rarityClass: 'legend', rarityName: 'Legend'},
@@ -9,7 +9,7 @@ const rarities = {
 
 function getRarity(rarityScore) {
     if (rarityScore > 50){
-        return rarities.sundayLeague
+        return rarities.amateur
     } else if (rarityScore > 20) {
         return rarities.semiPro
     } else if (rarityScore > 10) {
