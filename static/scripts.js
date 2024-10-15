@@ -1,5 +1,5 @@
-// global data
-const GUESSES_NUMBER = 3
+const GUESSES_NUMBER = 12
+
 let clubs = []
 let gridIds = []
 
@@ -22,7 +22,7 @@ window.onload = async () => {
 
     currentGridId = document.querySelector('.grid-title').getAttribute('gridId')
 
-    let gridAnswersStoredValue = window.localStorage.getItem(`grid_answers_${currentGridId}`)
+    let gridAnswersStoredValue = window.localStorage.getItem(`gridAnswers_${currentGridId}`)
     gridAnswers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : [
         {}, {}, {},
         {}, {}, {},
@@ -38,7 +38,7 @@ window.onload = async () => {
         fillCell(cell, club.name, club.logo, gridAnswer.score)
     })
 
-    let allGuessesStoredValue = window.localStorage.getItem(`all_guesses__${currentGridId}`)
+    let allGuessesStoredValue = window.localStorage.getItem(`allGuesses_${currentGridId}`)
     allGuesses = allGuessesStoredValue ? JSON.parse(allGuessesStoredValue) : []
 
     document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
@@ -234,7 +234,7 @@ async function submitClub(clubId) {
                 fillCell(selectedCell, data.clubName, data.logo, rarity_score)
 
                 gridAnswers[selectedCell.id - 1] = {"id": clubId, "score": isNaN(rarity_score) ? 0 : rarity_score}
-                window.localStorage.setItem(`grid_answers_${currentGridId}`, JSON.stringify(gridAnswers))
+                window.localStorage.setItem(`gridAnswers_${currentGridId}`, JSON.stringify(gridAnswers))
             } else {
                 applyPowEffect(selectedCell)
                 selectedCell.animate(

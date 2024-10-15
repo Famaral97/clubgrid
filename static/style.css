@@ -62,7 +62,8 @@ body {
   flex-direction: column;
 
   &.correct {
-    border: 2px solid #3a862c;
+    border-style: solid;
+    border-width: 2px;
     border-radius: 5px;
     padding: 0;
   }
@@ -70,10 +71,10 @@ body {
   > .answer-club-details {
     font-size: 8px;
     width: 100%;
-    border: 2px solid #3a862c;
+    border-style: solid;
+    border-width: 2px;
     border-radius: 5px;
-    background-color: #3a862c;
-    color: white;
+
   }
 
   > .answer-club-logo {
@@ -87,6 +88,36 @@ body {
   &.selected {
     background-color: gray;
   }
+}
+
+.sunday-league {
+  background-color: #ababab;
+  border-color: #ababab;
+  color: black
+}
+
+.semi-pro {
+  background-color: #3a862c;
+  border-color: #3a862c;
+  color: white
+}
+
+.pro {
+  background-color: #263aa0;
+  border-color: #263aa0;
+  color: white
+}
+
+.legend {
+  background-color: #5e2c86;
+  border-color: #5e2c86;
+  color: white
+}
+
+.ballon-dor {
+  background-color: #efaf16;
+  border-color: #efaf16;
+  color: black
 }
 
 .wrong {

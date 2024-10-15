@@ -98,7 +98,19 @@ function getGridResultText() {
     let resultAsText = ""
 
     gridAnswers.forEach(((answer, i) => {
-        if (Object.keys(answer).length !== 0) resultAsText += "✅"
+        if (Object.keys(answer).length !== 0) {
+            if (answer.score > 50){
+                resultAsText += "⚪"
+            } else if (answer.score > 20) {
+                resultAsText += "🟢"
+            } else if (answer.score > 10) {
+                resultAsText += "🔵"
+            } else if (answer.score > 5) {
+                resultAsText += "🟣"
+            } else {
+                resultAsText += "🟡"
+            }
+        }
         else resultAsText += "❌"
         if ((i+1) % 3 === 0) resultAsText += "\n"
     }))
