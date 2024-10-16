@@ -15,12 +15,16 @@ let conditions = {}
 let gridAnswers
 let allGuesses
 let currentGridId
+let gridScore
 
 window.onload = async () => {
     await getData()
     getGridsIds()
 
     currentGridId = document.querySelector('.grid-title').getAttribute('gridId')
+
+    let gridScoreStoredValue = parseFloat(window.localStorage.getItem(`gridScore_${currentGridId}`))
+    gridScore = gridScoreStoredValue || 0
 
     let gridAnswersStoredValue = window.localStorage.getItem(`gridAnswers_${currentGridId}`)
     gridAnswers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : [
@@ -42,6 +46,8 @@ window.onload = async () => {
     allGuesses = allGuessesStoredValue ? JSON.parse(allGuessesStoredValue) : []
 
     document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
+
+    document.getElementById("score").innerHTML = Math.round(gridScore * 100) / 100 // 2 decimal places
 
     if (gridIsComplete()) {
         showViewResultsButton()
@@ -123,18 +129,34 @@ function showClubSelectionModal(cell) {
 async function showFinalModal() {
     hideAllModals()
 
-    modalOverlay.style.display = 'flex'
+    let existingFinalModal = document.querySelector('.final-modal')
 
-    const {solutions, row_conditions_descriptions, col_conditions_descriptions} = await getGridSolution(currentGridId)
+    if (existingFinalModal) {
+        let shareButtonElement = document.getElementById("share")
+        shareButtonElement.textContent = "📢 Share"
 
-    let finalModal = document.createElement("div")
+        modalOverlay.style.display = 'flex'
+        existingFinalModal.style.display = 'block'
+        modalOverlay.onclick = exitFinalMode
+    } else {
 
-    makeSolutionsGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, currentGridId)
+        modalOverlay.style.display = 'flex'
 
-    finalModal.classList.add("final-modal")
+        const {
+            solutions,
+            row_conditions_descriptions,
+            col_conditions_descriptions
+        } = await getGridSolution(currentGridId)
 
-    modalOverlay.appendChild(finalModal)
-    modalOverlay.onclick = exitFinalMode
+        let finalModal = document.createElement("div")
+
+        makeSolutionsGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, currentGridId)
+
+        finalModal.classList.add("final-modal")
+
+        modalOverlay.appendChild(finalModal)
+        modalOverlay.onclick = exitFinalMode
+    }
 }
 
 function exitModal(e) {
@@ -229,11 +251,17 @@ async function submitClub(clubId) {
     })
         .then(data => {
             if (data.correct) {
-                let rarity_score = Math.floor(100 * data.total_club_answered / data.total_correct_answers)
+                let rarity_score = Math.floor(100 * data.total_club_answered / data.total_answers)
 
                 fillCell(selectedCell, data.clubName, data.logo, rarity_score)
 
-                gridAnswers[selectedCell.id - 1] = {"id": clubId, "score": isNaN(rarity_score) ? 0 : rarity_score}
+                let cellScore = isNaN(rarity_score) ? 0 : rarity_score
+
+                gridScore += (100 - cellScore) / 9
+                window.localStorage.setItem(`gridScore_${currentGridId}`, gridScore)
+                document.getElementById("score").innerHTML = Math.round(gridScore * 100) / 100 // 2 decimal places
+
+                gridAnswers[selectedCell.id - 1] = {"id": clubId, "score": cellScore}
                 window.localStorage.setItem(`gridAnswers_${currentGridId}`, JSON.stringify(gridAnswers))
             } else {
                 applyPowEffect(selectedCell)

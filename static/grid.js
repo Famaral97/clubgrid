@@ -10,6 +10,8 @@ function makeSolutionsGrid(container, solutions, row_conditions_descriptions, co
         <h1>Results</h1>
         <div>
             <span style="white-space: pre-line; font-size: x-large">${resultAsText}</span>
+            <span>Score: ${Math.round(gridScore * 100) / 100}</span>
+            <br>
             <span>Guesses left: ${GUESSES_NUMBER - allGuesses.length}</span>
         </div>
         <br>
@@ -83,6 +85,8 @@ function copyResultToClipboard(gridId) {
     let sharedResult = `Club Grid #${gridId}\n`
 
     sharedResult += getGridResultText()
+
+    sharedResult += `\nScore: ${Math.round(gridScore * 100) / 100}`
 
     sharedResult += `\nGuesses left: ${GUESSES_NUMBER - allGuesses.length}`
 

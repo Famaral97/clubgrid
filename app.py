@@ -100,15 +100,14 @@ def check_answer():
 
     is_correct = answer.is_solution if answer is not None else False
 
-    total_correct_answers = -1
+    total_answers = -1
     total_club_answered = -1
     if is_correct:
         total_club_answered = answer.count
-        total_correct_answers = int(Answer.query.with_entities(func.sum(Answer.count)).filter(
+        total_answers = int(Answer.query.with_entities(func.sum(Answer.count)).filter(
             Answer.grid_id == grid_id,
             Answer.row_condition_id == row_condition_id,
-            Answer.column_condition_id == column_condition_id,
-            Answer.is_solution.is_(True),
+            Answer.column_condition_id == column_condition_id
         ).scalar())
 
     stmt = insert(Answer).values(
@@ -131,7 +130,7 @@ def check_answer():
         "clubName": club.name,
         "logo": club.logo,
         "total_club_answered": total_club_answered,
-        "total_correct_answers": total_correct_answers
+        "total_answers": total_answers
     })
 
 

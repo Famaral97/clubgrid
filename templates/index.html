@@ -12,7 +12,6 @@
 <script src="{{ url_for('static', filename='services.js') }}"></script>
 <script src="{{ url_for('static', filename='cell.js') }}"></script>
 <script src="{{ url_for('static', filename='grid.js') }}"></script>
-<script src="{{ url_for('static', filename='cookies.js') }}"></script>
 <script src="{{ url_for('static', filename='info.js') }}"></script>
 <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 
@@ -27,6 +26,7 @@
         <div class="horizontal-container">
             <h3 class="grid-title" gridId="{{ grid_id }}">Grid #{{ grid_id }}</h3>
             <h3>Guesses Left: <span id="guesses"></span></h3>
+            <h3>Score: <span id="score"></span></h3>
         </div>
 
         <div class="horizontal-container">
