@@ -96,6 +96,33 @@ def create_default_conditions(db, app):
         Condition(id=53, description="Stadium capacity over 50k", expression="clubs.stadium_capacity > 50000"),
         Condition(id=54, description="Stadium capacity between 20k and 50k",
                   expression="clubs.stadium_capacity between 20000 and 50000"),
+
+        Condition(id=55, description="Squad size fewer than 25 players", expression="clubs.squad_size <= 24"),
+        Condition(id=56, description="Squad size more than 29 players ", expression="clubs.squad_size >= 30"),
+
+        Condition(id=57, description="Squad average age at most 25y", expression="clubs.average_age <= 25"),
+        Condition(id=58, description="Squad average age at least 27y", expression="clubs.average_age >= 27"),
+
+        Condition(id=59, description="Squad has fewer than 13 foreigners", expression="clubs.foreigners_number < 13"),
+        Condition(id=60, description="Squad has at least 20 foreigners", expression="clubs.foreigners_number >= 20"),
+
+        Condition(id=61, description="Squad composed by less than 50% foreigners",
+                  expression="clubs.foreigners_percentage < 50"),
+        Condition(id=62, description="Squad composed by more than 70% foreigners",
+                  expression="clubs.foreigners_percentage > 70"),
+
+        Condition(id=63, description="Squad has fewer than 6 national team players",
+                  expression="clubs.national_team_players < 6"),
+        Condition(id=64, description="Squad has at least 14 national team players",
+                  expression="clubs.national_team_players >= 14"),
+
+        Condition(id=65, description="Positive net transfer record", expression="clubs.net_transfer_record > 0"),
+        Condition(id=66, description="Net transfer record over +20M euros",
+                  expression="clubs.net_transfer_record > 20000000"),
+        Condition(id=67, description="Negative net transfer record", expression="clubs.net_transfer_record < 0"),
+        Condition(id=68, description="Net transfer record under -30M euros",
+                  expression="clubs.net_transfer_record < 30000000"),
+
     ]
 
     with app.app_context():
