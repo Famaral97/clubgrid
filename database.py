@@ -238,7 +238,12 @@ def load_clubs():
                     cup_runner_up=club_row["Domestic Cup Runner-Up"],
                     is_circular=club_row["Is Circular"] == "YES",
                     stadium_capacity=club_row["stadium_seats"],
+                    squad_size=club_row["squad_size"],
                     average_age=club_row["average_age"],
+                    foreigners_number=club_row["foreigners_number"],
+                    foreigners_percentage=club_row["foreigners_percentage"],
+                    national_team_players=club_row["national_team_players"],
+                    net_transfer_record=to_int(club_row["net_transfer_record"]),
                 )
             )
 
@@ -257,3 +262,21 @@ def create_default_clubs(db, app):
 
 def to_dict(obj):
     return {c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs}
+
+
+def to_int(s):
+    s = s.replace('€', '')
+
+    if '+-0' in s:
+        return 0
+
+    if s[-1] == 'm':
+        multiplier = 1_000_000
+    elif s[-1] == 'k':
+        multiplier = 1_000
+    else:
+        raise ValueError("Invalid suffix. Only 'm' and 'k' are supported.")
+
+    numeric_part = float(s[:-1])
+
+    return int(numeric_part * multiplier)

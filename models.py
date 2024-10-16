@@ -41,7 +41,12 @@ class Club(db.Model):
     cup_runner_up = db.Column(db.Integer)
     is_circular = db.Column(db.Boolean)
     stadium_capacity = db.Column(db.Integer)
+    squad_size = db.Column(db.Integer)
     average_age = db.Column(db.Float)
+    foreigners_number = db.Column(db.Integer)
+    foreigners_percentage = db.Column(db.Float)
+    national_team_players = db.Column(db.Integer)
+    net_transfer_record = db.Column(db.Integer)
 
 
 class Grid(db.Model):
