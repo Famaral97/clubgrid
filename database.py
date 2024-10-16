@@ -204,13 +204,14 @@ def load_clubs():
         csvreader = csv.DictReader(csvfile, delimiter=',')
 
         for club_row in csvreader:
-            name = club_row["Name"]
+            name = club_row["Short Name"]
             country = club_row["Country"]
             league = club_row["League"]
             clubs.append(
                 Club(
                     id=club_row["ID"],
-                    name=name,
+                    name=club_row["name"],
+                    short_name=club_row["Short Name"],
                     country=country,
                     logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{country}%20-%20{league}/{name}.png?raw=true".replace(
                         " ", "%20"),
@@ -236,7 +237,8 @@ def load_clubs():
                     cup_titles=club_row["Domestic Cup Titles"],
                     cup_runner_up=club_row["Domestic Cup Runner-Up"],
                     is_circular=club_row["Is Circular"] == "YES",
-                    stadium_capacity=club_row["Stadium Capacity"],
+                    stadium_capacity=club_row["stadium_seats"],
+                    average_age=club_row["average_age"],
                 )
             )
 

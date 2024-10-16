@@ -14,6 +14,7 @@ class Club(db.Model):
     __tablename__ = 'clubs'
     id = db.Column(db.String(255), primary_key=True)
     name = db.Column(db.String(255))
+    short_name = db.Column(db.String(255))
     country = db.Column(db.String(255))
     logo = db.Column(db.String(255))
     league = db.Column(db.String(255))
@@ -40,6 +41,7 @@ class Club(db.Model):
     cup_runner_up = db.Column(db.Integer)
     is_circular = db.Column(db.Boolean)
     stadium_capacity = db.Column(db.Integer)
+    average_age = db.Column(db.Float)
 
 
 class Grid(db.Model):
