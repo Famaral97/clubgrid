@@ -133,7 +133,11 @@ def create_default_conditions(db, app):
         Condition(id=68, description="Net transfer record under -30M euros",
                   expression="clubs.net_transfer_record < 30000000"),
 
-        # next available condition id: 74
+        Condition(id=74, description="Founded in the 19th century", expression="clubs.year_founded < 1901"),
+        Condition(id=75, description="Founded before 1890", expression="clubs.year_founded < 1890"),
+        Condition(id=76, description="Founded after 1930", expression="clubs.year_founded > 1930"),
+
+        # next available condition id: 76
     ]
 
     with app.app_context():
@@ -254,6 +258,7 @@ def load_clubs():
                     logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{country}%20-%20{league}/{short_name}.png?raw=true".replace(
                         " ", "%20"),
                     league=league,
+                    year_founded=club_row["year_founded"],
                     name_has_number=club_row["name_has_number"] == "YES",
                     has_animal=club_row["logo_has_animal"] == "YES",
                     has_winged_animal=club_row["logo_has_winged_animal"] == "YES",
