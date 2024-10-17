@@ -108,33 +108,17 @@ function displayInfo() {
                 </li>
             </ul>
             
-            <h3>Stadiums</h3>
-            <p>Stadium where the team was currently playing, according to:</p>
+            <h3>Transfermarkt Data</h3>
+            <p>The following conditions were designed with data obtained from <a href="https://www.transfermarkt.com/" target="_blank">Transfermarkt</a>:</p>
             <ul>
-                <li>
-                    🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League 
-                    <a href="https://www.transfermarkt.com/premier-league/stadien/wettbewerb/GB1" target="_blank" >Source</a>
-               </li>
-                <li>
-                    🇩🇪 Bundesliga 
-                    <a href="https://www.transfermarkt.co.uk/bundesliga/stadien/wettbewerb/L1" target="_blank" >Source</a>
-                </li>
-                <li>
-                    🇵🇹 Liga Portugal 
-                    <a href="https://www.transfermarkt.com/liga-portugal/stadien/wettbewerb/PO1/plus/1" target="_blank" >Source</a>
-                </li>
-                <li>
-                    🇪🇸 La Liga 
-                    <a href="https://www.transfermarkt.com/laliga/stadien/wettbewerb/ES1" target="_blank" >Source</a>
-                </li>
-                <li>
-                    🇮🇹 Serie A 
-                    <a href="https://www.transfermarkt.com/serie-a/stadien/wettbewerb/IT1" target="_blank" >Source</a>
-                </li>
-                <li>
-                    🇫🇷 Ligue 1
-                    <a href="https://www.transfermarkt.com/laliga/stadien/wettbewerb/FR1" target="_blank" >Source</a>
-                </li>
+                <li>Club names</li>
+                <li>Stadium capacities</li>
+                <li>Squad size</li>
+                <li>Squad average age</li>
+                <li>Number of foreigners in squad</li>
+                <li>% of foreigners in squad</li>
+                <li>National team players</li>
+                <li>Net transfer record</li>
             </ul>
         </div>
     `
