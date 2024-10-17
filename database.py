@@ -78,6 +78,15 @@ def create_default_conditions(db, app):
                   expression="(clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')"),
         Condition(id=43, description="Name starts with R or S",
                   expression="(clubs.name like 'r%' or clubs.name like 's%')"),
+        Condition(id=69, description="Name starts with D, E, F or G",
+                  expression="(clubs.name like 'd%' or clubs.name like 'e%'"
+                             " or clubs.name like 'f%' or clubs.name like 'g%')"),
+        Condition(id=70, description="Name starts with L, M, N, O or P",
+                  expression="(clubs.name like 'l%' or clubs.name like 'm%' or clubs.name like 'n%'"
+                             " or clubs.name like 'o%' or clubs.name like 'p%')"),
+        Condition(id=71, description="Name starts with T, U or V",
+                  expression="(clubs.name like 't%' or clubs.name like 'u%' or clubs.name like 'v%')"),
+        # TODO: contains number
 
         Condition(id=44, description="Logo is circular", expression="clubs.is_circular = True"),
 
@@ -123,6 +132,7 @@ def create_default_conditions(db, app):
         Condition(id=68, description="Net transfer record under -30M euros",
                   expression="clubs.net_transfer_record < 30000000"),
 
+        # last id is 71
     ]
 
     with app.app_context():
