@@ -25,6 +25,13 @@ function displayInfo() {
                 <li>🇮🇹 Serie A</li>
                 <li>🇫🇷 Ligue 1</li>
             </ul>
+            
+            <h2>Score</h2>
+            <p>The lower the %, the better the result. Each answer's score takes into consideration:</p>
+            <ul>
+                <li><strong>Rarity of the answer:</strong> how often the club has been used as an answer for those conditions.</li> 
+                <li><strong>Difficulty of the conditions:</strong> how many wrong answers there are for the given conditions.</li> 
+            </ul>
     
             <h2>Conditions info and sources</h2>
             <p>Unless specified otherwise, all conditions refer to the main male football team of the club.</p>
