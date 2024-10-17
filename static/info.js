@@ -127,6 +127,9 @@ function displayInfo() {
                 <li>National team players</li>
                 <li>Net transfer record</li>
             </ul>
+            
+            <h3>Founding year</h3>
+            <p>Taken from the club's wikipedia page, it was considered the earliest date of a foundation. For example, if a club was re-founded because of bankruptcy, that date was not taken into account.</p>
         </div>
     `
 
