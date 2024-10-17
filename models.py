@@ -17,7 +17,9 @@ class Club(db.Model):
     short_name = db.Column(db.String(255))
     country = db.Column(db.String(255))
     logo = db.Column(db.String(255))
-    league = db.Column(db.String(255))
+    league_2024_25 = db.Column(db.String(255))
+    league_2023_24 = db.Column(db.String(255))
+    league_2022_23 = db.Column(db.String(255))
 
     year_founded = db.Column(db.Integer)
     name_has_number = db.Column(db.Boolean)

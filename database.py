@@ -11,12 +11,12 @@ def create_default_conditions(db, app):
         Condition(id=1, description="Logo has animal", expression="clubs.has_animal = True"),
         Condition(id=2, description="Logo doesn't have animal", expression="clubs.has_animal = False"),
 
-        Condition(id=3, description="In Premier League", expression="clubs.league = 'Premier League'"),
-        Condition(id=4, description="In La Liga", expression="clubs.league = 'La Liga'"),
-        Condition(id=5, description="In Liga Portugal", expression="clubs.league = 'Liga Portugal'"),
-        Condition(id=6, description="In Ligue 1", expression="clubs.league = 'Ligue 1'"),
-        Condition(id=7, description="In Bundesliga", expression="clubs.league = 'Bundesliga'"),
-        Condition(id=8, description="In Italian Serie A", expression="clubs.league = 'Serie A'"),
+        Condition(id=3, description="In Premier League", expression="clubs.league_2024_25 = 'EN1'"),
+        Condition(id=4, description="In La Liga", expression="clubs.league_2024_25 = 'ES1'"),
+        Condition(id=5, description="In Liga Portugal", expression="clubs.league_2024_25 = 'PT1'"),
+        Condition(id=6, description="In Ligue 1", expression="clubs.league_2024_25 = 'FR1'"),
+        Condition(id=7, description="In Bundesliga", expression="clubs.league_2024_25 = 'DE1'"),
+        Condition(id=8, description="In Italian Serie A", expression="clubs.league_2024_25 = 'IT1'"),
 
         Condition(id=9, description="Logo has winged animal", expression="clubs.has_winged_animal = True"),
         Condition(id=10, description="Logo doesn't have winged animal", expression="clubs.has_winged_animal = False"),
@@ -137,7 +137,11 @@ def create_default_conditions(db, app):
         Condition(id=75, description="Founded before 1890", expression="clubs.year_founded < 1890"),
         Condition(id=76, description="Founded after 1930", expression="clubs.year_founded > 1930"),
 
-        # next available condition id: 76
+        Condition(id=77, description="Has played in 2nd tier in the last 2 seasons",
+                  expression="(clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2') or "
+                             "clubs.league_2022_23 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2')) "),
+
+        # next available condition id: 78
     ]
 
     with app.app_context():
@@ -248,16 +252,18 @@ def load_clubs():
         for club_row in csvreader:
             short_name = club_row["short_name"]
             country = club_row["Country"]
-            league = club_row["League"]
+            league = club_row["2024-25_league"]
             clubs.append(
                 Club(
                     id=club_row["id"],
                     name=club_row["name"],
                     short_name=short_name,
                     country=country,
-                    logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{country}%20-%20{league}/{short_name}.png?raw=true".replace(
+                    logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{league}/{short_name}.png?raw=true".replace(
                         " ", "%20"),
-                    league=league,
+                    league_2024_25=league,
+                    league_2023_24=club_row["2023-24_league"],
+                    league_2022_23=club_row["2022-23_league"],
                     year_founded=club_row["year_founded"],
                     name_has_number=club_row["name_has_number"] == "YES",
                     has_animal=club_row["logo_has_animal"] == "YES",
