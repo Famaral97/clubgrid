@@ -19,6 +19,7 @@ class Club(db.Model):
     logo = db.Column(db.String(255))
     league = db.Column(db.String(255))
 
+    name_has_number = db.Column(db.Boolean)
     has_animal = db.Column(db.Boolean)
     has_winged_animal = db.Column(db.Boolean)
     has_person = db.Column(db.Boolean)

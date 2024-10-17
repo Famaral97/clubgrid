@@ -86,7 +86,8 @@ def create_default_conditions(db, app):
                              " or clubs.name like 'o%' or clubs.name like 'p%')"),
         Condition(id=71, description="Name starts with T, U or V",
                   expression="(clubs.name like 't%' or clubs.name like 'u%' or clubs.name like 'v%')"),
-        # TODO: contains number
+        Condition(id=72, description="Name has a number", expression="clubs.name_has_number = True"),
+        Condition(id=73, description="Name does not have a number", expression="clubs.name_has_number = False"),
 
         Condition(id=44, description="Logo is circular", expression="clubs.is_circular = True"),
 
@@ -132,7 +133,7 @@ def create_default_conditions(db, app):
         Condition(id=68, description="Net transfer record under -30M euros",
                   expression="clubs.net_transfer_record < 30000000"),
 
-        # last id is 71
+        # next available condition id: 74
     ]
 
     with app.app_context():
@@ -149,8 +150,8 @@ def create_default_grids(db, app):
             row_condition_1=5,
             row_condition_2=23,
             row_condition_3=24,
-            column_condition_1=32,
-            column_condition_2=29,
+            column_condition_1=72,
+            column_condition_2=73,
             column_condition_3=43,
         ),
         Grid(
@@ -253,6 +254,7 @@ def load_clubs():
                     logo=f"https://github.com/Famaral97/clubgrid/blob/main/data/logos/{country}%20-%20{league}/{name}.png?raw=true".replace(
                         " ", "%20"),
                     league=league,
+                    name_has_number=club_row["name_has_number"] == "YES",
                     has_animal=club_row["Animal"] == "YES",
                     has_winged_animal=club_row["Winged Animal"] == "YES",
                     has_person=club_row["Person"] == "YES",

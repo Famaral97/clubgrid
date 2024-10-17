@@ -10,4 +10,4 @@ merged_data = pd.merge(my_data, other_data, left_on='Tfmk ID', right_on='club_id
 # Save the merged data to a new CSV file
 merged_data.to_csv('../data/data.csv', index=False, encoding='utf-8')
 
-print("Data merged successfully and saved to Merged_Data.csv")
+print("Data merged successfully and saved to /data/data.csv")
