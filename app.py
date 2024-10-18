@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from datetime import datetime
+
 from dotenv import load_dotenv
 import os
 
@@ -31,7 +33,7 @@ create_default_grids(db, app)
 
 @app.route('/', methods=['GET'])
 def redirect_home():
-    latest_grid_id = Grid.query.order_by(desc(Grid.id)).first().id
+    latest_grid_id = Grid.query.order_by(desc(Grid.id)).filter(Grid.starting_date <= datetime.now()).first().id
     return redirect(f"/grid/{latest_grid_id}", code=302)
 
 
@@ -39,6 +41,9 @@ def redirect_home():
 def index(grid_id):
 
     grid = Grid.query.get(grid_id)
+
+    if grid.starting_date > datetime.now():
+        return redirect(f"/", code=302)
 
     row_conditions = [
         Condition.query.get(grid.row_condition_1),
@@ -61,9 +66,13 @@ def index(grid_id):
 
 @app.route("/grids", methods=['GET'])
 def get_grids():
-    grids = Grid.query.order_by(desc(Grid.id)).all()
+    grids = Grid.query.order_by(desc(Grid.id)).filter(Grid.starting_date <= datetime.now())
+    @dataclass
+    class GridRepresenter():
+        id: int
+        starting_date: str
 
-    grids_ids = [grid.id for grid in grids]
+    grids_ids = [GridRepresenter(grid.id, grid.starting_date.strftime('%a, %d %b')) for grid in grids]
 
     return jsonify(grids_ids)
 

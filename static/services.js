@@ -15,7 +15,7 @@ async function getData() {
         });
 }
 
-async function getGridsIds() {
+async function getGrids() {
     fetch("/grids").then(response => {
         if (!response.ok) {
             throw new Error('Failed to fetch grids');
@@ -23,7 +23,7 @@ async function getGridsIds() {
         return response.json()
     })
         .then(data => {
-            gridIds = data
+            grids = data
         })
         .catch(error => {
             console.error('Error fetching grids:', error);

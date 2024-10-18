@@ -1,7 +1,7 @@
 const GUESSES_NUMBER = 12
 
 let clubs = []
-let gridIds = []
+let grids = []
 
 // modals
 let modalOverlay = ''
@@ -19,7 +19,7 @@ let gridScore
 
 window.onload = async () => {
     await getData()
-    getGridsIds()
+    getGrids()
 
     currentGridId = document.querySelector('.grid-title').getAttribute('gridId')
 
@@ -77,18 +77,18 @@ function showGridSelectionModal() {
 
     gridSelectionModalContainer = document.createElement("div")
 
-    gridIds.forEach(gridId => {
+    grids.forEach(grid => {
         const gridOptionContainer = document.createElement('div')
         gridOptionContainer.className = 'dropdown-option'
 
         const gridName = document.createElement('span')
-        gridName.textContent = `Grid #${gridId}`
+        gridName.textContent = `Grid #${grid.id} (${grid.starting_date})`
 
         const selectGridButton = document.createElement('button')
 
         selectGridButton.textContent = 'Play!'
         selectGridButton.onclick = () => {
-            location.replace(`/grid/${gridId}`)
+            location.replace(`/grid/${grid.id}`)
         }
 
         gridOptionContainer.appendChild(gridName)

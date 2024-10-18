@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 
 from sqlalchemy import text, inspect
 from sqlalchemy.dialects.mysql import insert
@@ -158,7 +159,18 @@ def create_default_conditions(db, app):
 def create_default_grids(db, app):
     grids = [
         Grid(
+            id=6,
+            starting_date=datetime(2024, 10, 21, 0, 0),
+            row_condition_1=63,
+            row_condition_2=77,
+            row_condition_3=78,
+            column_condition_1=52,
+            column_condition_2=4,
+            column_condition_3=23,
+        ),
+        Grid(
             id=5,
+            starting_date=datetime(2024, 10, 18, 0, 0),
             row_condition_1=5,
             row_condition_2=23,
             row_condition_3=24,
@@ -168,6 +180,7 @@ def create_default_grids(db, app):
         ),
         Grid(
             id=4,
+            starting_date=datetime(2024, 10, 17, 0, 0),
             row_condition_1=32,
             row_condition_2=22,
             row_condition_3=7,
@@ -177,6 +190,7 @@ def create_default_grids(db, app):
         ),
         Grid(
             id=3,
+            starting_date=datetime(2024, 10, 16, 0, 0),
             row_condition_1=1,
             row_condition_2=3,
             row_condition_3=17,
@@ -186,6 +200,7 @@ def create_default_grids(db, app):
         ),
         Grid(
             id=2,
+            starting_date=datetime(2024, 10, 15, 0, 0),
             row_condition_1=30,
             row_condition_2=13,
             row_condition_3=16,
@@ -195,6 +210,7 @@ def create_default_grids(db, app):
         ),
         Grid(
             id=1,
+            starting_date=datetime(2024, 10, 14, 0, 0),
             row_condition_1=11,
             row_condition_2=26,
             row_condition_3=28,
