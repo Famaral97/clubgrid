@@ -74,12 +74,13 @@ def get_clubs():
     class ClubRepresenter():
         id: int
         name: str
+        shortName: str
         logo: str
 
     clubs = Club.query.all()
 
     clubs_basic_info = [
-        ClubRepresenter(id=club.id, name=club.name, logo=club.logo) for club in clubs
+        ClubRepresenter(id=club.id, name=club.name, shortName=club.short_name, logo=club.logo) for club in clubs
     ]
 
     return jsonify(clubs_basic_info)
@@ -127,7 +128,7 @@ def check_answer():
 
     return jsonify({
         "correct": is_correct,
-        "clubName": club.short_name,
+        "clubShortName": club.short_name,
         "logo": club.logo,
         "total_club_answered": total_club_answered,
         "total_answers": total_answers
@@ -205,7 +206,7 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
         total_club_answered = answer.count if answer is not None else 0
 
         clubs_representers.append(
-            ClubRepresenter(id=club.id, name=club.name, logo=club.logo, total_club_answered=total_club_answered)
+            ClubRepresenter(id=club.id, name=club.name, shortName=club.short_name, logo=club.logo, total_club_answered=total_club_answered)
         )
 
         total_correct_answers += total_club_answered

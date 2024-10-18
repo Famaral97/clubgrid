@@ -39,7 +39,7 @@ window.onload = async () => {
 
         const club = clubs.filter(c => c.id === gridAnswer.id)[0]
 
-        fillCell(cell, club.name, club.logo, gridAnswer.score)
+        fillCell(cell, club.shortName, club.logo, gridAnswer.score)
     })
 
     let allGuessesStoredValue = window.localStorage.getItem(`allGuesses_${currentGridId}`)
@@ -253,7 +253,7 @@ async function submitClub(clubId) {
             if (data.correct) {
                 let rarityScore = Math.floor(100 * data.total_club_answered / data.total_answers)
 
-                fillCell(selectedCell, data.clubName, data.logo, rarityScore)
+                fillCell(selectedCell, data.clubShortName, data.logo, rarityScore)
 
                 let cellScore = isNaN(rarityScore) ? 0 : rarityScore
 
