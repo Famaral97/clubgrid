@@ -127,7 +127,7 @@ def check_answer():
 
     return jsonify({
         "correct": is_correct,
-        "clubName": club.name,
+        "clubName": club.short_name,
         "logo": club.logo,
         "total_club_answered": total_club_answered,
         "total_answers": total_answers
