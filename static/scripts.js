@@ -251,13 +251,13 @@ async function submitClub(clubId) {
     })
         .then(data => {
             if (data.correct) {
-                let rarity_score = Math.floor(100 * data.total_club_answered / data.total_answers)
+                let rarityScore = Math.floor(100 * data.total_club_answered / data.total_answers)
 
-                fillCell(selectedCell, data.clubName, data.logo, rarity_score)
+                fillCell(selectedCell, data.clubName, data.logo, rarityScore)
 
-                let cellScore = isNaN(rarity_score) ? 0 : rarity_score
+                let cellScore = isNaN(rarityScore) ? 0 : rarityScore
 
-                gridScore += (100 - cellScore) / 9
+                gridScore += ((125 - cellScore) / 1125) * 100
                 window.localStorage.setItem(`gridScore_${currentGridId}`, gridScore)
                 document.getElementById("score").innerHTML = Math.round(gridScore * 100) / 100 // 2 decimal places
 
