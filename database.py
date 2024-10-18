@@ -89,9 +89,9 @@ def create_default_conditions(db, app):
         Condition(id=72, description="Name has a number", expression="clubs.name_has_number = True"),
         Condition(id=73, description="Name does not have a number", expression="clubs.name_has_number = False"),
 
-        Condition(id=78, description="Name ends with letter A", expression="clubs.name like '%a'"),
-        Condition(id=79, description="Name ends with letter B", expression="clubs.name like '%b'"),
-        Condition(id=80, description="Name ends with letter E", expression="clubs.name like '%e'"),
+        Condition(id=78, description="Name ends with A", expression="clubs.name like '%a'"),
+        Condition(id=79, description="Name ends with B", expression="clubs.name like '%b'"),
+        Condition(id=80, description="Name ends with E", expression="clubs.name like '%e'"),
 
         Condition(id=44, description="Logo is circular", expression="clubs.is_circular = True"),
 
