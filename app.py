@@ -192,6 +192,7 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
     class ClubRepresenter():
         id: int
         name: str
+        short_name: str
         logo: str
         total_club_answered: int
 
@@ -215,7 +216,7 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
         total_club_answered = answer.count if answer is not None else 0
 
         clubs_representers.append(
-            ClubRepresenter(id=club.id, name=club.name, shortName=club.short_name, logo=club.logo, total_club_answered=total_club_answered)
+            ClubRepresenter(id=club.id, name=club.name, short_name=club.short_name, logo=club.logo, total_club_answered=total_club_answered)
         )
 
         total_correct_answers += total_club_answered

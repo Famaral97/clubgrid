@@ -136,7 +136,7 @@ def create_default_conditions(db, app):
                   expression="clubs.net_transfer_record > 20000000"),
         Condition(id=67, description="Negative net transfer record", expression="clubs.net_transfer_record < 0"),
         Condition(id=68, description="Net transfer record under -30M euros",
-                  expression="clubs.net_transfer_record < 30000000"),
+                  expression="clubs.net_transfer_record < -30000000"),
 
         Condition(id=74, description="Founded in the 19th century", expression="clubs.year_founded < 1901"),
         Condition(id=75, description="Founded before 1890", expression="clubs.year_founded < 1890"),
@@ -222,15 +222,7 @@ def create_default_grids(db, app):
 
     answers = []
     for grid in grids:
-        answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_1, app))
-        answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_2, app))
-        answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_3, app))
-        answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_1, app))
-        answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_2, app))
-        answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_3, app))
-        answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_1, app))
-        answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_2, app))
-        answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_3, app))
+        answers.extend(get_grid_answers(grid, app))
 
     with app.app_context():
         stmt = insert(Grid).values([to_dict(grid) for grid in grids])
@@ -242,6 +234,20 @@ def create_default_grids(db, app):
         db.session.execute(stmt)
 
         db.session.commit()
+
+
+def get_grid_answers(grid, app):
+    grid_answers = []
+    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_1, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_2, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_3, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_1, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_2, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_3, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_1, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_2, app))
+    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_3, app))
+    return grid_answers
 
 
 def get_answers(grid, column_condition_id, row_condition_id, app):
