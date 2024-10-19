@@ -87,6 +87,7 @@ function showGridSelectionModal() {
         const selectGridButton = document.createElement('button')
 
         selectGridButton.textContent = 'Play!'
+        selectGridButton.classList.add('primary')
         selectGridButton.onclick = () => {
             location.replace(`/grid/${grid.id}`)
         }
@@ -134,6 +135,7 @@ async function showFinalModal() {
     if (existingFinalModal) {
         let shareButtonElement = document.getElementById("share")
         shareButtonElement.textContent = "📢 Share"
+        shareButtonElement.classList.add('secondary')
 
         modalOverlay.style.display = 'flex'
         existingFinalModal.style.display = 'block'
@@ -219,6 +221,7 @@ function listOptions() {
             selectButton.disabled = true
         }
         selectButton.textContent = 'Select'
+        selectButton.classList.add('primary')
         selectButton.onclick = () => {
             submitClub(club.id)
         }
