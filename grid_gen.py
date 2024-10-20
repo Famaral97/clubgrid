@@ -16,10 +16,13 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now
 
 def generate_grid(min_clubs_per_cell):
     all_conditions = Condition.query.all()
+    all_grids = Grid.query.all()
+
+    conditions_weights = compute_weights(all_conditions, all_grids)
 
     while True:
 
-        conditions_sample = random.sample(all_conditions, 6)
+        conditions_sample = get_weighted_sample_of_conditions(all_conditions, conditions_weights)
 
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
@@ -28,10 +31,41 @@ def generate_grid(min_clubs_per_cell):
             return row_conditions, col_conditions
 
 
+def get_weighted_sample_of_conditions(conditions, weights):
+    selected_conditions = []
+
+    while len(selected_conditions) < 6:
+        random_condition = random.choices(conditions, weights=weights)[0]
+        if random_condition not in selected_conditions:
+            selected_conditions.append(random_condition)
+    return selected_conditions
+
+
+def compute_weights(conditions, grids):
+    weights_by_condition_id = {}
+    for grid in grids:
+        weights_by_condition_id[grid.row_condition_1] = weights_by_condition_id.get(grid.row_condition_1, 0) + 1
+        weights_by_condition_id[grid.row_condition_2] = weights_by_condition_id.get(grid.row_condition_2, 0) + 1
+        weights_by_condition_id[grid.row_condition_3] = weights_by_condition_id.get(grid.row_condition_3, 0) + 1
+
+        weights_by_condition_id[grid.column_condition_1] = weights_by_condition_id.get(grid.column_condition_1, 0) + 1
+        weights_by_condition_id[grid.column_condition_2] = weights_by_condition_id.get(grid.column_condition_2, 0) + 1
+        weights_by_condition_id[grid.column_condition_3] = weights_by_condition_id.get(grid.column_condition_3, 0) + 1
+
+    weights_list = []
+    for condition in conditions:
+        weight = 1 / (1 + weights_by_condition_id.get(condition.id, 0))
+        weights_list.append(weight)
+
+    return weights_list
+
+
 def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell):
 
     for row_condition in row_conditions:
         for col_condition in column_conditions:
+            print(row_condition.expression)
+            print(col_condition.expression)
             possible_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
 
             if len(possible_clubs) < min_clubs_per_cell:
