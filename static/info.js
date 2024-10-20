@@ -27,11 +27,12 @@ function displayInfo() {
             </ul>
             
             <h2>Score</h2>
-            <p>The lower the %, the better the result. Each answer's score takes into consideration:</p>
+            <p>The lower club the %, the better the result. Each answer's score takes into consideration:</p>
             <ul>
                 <li><strong>Rarity of the answer:</strong> how often the club has been used as an answer for those conditions.</li> 
                 <li><strong>Difficulty of the conditions:</strong> how many wrong answers there are for the given conditions.</li> 
             </ul>
+            <p>This will translate to a final grid score, where 0 is the minimum and 100 the best score.</p>
     
             <h2>Conditions info and sources</h2>
             <p>Unless specified otherwise, all conditions refer to the main male football team of the club.</p>
