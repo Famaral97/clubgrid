@@ -20,13 +20,14 @@ let gridScore
 window.onload = async () => {
     await getData()
     getGrids()
+    manageLocalStorage()
 
     currentGridId = document.querySelector('.grid-title').getAttribute('gridId')
 
-    let gridScoreStoredValue = parseFloat(window.localStorage.getItem(`gridScore_${currentGridId}`))
+    let gridScoreStoredValue = getStoredGridScore(currentGridId)
     gridScore = gridScoreStoredValue || 0
 
-    let gridAnswersStoredValue = window.localStorage.getItem(`gridAnswers_${currentGridId}`)
+    let gridAnswersStoredValue = getStoredGridAnswers(currentGridId)
     gridAnswers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : [
         {}, {}, {},
         {}, {}, {},
@@ -42,7 +43,7 @@ window.onload = async () => {
         fillCell(cell, club.shortName, club.logo, gridAnswer.score)
     })
 
-    let allGuessesStoredValue = window.localStorage.getItem(`allGuesses_${currentGridId}`)
+    let allGuessesStoredValue = getStoredAllGuesses(currentGridId)
     allGuesses = allGuessesStoredValue ? JSON.parse(allGuessesStoredValue) : []
 
     document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
@@ -261,11 +262,11 @@ async function submitClub(clubId) {
                 let cellScore = isNaN(rarityScore) ? 0 : rarityScore
 
                 gridScore += ((125 - cellScore) / 1125) * 100
-                window.localStorage.setItem(`gridScore_${currentGridId}`, gridScore)
+                storeGridScore(currentGridId, gridScore)
                 document.getElementById("score").innerHTML = Math.round(gridScore * 100) / 100 // 2 decimal places
 
                 gridAnswers[selectedCell.id - 1] = {"id": clubId, "score": cellScore}
-                window.localStorage.setItem(`gridAnswers_${currentGridId}`, JSON.stringify(gridAnswers))
+                storeGridAnswers(currentGridId, gridAnswers)
             } else {
                 applyPowEffect(selectedCell)
                 selectedCell.animate(
@@ -277,7 +278,7 @@ async function submitClub(clubId) {
             hideModal()
             allGuesses.push({id: clubId, cell: selectedCell.id})
 
-            window.localStorage.setItem(`allGuesses_${currentGridId}`, JSON.stringify(allGuesses))
+            storeAllGuesses(currentGridId, allGuesses)
 
             document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
             if (gridIsComplete()) {
