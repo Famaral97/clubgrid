@@ -2,6 +2,7 @@
 .DS_Store
 /data/data.csv
 /__pycache__
+**/__pycache__
 .idea
 /transfermarket/clubs.csv
 /transfermarket/ClubGrid Logo Labelling - ALL_DATA.csv
