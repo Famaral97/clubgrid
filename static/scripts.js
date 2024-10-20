@@ -50,7 +50,7 @@ window.onload = async () => {
 
     document.getElementById("score").innerHTML = Math.round(gridScore * 100) / 100 // 2 decimal places
 
-    if (gridIsComplete()) {
+    if (gridIsComplete(gridAnswers, allGuesses)) {
         showViewResultsButton()
         lockGrid()
     }
@@ -73,10 +73,10 @@ function showGridSelectionModal() {
 
     modalOverlay.style.display = 'flex'
 
-    gridSelectionModal = document.createElement("div")
+    const gridSelectionModal = document.createElement("div")
     gridSelectionModal.classList.add("grid-selection-modal")
 
-    gridSelectionModalContainer = document.createElement("div")
+    const gridSelectionModalContainer = document.createElement("div")
 
     grids.forEach(grid => {
         const gridOptionContainer = document.createElement('div')
@@ -87,7 +87,24 @@ function showGridSelectionModal() {
 
         const selectGridButton = document.createElement('button')
 
-        selectGridButton.textContent = 'Play!'
+        const gridAllGuessesStoredValue  = getStoredAllGuesses(grid.id)
+        const gridAllGuesses = gridAllGuessesStoredValue ? JSON.parse(gridAllGuessesStoredValue) : []
+
+        const gridAnswersStoredValue = getStoredGridAnswers(grid.id)
+        const answers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : []
+        console.log(answers)
+        console.log(gridAllGuesses)
+        let selectButtonText
+        if (gridIsComplete(answers, gridAllGuesses)) {
+            const gridScoreStoredValue = Math.round(getStoredGridScore(grid.id) * 100) / 100
+            selectButtonText = `Score: ${gridScoreStoredValue || 0}/100`
+        } else if (gridAllGuesses.length > 0) {
+            selectButtonText = `Playing (${gridAllGuesses.length}/${GUESSES_NUMBER})`
+        } else {
+            selectButtonText = 'Play!'
+        }
+
+        selectGridButton.textContent = selectButtonText
         selectGridButton.classList.add('primary')
         selectGridButton.onclick = () => {
             location.replace(`/grid/${grid.id}`)
@@ -281,7 +298,7 @@ async function submitClub(clubId) {
             storeAllGuesses(currentGridId, allGuesses)
 
             document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
-            if (gridIsComplete()) {
+            if (gridIsComplete(gridAnswers, allGuesses)) {
                 showFinalModal()
             }
         });
