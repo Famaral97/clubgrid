@@ -62,4 +62,11 @@ button.accent:active {
 }
 
 
-
+button:disabled,
+button:disabled:hover,
+button:disabled:active {
+  cursor: not-allowed;
+  color: #555;
+  background-color: #d0d0d0;
+  transform: none;
+}
