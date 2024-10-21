@@ -224,7 +224,7 @@ function listOptions() {
 
     let selectedCell = document.querySelector('.selected')
 
-    const filteredClubs = clubs.filter(club => club.name.toLowerCase().includes(searchString));
+    const filteredClubs = clubs.filter(club => club.name.toLowerCase().includes(searchString) || club.shortName.toLowerCase().includes(searchString) );
 
     filteredClubs.forEach(club => {
         const optionContainer = document.createElement('div')
