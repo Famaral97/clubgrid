@@ -159,7 +159,7 @@ def create_default_conditions(db, app):
 def create_default_grids(db, app):
     grids = [
         Grid(
-            id=10,
+            id=8,
             starting_date=datetime(2024, 10, 25, 0, 0),
             row_condition_1=70,
             row_condition_2=19,
@@ -169,7 +169,7 @@ def create_default_grids(db, app):
             column_condition_3=31,
         ),
         Grid(
-            id=9,
+            id=7,
             starting_date=datetime(2024, 10, 24, 0, 0),
             row_condition_1=32,
             row_condition_2=52,
@@ -179,7 +179,7 @@ def create_default_grids(db, app):
             column_condition_3=41,
         ),
         Grid(
-            id=8,
+            id=6,
             starting_date=datetime(2024, 10, 23, 0, 0),
             row_condition_1=30,
             row_condition_2=41,
@@ -189,7 +189,7 @@ def create_default_grids(db, app):
             column_condition_3=50,
         ),
         Grid(
-            id=7,
+            id=5,
             starting_date=datetime(2024, 10, 22, 0, 0),
             row_condition_1=36,
             row_condition_2=1,
@@ -199,7 +199,7 @@ def create_default_grids(db, app):
             column_condition_3=73,
         ),
         Grid(
-            id=6,
+            id=4,
             starting_date=datetime(2024, 10, 21, 0, 0),
             row_condition_1=63,
             row_condition_2=77,
@@ -209,18 +209,8 @@ def create_default_grids(db, app):
             column_condition_3=29,
         ),
         Grid(
-            id=5,
-            starting_date=datetime(2024, 10, 18, 0, 0),
-            row_condition_1=5,
-            row_condition_2=23,
-            row_condition_3=24,
-            column_condition_1=72,
-            column_condition_2=73,
-            column_condition_3=43,
-        ),
-        Grid(
-            id=4,
-            starting_date=datetime(2024, 10, 17, 0, 0),
+            id=3,
+            starting_date=datetime(2024, 10, 20, 0, 0),
             row_condition_1=32,
             row_condition_2=22,
             row_condition_3=7,
@@ -229,8 +219,8 @@ def create_default_grids(db, app):
             column_condition_3=9,
         ),
         Grid(
-            id=3,
-            starting_date=datetime(2024, 10, 16, 0, 0),
+            id=2,
+            starting_date=datetime(2024, 10, 19, 0, 0),
             row_condition_1=1,
             row_condition_2=3,
             row_condition_3=17,
@@ -239,8 +229,8 @@ def create_default_grids(db, app):
             column_condition_3=42,
         ),
         Grid(
-            id=2,
-            starting_date=datetime(2024, 10, 15, 0, 0),
+            id=1,
+            starting_date=datetime(2024, 10, 18, 0, 0),
             row_condition_1=30,
             row_condition_2=13,
             row_condition_3=16,
@@ -248,16 +238,6 @@ def create_default_grids(db, app):
             column_condition_2=19,
             column_condition_3=41,
         ),
-        Grid(
-            id=1,
-            starting_date=datetime(2024, 10, 14, 0, 0),
-            row_condition_1=11,
-            row_condition_2=26,
-            row_condition_3=28,
-            column_condition_1=33,
-            column_condition_2=39,
-            column_condition_3=40,
-        )
     ]
 
     answers = []
