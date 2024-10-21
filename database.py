@@ -206,7 +206,7 @@ def create_default_grids(db, app):
             row_condition_3=78,
             column_condition_1=52,
             column_condition_2=4,
-            column_condition_3=23,
+            column_condition_3=29,
         ),
         Grid(
             id=5,
