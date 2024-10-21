@@ -92,8 +92,7 @@ function showGridSelectionModal() {
 
         const gridAnswersStoredValue = getStoredGridAnswers(grid.id)
         const answers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : []
-        console.log(answers)
-        console.log(gridAllGuesses)
+
         let selectButtonText
         if (gridIsComplete(answers, gridAllGuesses)) {
             const gridScoreStoredValue = Math.round(getStoredGridScore(grid.id) * 100) / 100
