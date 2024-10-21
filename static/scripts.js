@@ -240,6 +240,7 @@ function listOptions() {
         selectButton.textContent = 'Select'
         selectButton.classList.add('primary')
         selectButton.onclick = () => {
+            selectButton.disabled = true
             submitClub(club.id)
         }
 
