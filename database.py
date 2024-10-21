@@ -142,7 +142,7 @@ def create_default_conditions(db, app):
         Condition(id=75, description="Founded before 1890", expression="clubs.year_founded < 1890"),
         Condition(id=76, description="Founded after 1930", expression="clubs.year_founded > 1930"),
 
-        Condition(id=77, description="Has played in 2nd tier in the last 2 seasons",
+        Condition(id=77, description="Was promoted in the last 2 seasons",
                   expression="(clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2') or "
                              "clubs.league_2022_23 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2')) "),
 
