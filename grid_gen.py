@@ -8,13 +8,13 @@ from database import get_grid_answers, to_dict
 from models import Condition, Grid, Club, Answer
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now()):
-    row_conditions, column_conditions = generate_grid(min_clubs_per_cell)
+def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now(), max_common_conditions=2):
+    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_common_conditions)
 
     insert_new_grid(db, app, row_conditions, column_conditions, grid_date)
 
 
-def generate_grid(min_clubs_per_cell):
+def generate_grid(min_clubs_per_cell, max_common_conditions):
     all_conditions = Condition.query.all()
     all_grids = Grid.query.all()
 
@@ -27,7 +27,8 @@ def generate_grid(min_clubs_per_cell):
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
-        if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell):
+        if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell) and \
+                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions):
             return row_conditions, col_conditions
 
 
@@ -60,8 +61,23 @@ def compute_weights(conditions, grids):
     return weights_list
 
 
-def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell):
+def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
+    for grid in grids:
+        grid_conditions = [
+            grid.row_condition_1,
+            grid.row_condition_2,
+            grid.row_condition_3,
+            grid.column_condition_1,
+            grid.column_condition_2,
+            grid.column_condition_3
+        ]
+        common_conditions = list(set(conditions).intersection(grid_conditions))
+        if len(common_conditions) > max_conditions_number:
+            return False
+    return True
 
+
+def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell):
     for row_condition in row_conditions:
         for col_condition in column_conditions:
             print(row_condition.expression)
@@ -91,7 +107,6 @@ def insert_new_grid(db, app, row_conditions, column_conditions, grid_date):
     new_grid_answers = get_grid_answers(new_grid, app)
 
     with app.app_context():
-
         stmt = insert(Grid).values(
             id=new_grid_id,
             starting_date=grid_date,
