@@ -230,7 +230,7 @@ function listOptions() {
         optionContainer.className = 'dropdown-option'
 
         const clubName = document.createElement('span')
-        clubName.textContent = club.shortName;
+        clubName.textContent = club.name;
 
         const selectButton = document.createElement('button')
         if (gridAnswers.some(c => c.id === club.id) || allGuesses.some(c => c.id === club.id && c.cell === selectedCell.id)) {
