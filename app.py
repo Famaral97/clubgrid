@@ -35,8 +35,7 @@ create_default_grids(db, app)
 # to test grid generation
 # @app.route('/test-gen')
 # def generate_grid():
-#     create_and_insert_grid(db, app)
-#     return 'grid generated!'
+#     return f"{create_and_insert_grid(db, app)}"
 
 
 @app.route('/', methods=['GET'])

@@ -13,6 +13,13 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now
 
     insert_new_grid(db, app, row_conditions, column_conditions, grid_date)
 
+    ids = []
+    for row_cond in row_conditions:
+        ids.append(row_cond.id)
+    for column_cond in column_conditions:
+        ids.append(column_cond.id)
+    return ids
+
 
 def generate_grid(min_clubs_per_cell, max_common_conditions):
     all_conditions = Condition.query.all()

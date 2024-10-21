@@ -121,9 +121,9 @@ def create_default_conditions(db, app):
         Condition(id=59, description="Squad has fewer than 13 foreigners", expression="clubs.foreigners_number < 13"),
         Condition(id=60, description="Squad has at least 20 foreigners", expression="clubs.foreigners_number >= 20"),
 
-        Condition(id=61, description="Squad composed by less than 50% foreigners",
+        Condition(id=61, description="Squad with under 50% foreign players",
                   expression="clubs.foreigners_percentage < 50"),
-        Condition(id=62, description="Squad composed by more than 70% foreigners",
+        Condition(id=62, description="Squad with over 70% foreign players",
                   expression="clubs.foreigners_percentage > 70"),
 
         Condition(id=63, description="Squad has fewer than 6 national team players",
@@ -158,6 +158,46 @@ def create_default_conditions(db, app):
 
 def create_default_grids(db, app):
     grids = [
+        Grid(
+            id=10,
+            starting_date=datetime(2024, 10, 25, 0, 0),
+            row_condition_1=70,
+            row_condition_2=19,
+            row_condition_3=6,
+            column_condition_1=79,
+            column_condition_2=48,
+            column_condition_3=31,
+        ),
+        Grid(
+            id=9,
+            starting_date=datetime(2024, 10, 24, 0, 0),
+            row_condition_1=32,
+            row_condition_2=52,
+            row_condition_3=26,
+            column_condition_1=49,
+            column_condition_2=2,
+            column_condition_3=41,
+        ),
+        Grid(
+            id=8,
+            starting_date=datetime(2024, 10, 23, 0, 0),
+            row_condition_1=30,
+            row_condition_2=41,
+            row_condition_3=27,
+            column_condition_1=54,
+            column_condition_2=21,
+            column_condition_3=50,
+        ),
+        Grid(
+            id=7,
+            starting_date=datetime(2024, 10, 22, 0, 0),
+            row_condition_1=36,
+            row_condition_2=1,
+            row_condition_3=10,
+            column_condition_1=62,
+            column_condition_2=67,
+            column_condition_3=73,
+        ),
         Grid(
             id=6,
             starting_date=datetime(2024, 10, 21, 0, 0),
