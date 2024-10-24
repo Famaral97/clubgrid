@@ -132,3 +132,7 @@ function lockGrid() {
 function gridIsComplete(answers, guesses) {
     return answers.filter(c => Object.keys(c).length !== 0).length === 9 || guesses.length === GUESSES_NUMBER
 }
+
+function gridIsAlmostComplete(answers, guesses) {
+    return answers.filter(c => Object.keys(c).length !== 0).length === 8 || guesses.length === (GUESSES_NUMBER - 1)
+}

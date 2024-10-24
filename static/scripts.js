@@ -50,16 +50,21 @@ window.onload = async () => {
 
     document.getElementById("score").innerHTML = Math.round(gridScore * 100) / 100 // 2 decimal places
 
-    if (gridIsComplete(gridAnswers, allGuesses)) {
-        showViewResultsButton()
-        lockGrid()
-    }
-
     modalOverlay = document.querySelector('.modal-overlay')
     extraModalOverlay = document.querySelector('.modal-overlay-extra')
     searchInput = document.querySelector('.search-input')
     dropdownContainer = document.querySelector('.dropdown-container')
     gridContainer = document.querySelector('.grid-container')
+
+    if (gridIsAlmostComplete(gridAnswers, allGuesses)) {
+        await makeFinalModal()
+    }
+
+    else if (gridIsComplete(gridAnswers, allGuesses)) {
+        showViewResultsButton()
+        lockGrid()
+    }
+
 };
 
 function hideAllModals() {
@@ -161,7 +166,14 @@ async function showFinalModal() {
 
         modalOverlay.style.display = 'flex'
 
-        const {
+        await makeFinalModal()
+
+        modalOverlay.onclick = exitFinalMode
+    }
+}
+
+async function makeFinalModal() {
+    const {
             solutions,
             row_conditions_descriptions,
             col_conditions_descriptions
@@ -173,9 +185,9 @@ async function showFinalModal() {
 
         finalModal.classList.add("final-modal")
 
+        finalModal.style.display = 'none'
+
         modalOverlay.appendChild(finalModal)
-        modalOverlay.onclick = exitFinalMode
-    }
 }
 
 function exitModal(e) {
@@ -298,7 +310,12 @@ async function submitClub(clubId) {
             storeAllGuesses(currentGridId, allGuesses)
 
             document.getElementById("guesses").innerHTML = GUESSES_NUMBER - allGuesses.length
-            if (gridIsComplete(gridAnswers, allGuesses)) {
+
+            if (gridIsAlmostComplete(gridAnswers, allGuesses)) {
+                makeFinalModal()
+            }
+
+            else if (gridIsComplete(gridAnswers, allGuesses)) {
                 showFinalModal()
             }
         });
