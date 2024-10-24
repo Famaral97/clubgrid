@@ -95,9 +95,9 @@ def get_clubs():
 
     clubs = Club.query.all()
 
-    clubs_basic_info = [
-        ClubRepresenter(id=club.id, name=club.name, shortName=club.short_name, logo=club.logo) for club in clubs
-    ]
+    clubs_basic_info = {
+        club.id: ClubRepresenter(id=club.id, name=club.name, shortName=club.short_name, logo=club.logo) for club in clubs
+    }
 
     return jsonify(clubs_basic_info)
 
@@ -197,10 +197,7 @@ def get_grid_solution(grid_id):
 def get_solution(grid_id, row_condition_id, col_condition_id):
     @dataclass
     class ClubRepresenter():
-        id: int
-        name: str
-        short_name: str
-        logo: str
+        id: str
         total_club_answered: int
 
     row_condition = Condition.query.get(row_condition_id)
@@ -223,11 +220,11 @@ def get_solution(grid_id, row_condition_id, col_condition_id):
         total_club_answered = answer.count if answer is not None else 0
 
         clubs_representers.append(
-            ClubRepresenter(id=club.id, name=club.name, short_name=club.short_name, logo=club.logo, total_club_answered=total_club_answered)
+            ClubRepresenter(id=club.id, total_club_answered=total_club_answered)
         )
 
         total_correct_answers += total_club_answered
 
     sorted_club_representers = sorted(clubs_representers, key=lambda c: c.total_club_answered, reverse=True)
 
-    return {"clubs": sorted_club_representers, "total_correct_answers": total_correct_answers}
+    return {"solution_clubs": sorted_club_representers, "total_correct_answers": total_correct_answers}

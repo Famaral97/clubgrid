@@ -1,6 +1,6 @@
 const GUESSES_NUMBER = 12
 
-let clubs = []
+let clubs = {}
 let grids = []
 
 // modals
@@ -38,7 +38,7 @@ window.onload = async () => {
         if (Object.keys(gridAnswer).length === 0) return
         const cell = document.getElementById(i + 1)
 
-        const club = clubs.filter(c => c.id === gridAnswer.id)[0]
+        const club = Object.values(clubs).filter(c => c.id === gridAnswer.id)[0]
 
         fillCell(cell, club.shortName, club.logo, gridAnswer.score)
     })
@@ -223,7 +223,7 @@ function listOptions() {
 
     let selectedCell = document.querySelector('.selected')
 
-    const filteredClubs = clubs.filter(club => club.name.toLowerCase().includes(searchString) || club.shortName.toLowerCase().includes(searchString) );
+    const filteredClubs = Object.values(clubs).filter(club => club.name.toLowerCase().includes(searchString) || club.shortName.toLowerCase().includes(searchString) );
 
     filteredClubs.forEach(club => {
         const optionContainer = document.createElement('div')
