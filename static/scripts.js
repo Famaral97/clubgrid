@@ -61,6 +61,7 @@ window.onload = async () => {
     }
 
     else if (gridIsComplete(gridAnswers, allGuesses)) {
+        updateFinalModal()
         showViewResultsButton()
         lockGrid()
     }
@@ -316,6 +317,7 @@ async function submitClub(clubId) {
             }
 
             else if (gridIsComplete(gridAnswers, allGuesses)) {
+                updateFinalModal()
                 showFinalModal()
             }
         });

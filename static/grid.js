@@ -1,5 +1,18 @@
 let all_solutions = []
 
+
+function updateFinalModal() {
+    let resultAsText = getGridResultText()
+
+    document.getElementById("results").innerHTML = `
+    <span style="white-space: pre-line; font-size: x-large">${resultAsText}</span>
+    <span>Score: ${Math.round(gridScore * 100) / 100}</span>
+    <br>
+    <span>Guesses left: ${GUESSES_NUMBER - allGuesses.length}</span>
+    `
+}
+
+
 function makeSolutionsGrid(container, solutions, row_conditions_descriptions, col_conditions_descriptions, gridId) {
     all_solutions = solutions
 
@@ -8,7 +21,7 @@ function makeSolutionsGrid(container, solutions, row_conditions_descriptions, co
     container.innerHTML = `
     <div>
         <h1>Results</h1>
-        <div>
+        <div id="results">
             <span style="white-space: pre-line; font-size: x-large">${resultAsText}</span>
             <span>Score: ${Math.round(gridScore * 100) / 100}</span>
             <br>
