@@ -35,7 +35,8 @@ def generate_grid(min_clubs_per_cell, max_common_conditions):
         col_conditions = conditions_sample[3:]
 
         if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell) and \
-                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions):
+                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
+                check_grid_has_different_conditions_tags(conditions_sample):
             return row_conditions, col_conditions
 
 
@@ -66,6 +67,11 @@ def compute_weights(conditions, grids):
         weights_list.append(weight)
 
     return weights_list
+
+
+def check_grid_has_different_conditions_tags(conditions):
+    tags = [condition.tags for condition in conditions]
+    return len(set(tags)) == 6
 
 
 def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
