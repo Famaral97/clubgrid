@@ -60,7 +60,7 @@ window.onload = async () => {
         await makeFinalModal()
     }
 
-    else if (gridIsComplete(gridAnswers, allGuesses)) {
+    if (gridIsComplete(gridAnswers, allGuesses)) {
         await makeFinalModal()
         showViewResultsButton()
         lockGrid()
@@ -316,7 +316,7 @@ async function submitClub(clubId) {
                 makeFinalModal()
             }
 
-            else if (gridIsComplete(gridAnswers, allGuesses)) {
+            if (gridIsComplete(gridAnswers, allGuesses)) {
                 updateFinalModal()
                 showFinalModal()
             }
