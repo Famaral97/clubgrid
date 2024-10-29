@@ -61,9 +61,9 @@ window.onload = async () => {
     }
 
     if (gridIsComplete(gridAnswers, allGuesses)) {
-        await makeFinalModal()
         showViewResultsButton()
         lockGrid()
+        await makeFinalModal()
     }
 
 };

@@ -147,5 +147,6 @@ function gridIsComplete(answers, guesses) {
 }
 
 function gridIsAlmostComplete(answers, guesses) {
-    return answers.filter(c => Object.keys(c).length !== 0).length === 8 || guesses.length === (GUESSES_NUMBER - 1)
+    return (answers.filter(c => Object.keys(c).length !== 0).length === 8 && guesses.length < GUESSES_NUMBER) ||
+        guesses.length === (GUESSES_NUMBER - 1)
 }
