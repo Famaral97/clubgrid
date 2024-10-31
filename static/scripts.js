@@ -60,7 +60,8 @@ window.onload = async () => {
         await makeFinalModal()
     }
 
-    if (gridIsComplete(gridAnswers, allGuesses)) {
+    if (gridIsComplete(gridAnswers, allGuesses) || hasGivenUp(currentGridId)) {
+        document.getElementById("give-up").remove()
         showViewResultsButton()
         lockGrid()
         await makeFinalModal()
@@ -100,7 +101,7 @@ function showGridSelectionModal() {
         const answers = gridAnswersStoredValue ? JSON.parse(gridAnswersStoredValue) : []
 
         let selectButtonText
-        if (gridIsComplete(answers, gridAllGuesses)) {
+        if (gridIsComplete(answers, gridAllGuesses) || hasGivenUp(grid.id)) {
             const gridScoreStoredValue = Math.round(getStoredGridScore(grid.id) * 100) / 100
             selectButtonText = `Score: ${gridScoreStoredValue || 0}/100`
         } else if (gridAllGuesses.length > 0) {
@@ -340,3 +341,12 @@ function applyPowEffect(cell) {
     }, 1000); // Match the animation duration
 }
 
+
+async function giveUp() {
+    document.getElementById("give-up").remove()
+    storeHasGivenUp(currentGridId)
+    await makeFinalModal()
+        .then(() => {
+            showFinalModal()
+        })
+}

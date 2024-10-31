@@ -3,6 +3,7 @@ const STORAGE_VERSION = "v0.1"
 const GRID_SCORE_LS = "gridScore"
 const GRID_ANSWERS_LS = "gridAnswers"
 const ALL_GUESSES_LS = "allGuesses"
+const GIVE_UP_LS = "giveUp"
 
 function manageLocalStorage() {
     // Code to migrate older versions to new ones
@@ -41,4 +42,12 @@ function getStoredAllGuesses(gridId) {
 
 function storeAllGuesses(gridId, allGuesses) {
     window.localStorage.setItem(`${STORAGE_VERSION}_${ALL_GUESSES_LS}_${gridId}`, JSON.stringify(allGuesses))
+}
+
+function hasGivenUp(gridId) {
+    return window.localStorage.getItem(`${STORAGE_VERSION}_${GIVE_UP_LS}_${gridId}`) === "true"
+}
+
+function storeHasGivenUp(gridId) {
+    window.localStorage.setItem(`${STORAGE_VERSION}_${GIVE_UP_LS}_${gridId}`, "true")
 }
