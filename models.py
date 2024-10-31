@@ -36,6 +36,8 @@ class Club(db.Model):
     has_color_green = db.Column(db.Boolean)
     has_color_black = db.Column(db.Boolean)
     league_titles = db.Column(db.Integer)
+    national_supercup_titles = db.Column(db.Integer)
+    cups_winners_cup_titles = db.Column(db.Integer)
     has_crown = db.Column(db.Boolean)
     champions_league_titles = db.Column(db.Integer)
     champions_league_runner_up = db.Column(db.Integer)

@@ -48,6 +48,7 @@ def create_default_conditions(db, app):
         Condition(id=26, description="Logo has green", expression="clubs.has_color_green = True", tags="logo"),
         Condition(id=27, description="Logo doesn't have green", expression="clubs.has_color_green = False", tags="logo"),
 
+        Condition(id=81, description="Has at least 5 league titles", expression="clubs.league_titles > 4", tags="titles"),
         Condition(id=28, description="Has at least 1 league title", expression="clubs.league_titles > 0", tags="titles"),
         Condition(id=29, description="Never won a league title", expression="clubs.league_titles = 0", tags="titles"),
 
@@ -146,7 +147,12 @@ def create_default_conditions(db, app):
                   expression="(clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2') or "
                              "clubs.league_2022_23 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2')) ", tags="promotions"),
 
-        # next available condition id: 81
+        Condition(id=82, description="Never won a domestic Super Cup", expression="clubs.national_supercup_titles = 0",
+                  tags="titles"),
+        Condition(id=83, description="Won a domestic Super Cup", expression="clubs.national_supercup_titles > 0",
+                  tags="titles"),
+
+        # next available condition id: 84
     ]
 
     with app.app_context():
@@ -158,6 +164,16 @@ def create_default_conditions(db, app):
 
 def create_default_grids(db, app):
     grids = [
+        Grid(
+            id=18,
+            starting_date=datetime(2024, 11, 4, 0, 0),
+            row_condition_1=62,
+            row_condition_2=21,
+            row_condition_3=83,
+            column_condition_1=8,
+            column_condition_2=71,
+            column_condition_3=66,
+        ),
         Grid(
             id=17,
             starting_date=datetime(2024, 11, 3, 0, 0),
@@ -414,6 +430,8 @@ def load_clubs():
                     has_color_green=club_row["logo_has_green"] == "YES",
                     has_color_black=club_row["logo_has_black"] == "YES",
                     league_titles=club_row["league_titles_until_2024"],
+                    national_supercup_titles=club_row["national_supercups"],
+                    cups_winners_cup_titles=club_row["cups_winners_cups"],
                     has_crown=club_row["logo_has_crown"] == "YES",
                     champions_league_titles=club_row["champions_league_titles"],
                     champions_league_runner_up=club_row["champions_league_runner-up"],
