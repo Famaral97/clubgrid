@@ -318,6 +318,7 @@ async function submitClub(clubId) {
             }
 
             if (gridIsComplete(gridAnswers, allGuesses)) {
+                document.getElementById("give-up").remove()
                 updateFinalModal()
                 showFinalModal()
             }
