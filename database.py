@@ -165,6 +165,36 @@ def create_default_conditions(db, app):
 def create_default_grids(db, app):
     grids = [
         Grid(
+            id=21,
+            starting_date=datetime(2024, 11, 7, 0, 0),
+            row_condition_1=3,
+            row_condition_2=12,
+            row_condition_3=37,
+            column_condition_1=53,
+            column_condition_2=65,
+            column_condition_3=73,
+        ),
+        Grid(
+            id=20,
+            starting_date=datetime(2024, 11, 6, 0, 0),
+            row_condition_1=38,
+            row_condition_2=79,
+            row_condition_3=14,
+            column_condition_1=40,
+            column_condition_2=54,
+            column_condition_3=68,
+        ),
+        Grid(
+            id=19,
+            starting_date=datetime(2024, 11, 5, 0, 0),
+            row_condition_1=41,
+            row_condition_2=77,
+            row_condition_3=51,
+            column_condition_1=75,
+            column_condition_2=63,
+            column_condition_3=42,
+        ),
+        Grid(
             id=18,
             starting_date=datetime(2024, 11, 4, 0, 0),
             row_condition_1=62,

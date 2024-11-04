@@ -8,8 +8,8 @@ from database import get_grid_answers, to_dict
 from models import Condition, Grid, Club, Answer
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now(), max_common_conditions=2):
-    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_common_conditions)
+def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now(), max_common_conditions=2, previous_grids_number=3):
+    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_common_conditions, previous_grids_number)
 
     insert_new_grid(db, app, row_conditions, column_conditions, grid_date)
 
@@ -21,9 +21,9 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now
     return ids
 
 
-def generate_grid(min_clubs_per_cell, max_common_conditions):
+def generate_grid(min_clubs_per_cell, max_common_conditions, previous_grids_number):
     all_conditions = Condition.query.all()
-    all_grids = Grid.query.all()
+    all_grids = Grid.query.order_by(desc(Grid.id)).all()
 
     conditions_weights = compute_weights(all_conditions, all_grids)
 
@@ -35,6 +35,7 @@ def generate_grid(min_clubs_per_cell, max_common_conditions):
         col_conditions = conditions_sample[3:]
 
         if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell) and \
+                check_grid_does_not_have_common_conditions_to_last_n_grids(conditions_sample, all_grids, previous_grids_number) and \
                 check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
                 check_grid_has_different_conditions_tags(conditions_sample):
             return row_conditions, col_conditions
@@ -74,7 +75,27 @@ def check_grid_has_different_conditions_tags(conditions):
     return len(set(tags)) == 6
 
 
+def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids, n_grids):
+    conditions_ids = [condition.id for condition in conditions]
+
+    for grid in grids[:n_grids]:
+        grid_conditions = [
+            grid.row_condition_1,
+            grid.row_condition_2,
+            grid.row_condition_3,
+            grid.column_condition_1,
+            grid.column_condition_2,
+            grid.column_condition_3
+        ]
+        common_conditions = list(set(conditions_ids).intersection(grid_conditions))
+        if len(common_conditions) > 0:
+            return False
+    return True
+
+
 def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
+    conditions_ids = [condition.id for condition in conditions]
+
     for grid in grids:
         grid_conditions = [
             grid.row_condition_1,
@@ -84,7 +105,7 @@ def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
             grid.column_condition_2,
             grid.column_condition_3
         ]
-        common_conditions = list(set(conditions).intersection(grid_conditions))
+        common_conditions = list(set(conditions_ids).intersection(grid_conditions))
         if len(common_conditions) > max_conditions_number:
             return False
     return True
