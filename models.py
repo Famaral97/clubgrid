@@ -37,7 +37,9 @@ class Club(db.Model):
     has_color_black = db.Column(db.Boolean)
     league_titles = db.Column(db.Integer)
     national_supercup_titles = db.Column(db.Integer)
+    national_supercup_runner_up = db.Column(db.Integer)
     cups_winners_cup_titles = db.Column(db.Integer)
+    cups_winners_cup_runner_up = db.Column(db.Integer)
     has_crown = db.Column(db.Boolean)
     champions_league_titles = db.Column(db.Integer)
     champions_league_runner_up = db.Column(db.Integer)
@@ -54,6 +56,7 @@ class Club(db.Model):
     foreigners_percentage = db.Column(db.Float)
     national_team_players = db.Column(db.Integer)
     net_transfer_record = db.Column(db.Integer)
+    instagram_followers = db.Column(db.Integer)
 
 
 class Grid(db.Model):

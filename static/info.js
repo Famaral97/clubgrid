@@ -85,6 +85,10 @@ function displayInfo() {
                     Europa League/UEFA Cup 
                     <a href="https://en.wikipedia.org/wiki/List_of_UEFA_Cup_and_Europa_League_finals" target="_blank" >Source</a>
                 </li>
+                <li>
+                    UEFA Cup Winners' Cup/European Cup Winners' Cup 
+                    <a href="https://en.wikipedia.org/wiki/List_of_UEFA_Cup_Winners%27_Cup_finals" target="_blank" >Source</a>
+                </li>
             </ul>
             
             <h3>Domestic Cup titles</h3>
@@ -116,6 +120,35 @@ function displayInfo() {
                 </li>
             </ul>
             
+            <h3>Domestic Super Cup titles</h3>
+            <p>They are related to each country's Super Cup, being usually contested between the winners of the domestic league and the domestic cup. When a single club has won both, it goes on to face the domestic league runner-up.</p>
+            <ul>
+                <li>
+                    🏴󠁧󠁢󠁥󠁮󠁧󠁿 FA Community Shield, from 1908 to 2024.
+                    <a href="https://en.wikipedia.org/wiki/List_of_FA_Community_Shield_matches" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇩🇪 DFL Supercup, from 1987 to 2024. 
+                    <a href="https://en.wikipedia.org/wiki/DFL-Supercup" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇵🇹 Supertaça Cândido de Oliveira, from 1979 to 2024. 
+                    <a href="https://en.wikipedia.org/wiki/Superta%C3%A7a_C%C3%A2ndido_de_Oliveira" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇪🇸 Supercopa de España, from 1982 to 2024. 
+                    <a href="https://en.wikipedia.org/wiki/Supercopa_de_Espa%C3%B1a" target="_blank" >Source</a>
+                </li>
+                <li>
+                    🇮🇹 Supercoppa Italiana, from 1988 to 2024. 
+                    <a href="https://en.wikipedia.org/wiki/Supercoppa_Italiana" target="_blank" >Source</a>
+                </li>                
+                <li>
+                    🇫🇷 Trophée des Champions, from 1955 to 2024. 
+                    <a href="https://en.wikipedia.org/wiki/Troph%C3%A9e_des_Champions" target="_blank" >Source</a>
+                </li>
+            </ul>
+            
             <h3>Transfermarkt Data</h3>
             <p>The following conditions were designed with data obtained from <a href="https://www.transfermarkt.com/" target="_blank">Transfermarkt</a>:</p>
             <ul>
@@ -131,6 +164,9 @@ function displayInfo() {
             
             <h3>Founding year</h3>
             <p>Taken from the club's wikipedia page, it was considered the earliest date of a foundation. For example, if a club was re-founded because of bankruptcy, that date was not taken into account.</p>
+            
+            <h3>Instagram Followers</h3>
+            <p>Taken directly from each club's official Instagram page, in November 2024.</p>
         </div>
     `
 

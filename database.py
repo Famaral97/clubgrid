@@ -9,8 +9,8 @@ from models import Condition, Club, Grid, Answer
 
 def create_default_conditions(db, app):
     conditions = [
-        Condition(id=1, description="Logo has animal", expression="clubs.has_animal = True", tags="logo"),
-        Condition(id=2, description="Logo doesn't have animal", expression="clubs.has_animal = False", tags="logo"),
+        Condition(id=1, description="Logo has animal", expression="clubs.has_animal = True", tags="logo-items"),
+        Condition(id=2, description="Logo doesn't have animal", expression="clubs.has_animal = False", tags="logo-items"),
 
         Condition(id=3, description="In Premier League", expression="clubs.league_2024_25 = 'EN1'", tags="league"),
         Condition(id=4, description="In La Liga", expression="clubs.league_2024_25 = 'ES1'", tags="league"),
@@ -19,41 +19,41 @@ def create_default_conditions(db, app):
         Condition(id=7, description="In Bundesliga", expression="clubs.league_2024_25 = 'DE1'", tags="league"),
         Condition(id=8, description="In Italian Serie A", expression="clubs.league_2024_25 = 'IT1'", tags="league"),
 
-        Condition(id=9, description="Logo has winged animal", expression="clubs.has_winged_animal = True", tags="logo"),
-        Condition(id=10, description="Logo doesn't have winged animal", expression="clubs.has_winged_animal = False", tags="logo"),
+        Condition(id=9, description="Logo has winged animal", expression="clubs.has_winged_animal = True", tags="logo-items"),
+        Condition(id=10, description="Logo doesn't have winged animal", expression="clubs.has_winged_animal = False", tags="logo-items"),
 
-        Condition(id=11, description="Logo has person", expression="clubs.has_person = True", tags="logo"),
-        Condition(id=12, description="Logo doesn't have person", expression="clubs.has_person = False", tags="logo"),
+        Condition(id=11, description="Logo has person", expression="clubs.has_person = True", tags="logo-items"),
+        Condition(id=12, description="Logo doesn't have person", expression="clubs.has_person = False", tags="logo-items"),
 
-        Condition(id=13, description="Logo has a football", expression="clubs.has_football = True", tags="logo"),
-        Condition(id=14, description="Logo doesn't a football", expression="clubs.has_football = False", tags="logo"),
+        Condition(id=13, description="Logo has a football", expression="clubs.has_football = True", tags="logo-items"),
+        Condition(id=14, description="Logo doesn't a football", expression="clubs.has_football = False", tags="logo-items"),
 
-        Condition(id=15, description="Logo doesn't have stars", expression="clubs.stars_number = 0", tags="logo"),
-        Condition(id=16, description="Logo has stars", expression="clubs.stars_number != 0", tags="logo"),
+        Condition(id=15, description="Logo doesn't have stars", expression="clubs.stars_number = 0", tags="logo-items"),
+        Condition(id=16, description="Logo has stars", expression="clubs.stars_number != 0", tags="logo-items"),
 
         Condition(id=17, description="Logo has exactly 1 or 2 colors",
-                  expression="(clubs.colors_number = '1' or clubs.colors_number = '2')", tags="logo"),
-        Condition(id=18, description="Logo has exactly 3 colors", expression="clubs.colors_number = '3'", tags="logo"),
-        Condition(id=19, description="Logo has 4 or more colors", expression="clubs.colors_number = '4+'", tags="logo"),
+                  expression="(clubs.colors_number = '1' or clubs.colors_number = '2')", tags="logo-colors"),
+        Condition(id=18, description="Logo has exactly 3 colors", expression="clubs.colors_number = '3'", tags="logo-colors"),
+        Condition(id=19, description="Logo has 4 or more colors", expression="clubs.colors_number = '4+'", tags="logo-colors"),
 
-        Condition(id=20, description="Logo has numbers", expression="clubs.has_numbers = True", tags="logo"),
-        Condition(id=21, description="Logo doesn't have numbers", expression="clubs.has_numbers = False", tags="logo"),
+        Condition(id=20, description="Logo has numbers", expression="clubs.has_numbers = True", tags="logo-items"),
+        Condition(id=21, description="Logo doesn't have numbers", expression="clubs.has_numbers = False", tags="logo-items"),
 
-        Condition(id=22, description="Logo has red", expression="clubs.has_color_red = True", tags="logo"),
-        Condition(id=23, description="Logo doesn't have red", expression="clubs.has_color_red = False", tags="logo"),
+        Condition(id=22, description="Logo has red", expression="clubs.has_color_red = True", tags="logo-colors"),
+        Condition(id=23, description="Logo doesn't have red", expression="clubs.has_color_red = False", tags="logo-colors"),
 
-        Condition(id=24, description="Logo has blue", expression="clubs.has_color_blue = True", tags="logo"),
-        Condition(id=25, description="Logo doesn't have blue", expression="clubs.has_color_blue = False", tags="logo"),
+        Condition(id=24, description="Logo has blue", expression="clubs.has_color_blue = True", tags="logo-colors"),
+        Condition(id=25, description="Logo doesn't have blue", expression="clubs.has_color_blue = False", tags="logo-colors"),
 
-        Condition(id=26, description="Logo has green", expression="clubs.has_color_green = True", tags="logo"),
-        Condition(id=27, description="Logo doesn't have green", expression="clubs.has_color_green = False", tags="logo"),
+        Condition(id=26, description="Logo has green", expression="clubs.has_color_green = True", tags="logo-colors"),
+        Condition(id=27, description="Logo doesn't have green", expression="clubs.has_color_green = False", tags="logo-colors"),
 
         Condition(id=81, description="Has at least 5 league titles", expression="clubs.league_titles > 4", tags="titles"),
         Condition(id=28, description="Has at least 1 league title", expression="clubs.league_titles > 0", tags="titles"),
         Condition(id=29, description="Never won a league title", expression="clubs.league_titles = 0", tags="titles"),
 
-        Condition(id=30, description="Logo has crown", expression="clubs.has_crown = True", tags="logo"),
-        Condition(id=31, description="Logo doesn't have crown", expression="clubs.has_crown = False", tags="logo"),
+        Condition(id=30, description="Logo has crown", expression="clubs.has_crown = True", tags="logo-items"),
+        Condition(id=31, description="Logo doesn't have crown", expression="clubs.has_crown = False", tags="logo-items"),
 
         Condition(id=32, description="Never won UEFA Champions League / European Cup",
                   expression="clubs.champions_league_titles = 0", tags="titles"),
@@ -95,7 +95,7 @@ def create_default_conditions(db, app):
         Condition(id=79, description="Name ends with B", expression="clubs.name like '%b'", tags="name"),
         Condition(id=80, description="Name ends with E", expression="clubs.name like '%e'", tags="name"),
 
-        Condition(id=44, description="Logo is circular", expression="clubs.is_circular = True", tags="logo"),
+        Condition(id=44, description="Logo is circular", expression="clubs.is_circular = True", tags="logo-items"),
 
         Condition(id=45, description="Never won a domestic Cup", expression="clubs.cup_titles = 0", tags="titles"),
         Condition(id=46, description="Never a domestic Cup finalist",
@@ -105,8 +105,8 @@ def create_default_conditions(db, app):
         Condition(id=49, description="Domestic Cup finalist but never won",
                   expression="(clubs.cup_titles = 0 and clubs.cup_runner_up > 0)", tags="titles"),
 
-        Condition(id=50, description="Logo has black", expression="clubs.has_color_black = True", tags="logo"),
-        Condition(id=51, description="Logo doesn't have black", expression="clubs.has_color_black = False", tags="logo"),
+        Condition(id=50, description="Logo has black", expression="clubs.has_color_black = True", tags="logo-colors"),
+        Condition(id=51, description="Logo doesn't have black", expression="clubs.has_color_black = False", tags="logo-colors"),
 
         Condition(id=52, description="Stadium capacity under 20k", expression="clubs.stadium_capacity < 20000", tags="stadium"),
         Condition(id=53, description="Stadium capacity over 50k", expression="clubs.stadium_capacity > 50000", tags="stadium"),
@@ -151,8 +151,32 @@ def create_default_conditions(db, app):
                   tags="titles"),
         Condition(id=83, description="Won a domestic Super Cup", expression="clubs.national_supercup_titles > 0",
                   tags="titles"),
+        Condition(id=84, description="Domestic Super Cup finalist but never won",
+                  expression="clubs.national_supercup_titles = 0 and clubs.national_supercup_runner_up > 0",
+                  tags="titles"),
+        Condition(id=85, description="Never a domestic Super Cup finalist",
+                  expression="clubs.national_supercup_titles = 0 and clubs.national_supercup_runner_up = 0",
+                  tags="titles"),
+        Condition(id=86, description="Won domestic Super Cup 5 or more times",
+                  expression="clubs.national_supercup_titles > 5", tags="titles"),
 
-        # next available condition id: 84
+        Condition(id=87, description="Never won a Cup Winners' Cup", expression="clubs.cups_winners_cup_titles = 0",
+                  tags="titles"),
+        Condition(id=88, description="Won a Cup Winners' Cup", expression="clubs.cups_winners_cup_titles > 0",
+                  tags="titles"),
+        Condition(id=89, description="Cup Winners' Cup finalist but never won",
+                  expression="clubs.cups_winners_cup_titles = 0 and clubs.cups_winners_cup_runner_up > 0",
+                  tags="titles"),
+        Condition(id=90, description="Never a Cup Winners' Cup finalist",
+                  expression="clubs.cups_winners_cup_titles = 0 and clubs.cups_winners_cup_runner_up = 0",
+                  tags="titles"),
+
+        Condition(id=91, description="Has at least 10M Instagram followers",
+                  expression="clubs.instagram_followers >= 10000000", tags="followers"),
+        Condition(id=92, description="Has fewer than 10M Instagram followers",
+                  expression="clubs.instagram_followers < 10000000", tags="followers"),
+
+        # next available condition id: 93
     ]
 
     with app.app_context():
@@ -460,8 +484,10 @@ def load_clubs():
                     has_color_green=club_row["logo_has_green"] == "YES",
                     has_color_black=club_row["logo_has_black"] == "YES",
                     league_titles=club_row["league_titles_until_2024"],
-                    national_supercup_titles=club_row["national_supercups"],
-                    cups_winners_cup_titles=club_row["cups_winners_cups"],
+                    national_supercup_titles=club_row["domestic_supercup_titles"],
+                    national_supercup_runner_up=club_row["domestic_supercup_runner-up"],
+                    cups_winners_cup_titles=club_row["cup_winners_cup_titles"],
+                    cups_winners_cup_runner_up=club_row["cup_winners_cup_runner-up"],
                     has_crown=club_row["logo_has_crown"] == "YES",
                     champions_league_titles=club_row["champions_league_titles"],
                     champions_league_runner_up=club_row["champions_league_runner-up"],
@@ -478,6 +504,7 @@ def load_clubs():
                     foreigners_percentage=club_row["foreigners_percentage"],
                     national_team_players=club_row["national_team_players"],
                     net_transfer_record=to_int(club_row["net_transfer_record"]),
+                    instagram_followers=club_row["instagram_followers"],
                 )
             )
 
