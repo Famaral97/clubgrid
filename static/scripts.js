@@ -19,7 +19,7 @@ let gridScore
 
 window.onload = async () => {
     await getData()
-    getGrids()
+    await getGrids()
     manageLocalStorage()
 
     currentGridId = document.querySelector('.grid-title').getAttribute('gridId')
@@ -172,6 +172,7 @@ async function showFinalModal() {
 
         modalOverlay.onclick = exitFinalMode
     }
+    startCountdownToMidnight()
 }
 
 async function makeFinalModal() {

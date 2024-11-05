@@ -30,6 +30,8 @@ function makeSolutionsGrid(container, solutions, row_conditions_descriptions, co
         <br>
         <button id="share" onclick="copyResultToClipboard(`+gridId+`)">📢 Share</button>
         
+        <h2>⏰ <span id="countdown"></span> until next grid is out - don't miss it!</h2>
+        
         <h1>Solutions</h1>
         <p>Click on a cell to check all possible clubs</p>
     
