@@ -78,15 +78,19 @@ function displayInfo() {
             <h3>European titles</h3>
             <ul>
                 <li>
-                    UEFA Champions League/European Cup. 
+                    UEFA Champions League/European Cup (1955-2024) 
                     <a href="https://en.wikipedia.org/wiki/List_of_European_Cup_and_UEFA_Champions_League_finals" target="_blank" >Source</a>
                 </li>
                 <li>
-                    Europa League/UEFA Cup 
+                    Europa League/UEFA Cup (1971-2024) 
                     <a href="https://en.wikipedia.org/wiki/List_of_UEFA_Cup_and_Europa_League_finals" target="_blank" >Source</a>
                 </li>
                 <li>
-                    UEFA Cup Winners' Cup/European Cup Winners' Cup 
+                    UEFA Super Cup (1972-2024) 
+                    <a href="https://en.wikipedia.org/wiki/List_of_UEFA_Super_Cup_matches" target="_blank" >Source</a>
+                </li>
+                <li>
+                    UEFA Cup Winners' Cup/European Cup Winners' Cup (1960-1999) 
                     <a href="https://en.wikipedia.org/wiki/List_of_UEFA_Cup_Winners%27_Cup_finals" target="_blank" >Source</a>
                 </li>
             </ul>
@@ -146,6 +150,18 @@ function displayInfo() {
                 <li>
                     🇫🇷 Trophée des Champions, from 1955 to 2024. 
                     <a href="https://en.wikipedia.org/wiki/Troph%C3%A9e_des_Champions" target="_blank" >Source</a>
+                </li>
+            </ul>
+            
+            <h3>Other titles/awards</h3>
+            <ul>
+                <li>
+                    FIFA Club World Cup (2000-2024) 
+                    <a href="https://en.wikipedia.org/wiki/List_of_FIFA_Club_World_Cup_finals" target="_blank" >Source</a>
+                </li>
+                <li>
+                    IFFHS World's Best Club (1991-2024) 
+                    <a href="https://en.wikipedia.org/wiki/IFFHS_World%27s_Best_Club" target="_blank" >Source</a>
                 </li>
             </ul>
             

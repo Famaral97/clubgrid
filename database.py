@@ -176,7 +176,36 @@ def create_default_conditions(db, app):
         Condition(id=92, description="Has fewer than 10M Instagram followers",
                   expression="clubs.instagram_followers < 10000000", tags="followers"),
 
-        # next available condition id: 93
+        Condition(id=93, description="Never won a UEFA Super Cup", expression="clubs.uefa_supercup_titles = 0",
+                  tags="titles-uefa"),
+        Condition(id=94, description="Won a UEFA Super Cup", expression="clubs.uefa_supercup_titles > 0",
+                  tags="titles-uefa"),
+        Condition(id=95, description="UEFA Super Cup finalist but never won",
+                  expression="clubs.uefa_supercup_titles = 0 and clubs.uefa_supercup_runner_up > 0",
+                  tags="titles-uefa"),
+        Condition(id=96, description="Never a UEFA Super Cup finalist",
+                  expression="clubs.uefa_supercup_titles = 0 and clubs.uefa_supercup_runner_up = 0",
+                  tags="titles-uefa"),
+
+        Condition(id=97, description="Never won a Club World Cup", expression="clubs.club_world_cup_titles = 0",
+                  tags="titles-fifa"),
+        Condition(id=98, description="Won a Club World Cup", expression="clubs.club_world_cup_titles > 0",
+                  tags="titles-fifa"),
+        Condition(id=99, description="Was in a Club World Cup final",
+                  expression="(clubs.club_world_cup_titles + clubs.club_world_cup_runner_up) > 0",
+                  tags="titles-fifa"),
+
+        Condition(id=100, description="IFFHS Best Club award winner", expression="clubs.best_club_awards > 0",
+                  tags="awards"),
+        Condition(id=101, description="IFFHS Best Club award runner-up", expression="clubs.best_club_runner_up > 0",
+                  tags="awards"),
+        Condition(id=102, description="IFFHS Best Club award third place", expression="clubs.best_club_third_place > 0",
+                  tags="awards"),
+        Condition(id=103, description="Was in the podium of the IFFHS Best Club award",
+                  expression="(clubs.best_club_awards + clubs.best_club_runner_up + clubs.best_club_third_place) > 0",
+                  tags="awards"),
+
+        # next available condition id: 104
     ]
 
     with app.app_context():
@@ -508,6 +537,10 @@ def load_clubs():
                     national_supercup_runner_up=club_row["domestic_supercup_runner-up"],
                     cups_winners_cup_titles=club_row["cup_winners_cup_titles"],
                     cups_winners_cup_runner_up=club_row["cup_winners_cup_runner-up"],
+                    uefa_super_cup_titles=club_row["uefa_super_cup_titles"],
+                    uefa_super_cup_runner_up=club_row["uefa_super_cup_runner-up"],
+                    club_world_cup_titles=club_row["club_world_cup_titles"],
+                    club_world_cup_runner_up=club_row["club_world_cup_runner-up"],
                     has_crown=club_row["logo_has_crown"] == "YES",
                     champions_league_titles=club_row["champions_league_titles"],
                     champions_league_runner_up=club_row["champions_league_runner-up"],
@@ -525,6 +558,9 @@ def load_clubs():
                     national_team_players=club_row["national_team_players"],
                     net_transfer_record=to_int(club_row["net_transfer_record"]),
                     instagram_followers=club_row["instagram_followers"],
+                    best_club_awards=club_row["best_club_awards"],
+                    best_club_runner_up=club_row["best_club_runner-up"],
+                    best_club_third_place=club_row["best_club_third-place"],
                 )
             )
 

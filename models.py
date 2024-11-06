@@ -40,6 +40,10 @@ class Club(db.Model):
     national_supercup_runner_up = db.Column(db.Integer)
     cups_winners_cup_titles = db.Column(db.Integer)
     cups_winners_cup_runner_up = db.Column(db.Integer)
+    uefa_super_cup_titles = db.Column(db.Integer)
+    uefa_super_cup_runner_up = db.Column(db.Integer)
+    club_world_cup_titles = db.Column(db.Integer)
+    club_world_cup_runner_up = db.Column(db.Integer)
     has_crown = db.Column(db.Boolean)
     champions_league_titles = db.Column(db.Integer)
     champions_league_runner_up = db.Column(db.Integer)
@@ -57,6 +61,9 @@ class Club(db.Model):
     national_team_players = db.Column(db.Integer)
     net_transfer_record = db.Column(db.Integer)
     instagram_followers = db.Column(db.Integer)
+    best_club_awards = db.Column(db.Integer)
+    best_club_runner_up = db.Column(db.Integer)
+    best_club_third_place = db.Column(db.Integer)
 
 
 class Grid(db.Model):
