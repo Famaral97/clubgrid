@@ -11,7 +11,8 @@ async function getData() {
             clubs = data
         })
         .catch(error => {
-            console.error('Error fetching clubs:', error);
+            console.error('Error fetching clubs:', error)
+            location.reload()
         });
 }
 
@@ -26,7 +27,8 @@ async function getGrids() {
             grids = data
         })
         .catch(error => {
-            console.error('Error fetching grids:', error);
+            console.error('Error fetching grids:', error)
+            location.reload()
         });
 }
 
@@ -41,6 +43,7 @@ async function getGridSolution(gridId) {
             return data
         })
         .catch(error => {
-            console.error('Error fetching grids:', error);
+            console.error('Error fetching solutions:', error)
+            location.reload()
         });
 }
