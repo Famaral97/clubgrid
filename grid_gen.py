@@ -8,8 +8,8 @@ from database import get_grid_answers, to_dict
 from models import Condition, Grid, Club, Answer
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now(), max_common_conditions=2, previous_grids_number=3):
-    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_common_conditions, previous_grids_number)
+def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=20, grid_date=datetime.now(), max_common_conditions=2, previous_grids_number=3):
+    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number)
 
     insert_new_grid(db, app, row_conditions, column_conditions, grid_date)
 
@@ -21,7 +21,7 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=5, grid_date=datetime.now
     return ids
 
 
-def generate_grid(min_clubs_per_cell, max_common_conditions, previous_grids_number):
+def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number):
     all_conditions = Condition.query.all()
     all_grids = Grid.query.order_by(desc(Grid.id)).all()
 
@@ -34,7 +34,7 @@ def generate_grid(min_clubs_per_cell, max_common_conditions, previous_grids_numb
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
-        if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell) and \
+        if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell, max_clubs_per_cell) and \
                 check_grid_does_not_have_common_conditions_to_last_n_grids(conditions_sample, all_grids, previous_grids_number) and \
                 check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
                 check_grid_has_different_conditions_tags(conditions_sample):
@@ -111,14 +111,14 @@ def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
     return True
 
 
-def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell):
+def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell, max_clubs_per_cell):
     for row_condition in row_conditions:
         for col_condition in column_conditions:
             print(row_condition.expression)
             print(col_condition.expression)
             possible_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
 
-            if len(possible_clubs) < min_clubs_per_cell:
+            if len(possible_clubs) < min_clubs_per_cell or len(possible_clubs) > max_clubs_per_cell:
                 return False
 
     return True
