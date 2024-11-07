@@ -12,7 +12,7 @@ async function getData() {
         })
         .catch(error => {
             console.error('Error fetching clubs:', error)
-            location.reload()
+            window.location.reload()
         });
 }
 
@@ -28,7 +28,7 @@ async function getGrids() {
         })
         .catch(error => {
             console.error('Error fetching grids:', error)
-            location.reload()
+            window.location.reload()
         });
 }
 
@@ -44,6 +44,6 @@ async function getGridSolution(gridId) {
         })
         .catch(error => {
             console.error('Error fetching solutions:', error)
-            location.reload()
+            window.location.reload()
         });
 }

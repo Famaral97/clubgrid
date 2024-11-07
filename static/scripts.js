@@ -18,6 +18,7 @@ let currentGridId
 let gridScore
 
 window.onload = async () => {
+    checkServerStatus()
     await getData()
     await getGrids()
     manageLocalStorage()
