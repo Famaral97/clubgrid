@@ -24,4 +24,4 @@ jobs:
 
       - name: Run Python script
         run: |
-          python ./scripts/ping
+          python scripts/ping.py
