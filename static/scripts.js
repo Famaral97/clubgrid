@@ -94,7 +94,7 @@ function showGridSelectionModal() {
 
         const selectGridButton = document.createElement('button')
 
-        const gridAllGuessesStoredValue  = getStoredAllGuesses(grid.id)
+        const gridAllGuessesStoredValue = getStoredAllGuesses(grid.id)
         const gridAllGuesses = gridAllGuessesStoredValue ? JSON.parse(gridAllGuessesStoredValue) : []
 
         const gridAnswersStoredValue = getStoredGridAnswers(grid.id)
@@ -138,6 +138,25 @@ function showInfoModal() {
     modalOverlay.appendChild(infoModal)
 }
 
+function showCollectionModal() {
+    hideAllModals()
+
+    modalOverlay.style.display = 'flex'
+
+    let answeredClubs = new Set()
+    grids.forEach(grid => {
+            let storedAnswers = getStoredGridAnswers(grid.id)
+            let gridAnswers = storedAnswers ? JSON.parse(storedAnswers) : []
+            gridAnswers.filter((cellAnswer) => Object.keys(cellAnswer).length).forEach(answer =>  {
+                answeredClubs.add(answer.id)
+            })
+        }
+    )
+    let collectionModal = makeCollection(answeredClubs)
+
+    modalOverlay.appendChild(collectionModal)
+}
+
 function showClubSelectionModal(cell) {
     cell.classList.add('selected')
 
@@ -177,20 +196,20 @@ async function showFinalModal() {
 
 async function makeFinalModal() {
     const {
-            solutions,
-            row_conditions_descriptions,
-            col_conditions_descriptions
-        } = await getGridSolution(currentGridId)
+        solutions,
+        row_conditions_descriptions,
+        col_conditions_descriptions
+    } = await getGridSolution(currentGridId)
 
-        let finalModal = document.createElement("div")
+    let finalModal = document.createElement("div")
 
-        makeSolutionsGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, currentGridId)
+    makeSolutionsGrid(finalModal, solutions, row_conditions_descriptions, col_conditions_descriptions, currentGridId)
 
-        finalModal.classList.add("final-modal")
+    finalModal.classList.add("final-modal")
 
-        finalModal.style.display = 'none'
+    finalModal.style.display = 'none'
 
-        modalOverlay.appendChild(finalModal)
+    modalOverlay.appendChild(finalModal)
 }
 
 function exitModal(e) {
@@ -238,7 +257,7 @@ function listOptions() {
 
     let selectedCell = document.querySelector('.selected')
 
-    const filteredClubs = Object.values(clubs).filter(club => club.name.toLowerCase().includes(searchString) || club.shortName.toLowerCase().includes(searchString) );
+    const filteredClubs = Object.values(clubs).filter(club => club.name.toLowerCase().includes(searchString) || club.shortName.toLowerCase().includes(searchString));
 
     filteredClubs.forEach(club => {
         const optionContainer = document.createElement('div')

@@ -1,0 +1,45 @@
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 15px;
+  background: gray;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+/* Content area */
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  grid-auto-rows: 150px; /* Consistent row height */
+  gap: 10px; /* Space between cards */
+}
+
+.card {
+  background: #ddd;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /*transition: transform 0.2s, background 0.2s;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

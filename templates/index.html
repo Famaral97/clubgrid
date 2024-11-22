@@ -22,12 +22,14 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='buttons.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='collection.css') }}">
 </head>
 
 <body>
 <script src="{{ url_for('static', filename='services.js') }}"></script>
 <script src="{{ url_for('static', filename='cell.js') }}"></script>
 <script src="{{ url_for('static', filename='info.js') }}"></script>
+<script src="{{ url_for('static', filename='collection.js') }}"></script>
 <script src="{{ url_for('static', filename='storage.js') }}"></script>
 <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 <script src="{{ url_for('static', filename='grid.js') }}"></script>
@@ -51,6 +53,7 @@
 
         <div class="horizontal-container">
             <button class="secondary" onclick="showGridSelectionModal()">Play Previous Grids</button>
+            <button class="accent" onclick="showCollectionModal()">Clubdex</button>
             <button onclick="giveUp()" class="caution" id="give-up">Give Up</button>
             <button class="accent view-results">View Results</button>
         </div>
