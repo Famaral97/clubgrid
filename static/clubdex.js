@@ -35,6 +35,7 @@ function generateTabs(tabCategories) {
         tab.classList.add("accent")
         tab.textContent = tabCategory.name
         tab.onclick = () => {
+            highlightTab(index)
             showTab(index)
         }
         tabsContainer.appendChild(tab);
@@ -72,6 +73,15 @@ function generateTabContent(tabCategory, answeredClubs) {
     tabContentContainer.appendChild(cardsContainer)
 
     return tabContentContainer
+}
+
+function highlightTab(indexOfSelected) {
+        const tabs = document.querySelectorAll('.tab');
+
+        tabs.forEach((tab, i) => {
+            if (i === indexOfSelected) tab.classList.add('active')
+            else tab.classList.remove('active')
+        });
 }
 
 function showTab(index) {
