@@ -133,9 +133,16 @@ function showInfoModal() {
 
     modalOverlay.style.display = 'flex'
 
-    let infoModal = displayInfo()
+    let existingInfoModal = document.querySelector('.info-modal')
 
-    modalOverlay.appendChild(infoModal)
+    if (existingInfoModal) {
+        existingInfoModal.style.display = 'block'
+    } else {
+        let infoModal = displayInfo()
+
+        modalOverlay.appendChild(infoModal)
+    }
+
 }
 
 function showCollectionModal() {
@@ -143,11 +150,14 @@ function showCollectionModal() {
 
     modalOverlay.style.display = 'flex'
 
+    let existingCollectionModal = document.querySelector('.collection-modal')
+    if (existingCollectionModal) existingCollectionModal.remove()
+
     let answeredClubs = new Set()
     grids.forEach(grid => {
             let storedAnswers = getStoredGridAnswers(grid.id)
             let gridAnswers = storedAnswers ? JSON.parse(storedAnswers) : []
-            gridAnswers.filter((cellAnswer) => Object.keys(cellAnswer).length).forEach(answer =>  {
+            gridAnswers.filter((cellAnswer) => Object.keys(cellAnswer).length).forEach(answer => {
                 answeredClubs.add(answer.id)
             })
         }
@@ -155,6 +165,8 @@ function showCollectionModal() {
     let collectionModal = makeCollection(answeredClubs)
 
     modalOverlay.appendChild(collectionModal)
+
+    showTab(0)
 }
 
 function showClubSelectionModal(cell) {

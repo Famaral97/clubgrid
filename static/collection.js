@@ -20,7 +20,7 @@ function makeCollection(answeredClubs) {
     })
     modalContainer.appendChild(tabContentContainer)
 
-    modalContainer.classList.add("info-modal")
+    modalContainer.classList.add("collection-modal")
 
     return modalContainer
 }

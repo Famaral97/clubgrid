@@ -168,7 +168,7 @@ a:hover {
   z-index: 1000;
 }
 
-.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal {
+.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .collection-modal {
   width: 60vw;
   min-width: 350px;
 
@@ -182,7 +182,7 @@ a:hover {
   }
 }
 
-.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .solutions-modal {
+.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .solutions-modal, .collection-modal {
   background: #fff;
   border-radius: 8px;
   max-height: 80%;
@@ -280,7 +280,7 @@ a:hover {
 }
 
 .view-results {
-  display: none;
+  display: flex;
 }
 
 @keyframes pow {
