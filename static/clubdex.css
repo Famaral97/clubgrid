@@ -1,7 +1,6 @@
 .tabs {
   display: flex;
   justify-content: space-between;
-  padding: 0;
 }
 
 .tab {
@@ -22,6 +21,10 @@
 .content {
   flex: 1;
   padding: 20px;
+}
+
+.header {
+  padding-bottom: 25px;
 }
 
 .tab-content {

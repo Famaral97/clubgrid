@@ -13,12 +13,10 @@ function makeClubdex(answeredClubs) {
     let tabsContainer = generateTabs(tabCategories)
     modalContainer.appendChild(tabsContainer)
 
-    let tabContentContainer = document.createElement("div")
     tabCategories.forEach(tabCategory => {
         const tabContent = generateTabContent(tabCategory, answeredClubs)
-        tabContentContainer.appendChild(tabContent);
+        modalContainer.appendChild(tabContent);
     })
-    modalContainer.appendChild(tabContentContainer)
 
     modalContainer.classList.add("clubdex-modal")
 
@@ -66,10 +64,20 @@ function generateTabContent(tabCategory, answeredClubs) {
         cardsContainer.appendChild(clubCard)
     })
 
-    let completionContainer = document.createElement("h3")
-    completionContainer.textContent = collectedClubs + "/" + clubsInTab.length
+    let headerContainer = document.createElement("div")
+    headerContainer.classList.add("horizontal-container")
+    headerContainer.classList.add("header")
 
-    tabContentContainer.appendChild(completionContainer)
+    let introElement = document.createElement("span")
+    introElement.textContent = "Here you can collect all clubs you've used as correct answer!"
+    headerContainer.appendChild(introElement)
+
+    let completionElement = document.createElement("span")
+    completionElement.textContent = "Progress: " + collectedClubs + "/" + clubsInTab.length
+    headerContainer.appendChild(completionElement)
+
+    tabContentContainer.appendChild(headerContainer)
+
     tabContentContainer.appendChild(cardsContainer)
 
     return tabContentContainer
