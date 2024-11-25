@@ -280,7 +280,7 @@ a:hover {
 }
 
 .view-results {
-  display: flex;
+  display: none;
 }
 
 @keyframes pow {
