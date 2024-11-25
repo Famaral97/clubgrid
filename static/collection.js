@@ -1,32 +1,39 @@
 function makeCollection(answeredClubs) {
-    let countryCodes = ["PT", "EN", "ES", "DE", "IT", "FR"]
+    let tabCategories = [
+        {prefix: "EN", name: "England"},
+        {prefix: "DE", name: "Germany"},
+        {prefix: "PT", name: "Portugal"},
+        {prefix: "ES", name: "Spain"},
+        {prefix: "IT", name: "Italy"},
+        {prefix: "FR", name: "France"}
+    ]
 
     let modalContainer = document.createElement("div")
 
-    let tabsContainer = generateTabs(countryCodes)
+    let tabsContainer = generateTabs(tabCategories)
     modalContainer.appendChild(tabsContainer)
 
-    let cardsContainer = document.createElement("div")
-    countryCodes.forEach(countryCode => {
-        const cards = generateCards(countryCode, answeredClubs)
-        cardsContainer.appendChild(cards);
+    let tabContentContainer = document.createElement("div")
+    tabCategories.forEach(tabCategory => {
+        const tabContent = generateTabContent(tabCategory, answeredClubs)
+        tabContentContainer.appendChild(tabContent);
     })
-    modalContainer.appendChild(cardsContainer)
+    modalContainer.appendChild(tabContentContainer)
 
     modalContainer.classList.add("info-modal")
 
     return modalContainer
 }
 
-function generateTabs(countryCodes) {
+function generateTabs(tabCategories) {
     let tabsContainer = document.createElement("div")
     tabsContainer.classList.add("tabs")
 
-    countryCodes.forEach(((countryCode, index) => {
+    tabCategories.forEach(((tabCategory, index) => {
         const tab = document.createElement("button");
         tab.classList.add("tab")
         tab.classList.add("accent")
-        tab.textContent = countryCode
+        tab.textContent = tabCategory.name
         tab.onclick = () => {
             showTab(index)
         }
@@ -36,26 +43,35 @@ function generateTabs(countryCodes) {
     return tabsContainer
 }
 
-function generateCards(countryCode, answeredClubs) {
-    const tabContentDiv = document.createElement("div");
-    tabContentDiv.classList.add("tab-content");
-    tabContentDiv.id = countryCode;
+function generateTabContent(tabCategory, answeredClubs) {
+    const tabContentContainer = document.createElement("div");
+    tabContentContainer.classList.add("tab-content");
+    tabContentContainer.id = tabCategory.prefix;
 
-    const tabCardContainer = document.createElement("div");
-    tabCardContainer.classList.add("card-container")
+    const cardsContainer = document.createElement("div");
+    cardsContainer.classList.add("card-container")
 
-    const clubsInTab = Object.values(clubs).filter(c => c.id.startsWith(countryCode))
+    let collectedClubs = 0
+    const clubsInTab = Object.values(clubs).filter(c => c.id.startsWith(tabCategory.prefix))
     clubsInTab.forEach(club => {
         let clubCard = document.createElement("div");
         clubCard.classList.add("card")
-        clubCard.textContent = answeredClubs.has(club.id) ? club.name : "??????"
 
-        tabCardContainer.appendChild(clubCard)
+        let clubWasAnswered = answeredClubs.has(club.id)
+
+        collectedClubs = clubWasAnswered ? (collectedClubs + 1) : collectedClubs;
+        clubCard.textContent = clubWasAnswered ? club.name : "??????"
+
+        cardsContainer.appendChild(clubCard)
     })
 
-    tabContentDiv.appendChild(tabCardContainer)
+    let completionContainer = document.createElement("h3")
+    completionContainer.textContent = collectedClubs + "/" + clubsInTab.length
 
-    return tabContentDiv
+    tabContentContainer.appendChild(completionContainer)
+    tabContentContainer.appendChild(cardsContainer)
+
+    return tabContentContainer
 }
 
 function showTab(index) {
