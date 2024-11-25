@@ -145,13 +145,13 @@ function showInfoModal() {
 
 }
 
-function showCollectionModal() {
+function showClubdexModal() {
     hideAllModals()
 
     modalOverlay.style.display = 'flex'
 
-    let existingCollectionModal = document.querySelector('.collection-modal')
-    if (existingCollectionModal) existingCollectionModal.remove()
+    let existingClubdexModal = document.querySelector('.clubdex-modal')
+    if (existingClubdexModal) existingClubdexModal.remove()
 
     let answeredClubs = new Set()
     grids.forEach(grid => {
@@ -162,9 +162,9 @@ function showCollectionModal() {
             })
         }
     )
-    let collectionModal = makeCollection(answeredClubs)
+    let clubdexModal = makeClubdex(answeredClubs)
 
-    modalOverlay.appendChild(collectionModal)
+    modalOverlay.appendChild(clubdexModal)
 
     showTab(0)
 }

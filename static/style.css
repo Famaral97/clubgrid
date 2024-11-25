@@ -168,7 +168,7 @@ a:hover {
   z-index: 1000;
 }
 
-.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .collection-modal {
+.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .clubdex-modal {
   width: 60vw;
   min-width: 350px;
 
@@ -182,7 +182,7 @@ a:hover {
   }
 }
 
-.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .solutions-modal, .collection-modal {
+.club-selection-modal, .final-modal, .grid-selection-modal, .info-modal, .solutions-modal, .clubdex-modal {
   background: #fff;
   border-radius: 8px;
   max-height: 80%;

@@ -1,4 +1,4 @@
-function makeCollection(answeredClubs) {
+function makeClubdex(answeredClubs) {
     let tabCategories = [
         {prefix: "EN", name: "England"},
         {prefix: "DE", name: "Germany"},
@@ -20,7 +20,7 @@ function makeCollection(answeredClubs) {
     })
     modalContainer.appendChild(tabContentContainer)
 
-    modalContainer.classList.add("collection-modal")
+    modalContainer.classList.add("clubdex-modal")
 
     return modalContainer
 }
