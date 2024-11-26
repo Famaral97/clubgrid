@@ -1,11 +1,11 @@
 function makeClubdex(answeredClubs) {
     let tabCategories = [
-        {prefix: "EN", name: "England"},
-        {prefix: "DE", name: "Germany"},
-        {prefix: "PT", name: "Portugal"},
-        {prefix: "ES", name: "Spain"},
-        {prefix: "IT", name: "Italy"},
-        {prefix: "FR", name: "France"}
+        {prefix: "EN", name: "🏴󠁧󠁢󠁥󠁮󠁧󠁿"},
+        {prefix: "DE", name: "🇩🇪"},
+        {prefix: "PT", name: "🇵🇹"},
+        {prefix: "ES", name: "🇪🇸"},
+        {prefix: "IT", name: "🇮🇹"},
+        {prefix: "FR", name: "🇫🇷"}
     ]
 
     let modalContainer = document.createElement("div")
@@ -58,8 +58,13 @@ function generateTabContent(tabCategory, answeredClubs) {
 
         let clubWasAnswered = answeredClubs.has(club.id)
 
-        collectedClubs = clubWasAnswered ? (collectedClubs + 1) : collectedClubs;
-        clubCard.textContent = clubWasAnswered ? club.name : "??????"
+        if(clubWasAnswered) {
+            clubCard.textContent = club.name
+            clubCard.classList.add("answered")
+            collectedClubs += 1
+        } else {
+            clubCard.textContent = "??????"
+        }
 
         cardsContainer.appendChild(clubCard)
     })

@@ -1,16 +1,16 @@
 .tabs {
   display: flex;
   justify-content: space-between;
+  gap: 4px;
 }
 
 .tab {
   flex: 1;
   text-align: center;
-  padding: 15px;
   background: gray;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 32px;
   transition: background 0.3s;
   &.active {
     background-color: #27ae60;
@@ -42,8 +42,12 @@
   background: white;
   text-align: center;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px #00000033;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &.answered {
+      box-shadow: 0 0 5px inset #27ae60;
+  }
 }
