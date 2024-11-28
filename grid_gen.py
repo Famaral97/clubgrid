@@ -1,6 +1,6 @@
 import random
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import desc, text
 from sqlalchemy.dialects.mysql import insert
 
@@ -8,10 +8,10 @@ from database import get_grid_answers, to_dict
 from models import Condition, Grid, Club, Answer
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=20, grid_date=datetime.now(), max_common_conditions=2, previous_grids_number=3):
+def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=20, max_common_conditions=2, previous_grids_number=3):
     row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number)
 
-    insert_new_grid(db, app, row_conditions, column_conditions, grid_date)
+    insert_new_grid(db, app, row_conditions, column_conditions)
 
     ids = []
     for row_cond in row_conditions:
@@ -114,8 +114,7 @@ def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
 def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell, max_clubs_per_cell):
     for row_condition in row_conditions:
         for col_condition in column_conditions:
-            print(row_condition.expression)
-            print(col_condition.expression)
+
             possible_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
 
             if len(possible_clubs) < min_clubs_per_cell or len(possible_clubs) > max_clubs_per_cell:
@@ -124,12 +123,13 @@ def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell
     return True
 
 
-def insert_new_grid(db, app, row_conditions, column_conditions, grid_date):
+def insert_new_grid(db, app, row_conditions, column_conditions):
     new_grid_id = Grid.query.order_by(desc(Grid.id)).first().id + 1
+    new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
 
     new_grid = Grid(
         id=new_grid_id,
-        starting_date=grid_date,
+        starting_date=new_grid_date,
         row_condition_1=row_conditions[0].id,
         row_condition_2=row_conditions[1].id,
         row_condition_3=row_conditions[2].id,
@@ -143,7 +143,7 @@ def insert_new_grid(db, app, row_conditions, column_conditions, grid_date):
     with app.app_context():
         stmt = insert(Grid).values(
             id=new_grid_id,
-            starting_date=grid_date,
+            starting_date=new_grid_date,
             row_condition_1=row_conditions[0].id,
             row_condition_2=row_conditions[1].id,
             row_condition_3=row_conditions[2].id,
