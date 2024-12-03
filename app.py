@@ -34,7 +34,7 @@ create_default_grids(db, app)
 
 
 # to test grid generation
-@app.route(f'{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
+@app.route(f'/{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
 def generate_grid():
     return f"{create_and_insert_grid(db, app)}"
 
