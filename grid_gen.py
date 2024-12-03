@@ -1,6 +1,6 @@
 import random
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from sqlalchemy import desc, text
 from sqlalchemy.dialects.mysql import insert
 
@@ -8,8 +8,10 @@ from database import get_grid_answers, to_dict
 from models import Condition, Grid, Club, Answer
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=20, max_common_conditions=2, previous_grids_number=3):
-    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number)
+def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=20, max_common_conditions=2,
+                           previous_grids_number=3):
+    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
+                                                      previous_grids_number)
 
     insert_new_grid(db, app, row_conditions, column_conditions)
 
@@ -35,7 +37,8 @@ def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
         col_conditions = conditions_sample[3:]
 
         if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell, max_clubs_per_cell) and \
-                check_grid_does_not_have_common_conditions_to_last_n_grids(conditions_sample, all_grids, previous_grids_number) and \
+                check_grid_does_not_have_common_conditions_to_last_n_grids(conditions_sample, all_grids,
+                                                                           previous_grids_number) and \
                 check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
                 check_grid_has_different_conditions_tags(conditions_sample):
             return row_conditions, col_conditions

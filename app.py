@@ -9,7 +9,7 @@ from sqlalchemy import desc, text, func
 from flask import Flask, render_template, jsonify, redirect,  request
 
 from database import create_default_conditions, create_default_clubs, create_default_grids
-# from grid_gen import create_and_insert_grid
+from grid_gen import create_and_insert_grid
 from models import db, Condition, Club, Grid, Answer
 
 from sqlalchemy.dialects.mysql import insert
@@ -34,9 +34,9 @@ create_default_grids(db, app)
 
 
 # to test grid generation
-# @app.route('/test-gen')
-# def generate_grid():
-#     return f"{create_and_insert_grid(db, app)}"
+@app.route(f'{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
+def generate_grid():
+    return f"{create_and_insert_grid(db, app)}"
 
 
 @app.route('/', methods=['GET'])
