@@ -8,7 +8,7 @@ from database import get_grid_answers, to_dict
 from models import Condition, Grid, Club, Answer
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=20, max_common_conditions=2,
+def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=30, max_common_conditions=2,
                            previous_grids_number=3):
     row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
                                                       previous_grids_number)
