@@ -24,13 +24,12 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=30,
 
 
 def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number):
-    all_conditions = Condition.query.all()
+    all_conditions = Condition.query.filter(Condition.deprecated.is_(None)).all()
     all_grids = Grid.query.order_by(desc(Grid.id)).all()
 
     conditions_weights = compute_weights(all_conditions, all_grids)
 
     while True:
-
         conditions_sample = get_weighted_sample_of_conditions(all_conditions, conditions_weights)
 
         row_conditions = conditions_sample[:3]
@@ -163,4 +162,3 @@ def insert_new_grid(db, app, row_conditions, column_conditions):
         db.session.execute(stmt)
 
         db.session.commit()
-

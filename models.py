@@ -9,6 +9,7 @@ class Condition(db.Model):
     description = db.Column(db.String(255)) 
     expression = db.Column(db.String(255))
     tags = db.Column(db.String(255))
+    deprecated = db.Column(db.Boolean)
 
 
 class Club(db.Model):

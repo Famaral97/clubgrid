@@ -1,0 +1,6 @@
+POST http://localhost:5000/grid_generation_test_endpoint
+Content-Type: application/json
+
+{}
+
+###
