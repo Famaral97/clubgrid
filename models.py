@@ -49,6 +49,8 @@ class Club(db.Model):
     champions_league_runner_up = db.Column(db.Integer)
     europa_league_titles = db.Column(db.Integer)
     europa_league_runner_up = db.Column(db.Integer)
+    champions_league_2024_25 = db.Column(db.Boolean)
+    europa_league_2024_25 = db.Column(db.Boolean)
     in_capital = db.Column(db.Boolean)
     cup_titles = db.Column(db.Integer)
     cup_runner_up = db.Column(db.Integer)

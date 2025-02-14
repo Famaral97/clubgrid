@@ -205,7 +205,10 @@ def create_default_conditions(db, app):
                   expression="(clubs.best_club_awards + clubs.best_club_runner_up + clubs.best_club_third_place) > 0",
                   tags="awards"),
 
-        # next available condition id: 104
+        Condition(id=104, description="In 2024/25 UEFA Champions League", expression="clubs.champions_league_2024_25 = True",
+                  tags="league-continental"),
+        Condition(id=105, description="In 2024/25 UEFA Europa League", expression="clubs.europa_league_2024_25 = True",
+                  tags="league-continental"),
     ]
 
     with app.app_context():
@@ -806,6 +809,8 @@ def load_clubs():
                     champions_league_runner_up=club_row["champions_league_runner-up"],
                     europa_league_titles=club_row["europa_league_titles"],
                     europa_league_runner_up=club_row["europa_league_runner-up"],
+                    champions_league_2024_25=club_row["champions_league_2024_25"] == "YES",
+                    europa_league_2024_25=club_row["europa_league_2024_25"] == "YES",
                     in_capital=club_row["in_a_capital_city"] == "YES",
                     cup_titles=club_row["domestic_cup_titles"],
                     cup_runner_up=club_row["domestic_cup_runner-up"],
