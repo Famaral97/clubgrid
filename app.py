@@ -33,6 +33,11 @@ create_default_clubs(db, app)
 create_default_grids(db, app)
 
 
+@app.route('/health-check')
+def health_check():
+    return jsonify({"status": "Up"})
+
+
 # to test grid generation
 @app.route(f'/{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
 def generate_grid():
