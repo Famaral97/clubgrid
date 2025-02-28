@@ -12,6 +12,14 @@
 5. Build the flask app `docker-compose up -d --build flask`
 6. This should run the alembic upgrades and update the database
 
+## Deploying to Pythonanywhere
+1. Update `data.csv` in files root (outside clubgrid folder)
+2. Open Bash console
+3. `workon myvirtualenv`
+4. `./update.sh`
+5. `exit`
+6. Go upper right corner menu > Web and Reload the web app (big green button)
+
 Notes:
 1. not tested yet for deployment, but in theory we should just need to run `alembic upgrade head` before running flask.
 2. maybe there is a clever way to deal with the env vars. Problem is that we run `alembic revision` in the CLI.
