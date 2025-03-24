@@ -49,7 +49,8 @@ def health_check():
 def generate_grid():
     meta_condition_id = request.args.get('meta_condition_id')
 
-    #TODO:  if not meta condition id, return bad request
+    if meta_condition_id is None:
+        return jsonify({"error": "meta_condition_id is required"}), 400
 
     return f"{create_and_insert_grid(db, app, meta_condition_id)}"
 
