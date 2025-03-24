@@ -749,8 +749,8 @@ def get_answers(grid, column_condition_id, row_condition_id, app):
             text(Condition.query.get(column_condition_id).expression)
         )
 
-        if grid.country is not None:
-            query = query.filter(Club.country == grid.country)
+        if grid.meta_condition is not None:
+            query = query.filter(text(grid.meta_condition))
 
         solution_clubs = query.all()
 

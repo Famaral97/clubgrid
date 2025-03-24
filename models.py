@@ -73,7 +73,7 @@ class Grid(db.Model):
     __tablename__ = 'grids'
     id = db.Column(db.Integer, primary_key=True)
     starting_date = db.Column(db.DateTime)
-    country = db.Column(db.String(255))
+    meta_condition = db.Column(db.String(255))
     row_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     row_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     row_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))

@@ -5,7 +5,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:5000/grid_generation_test_endpoint?country=Italy
+POST http://localhost:5000/grid_generation_test_endpoint?meta_condition=clubs.country%20%3D%20%27Portugal%27
 Content-Type: application/json
 
 {}
