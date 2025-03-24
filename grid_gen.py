@@ -8,12 +8,12 @@ from database import get_grid_answers, to_dict
 from models import Condition, Grid, Club, Answer
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=30, max_common_conditions=2,
-                           previous_grids_number=3):
+def create_and_insert_grid(db, app, min_clubs_per_cell=1, max_clubs_per_cell=30, max_common_conditions=2,
+                           previous_grids_number=3, grid_country=None):
     row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
-                                                      previous_grids_number)
+                                                      previous_grids_number, grid_country)
 
-    insert_new_grid(db, app, row_conditions, column_conditions)
+    insert_new_grid(db, app, row_conditions, column_conditions, grid_country)
 
     ids = []
     for row_cond in row_conditions:
@@ -23,7 +23,7 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=30,
     return ids
 
 
-def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number):
+def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number, grid_country):
     all_conditions = Condition.query.filter(Condition.deprecated.is_(None)).all()
     all_grids = Grid.query.order_by(desc(Grid.id)).all()
 
@@ -35,10 +35,11 @@ def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
-        if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell, max_clubs_per_cell) and \
+        if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell, max_clubs_per_cell,
+                                  grid_country) and \
                 check_grid_does_not_have_common_conditions_to_last_n_grids(conditions_sample, all_grids,
-                                                                           previous_grids_number) and \
-                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
+                                                                           previous_grids_number, grid_country) and \
+                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions, grid_country) and \
                 check_grid_has_different_conditions_tags(conditions_sample):
             return row_conditions, col_conditions
 
@@ -77,7 +78,10 @@ def check_grid_has_different_conditions_tags(conditions):
     return len(set(tags)) == 6
 
 
-def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids, n_grids):
+def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids, n_grids, grid_country):
+    if grid_country is not None:
+        grids = [g for g in grids if g.country == grid_country]
+
     conditions_ids = [condition.id for condition in conditions]
 
     for grid in grids[:n_grids]:
@@ -95,7 +99,10 @@ def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids
     return True
 
 
-def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
+def check_grid_is_not_too_similar(conditions, grids, max_conditions_number, grid_country):
+    if grid_country is not None:
+        grids = [g for g in grids if g.country == grid_country]
+
     conditions_ids = [condition.id for condition in conditions]
 
     for grid in grids:
@@ -113,11 +120,18 @@ def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
     return True
 
 
-def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell, max_clubs_per_cell):
+def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell, max_clubs_per_cell, grid_country):
     for row_condition in row_conditions:
         for col_condition in column_conditions:
+            query = Club.query.filter(
+                text(row_condition.expression),
+                text(col_condition.expression)
+            )
 
-            possible_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
+            if grid_country is not None:
+                query = query.filter(Club.country == grid_country)
+
+            possible_clubs = query.all()
 
             if len(possible_clubs) < min_clubs_per_cell or len(possible_clubs) > max_clubs_per_cell:
                 return False
@@ -125,13 +139,14 @@ def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell
     return True
 
 
-def insert_new_grid(db, app, row_conditions, column_conditions):
+def insert_new_grid(db, app, row_conditions, column_conditions, grid_country):
     new_grid_id = Grid.query.order_by(desc(Grid.id)).first().id + 1
     new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
 
     new_grid = Grid(
         id=new_grid_id,
         starting_date=new_grid_date,
+        country=grid_country,
         row_condition_1=row_conditions[0].id,
         row_condition_2=row_conditions[1].id,
         row_condition_3=row_conditions[2].id,
@@ -146,6 +161,7 @@ def insert_new_grid(db, app, row_conditions, column_conditions):
         stmt = insert(Grid).values(
             id=new_grid_id,
             starting_date=new_grid_date,
+            country=grid_country,
             row_condition_1=row_conditions[0].id,
             row_condition_2=row_conditions[1].id,
             row_condition_3=row_conditions[2].id,

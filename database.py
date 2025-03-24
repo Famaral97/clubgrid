@@ -744,12 +744,15 @@ def get_grid_answers(grid, app):
 
 def get_answers(grid, column_condition_id, row_condition_id, app):
     with app.app_context():
-        row_condition_expression = Condition.query.get(column_condition_id).expression
-        column_condition_expression = Condition.query.get(row_condition_id).expression
+        query = Club.query.filter(
+            text(Condition.query.get(row_condition_id).expression),
+            text(Condition.query.get(column_condition_id).expression)
+        )
 
-        solution_clubs = Club.query.filter(
-            text(row_condition_expression),
-            text(column_condition_expression)).all()
+        if grid.country is not None:
+            query = query.filter(Club.country == grid.country)
+
+        solution_clubs = query.all()
 
     return [Answer(
         grid_id=grid.id,

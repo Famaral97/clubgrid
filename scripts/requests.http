@@ -4,3 +4,10 @@ Content-Type: application/json
 {}
 
 ###
+
+POST http://localhost:5000/grid_generation_test_endpoint?country=Italy
+Content-Type: application/json
+
+{}
+
+###

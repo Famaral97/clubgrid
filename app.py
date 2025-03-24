@@ -8,7 +8,7 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect,  request
 
-from database import create_default_conditions, create_default_clubs, create_default_grids
+from database import create_default_conditions, create_default_clubs
 from grid_gen import create_and_insert_grid
 from models import db, Condition, Club, Grid, Answer
 
@@ -34,7 +34,7 @@ db.init_app(app)
 
 create_default_conditions(db, app)
 create_default_clubs(db, app)
-create_default_grids(db, app)
+# create_default_grids(db, app)
 
 
 @app.route('/health-check')
@@ -45,7 +45,11 @@ def health_check():
 # to test grid generation
 @app.route(f'/{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
 def generate_grid():
-    return f"{create_and_insert_grid(db, app)}"
+    grid_country = request.args.get('country')
+    if grid_country is not None:
+        print("generating grid for country: " + grid_country, flush=True)
+
+    return f"{create_and_insert_grid(db, app, grid_country=grid_country)}"
 
 
 @app.route('/', methods=['GET'])
@@ -167,19 +171,19 @@ def get_grid_solution(grid_id):
 
     solutions = [
         [
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3)
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1, grid.country),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2, grid.country),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3, grid.country)
         ],
         [
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3)
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1, grid.country),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2, grid.country),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3, grid.country)
         ],
         [
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3)
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1, grid.country),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2, grid.country),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3, grid.country)
         ]
     ]
 
@@ -204,16 +208,21 @@ def get_grid_solution(grid_id):
     )
 
 
-def get_solution(grid_id, row_condition_id, col_condition_id):
+def get_solution(grid_id, row_condition_id, col_condition_id, grid_country):
     @dataclass
     class ClubRepresenter():
         id: str
         total_club_answered: int
 
-    row_condition = Condition.query.get(row_condition_id)
-    col_condition = Condition.query.get(col_condition_id)
+    query = Club.query.filter(
+        text(Condition.query.get(row_condition_id).expression),
+        text(Condition.query.get(col_condition_id).expression)
+    )
 
-    solution_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
+    if grid_country is not None:
+        query = query.filter(Club.country == grid_country)
+
+    solution_clubs = query.all()
 
     clubs_representers = []
 
