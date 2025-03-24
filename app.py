@@ -8,9 +8,10 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect,  request
 
-from database import create_default_conditions, create_default_clubs, create_default_grids
+from database import create_default_conditions, create_default_clubs, create_default_grids, \
+    create_default_meta_conditions
 from grid_gen import create_and_insert_grid
-from models import db, Condition, Club, Grid, Answer
+from models import db, Condition, Club, Grid, Answer, MetaCondition
 
 from sqlalchemy.dialects.mysql import insert
 
@@ -33,6 +34,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 db.init_app(app)
 
 create_default_conditions(db, app)
+create_default_meta_conditions(db, app)
 create_default_clubs(db, app)
 create_default_grids(db, app)
 
@@ -45,9 +47,11 @@ def health_check():
 # to test grid generation
 @app.route(f'/{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
 def generate_grid():
-    grid_meta_condition = request.args.get('meta_condition')
+    meta_condition_id = request.args.get('meta_condition_id')
 
-    return f"{create_and_insert_grid(db, app, grid_meta_condition=grid_meta_condition)}"
+    #TODO:  if not meta condition id, return bad request
+
+    return f"{create_and_insert_grid(db, app, meta_condition_id)}"
 
 
 @app.route('/', methods=['GET'])
@@ -166,22 +170,23 @@ def check_answer():
 @app.route('/grid/<grid_id>/end', methods=['GET'])
 def get_grid_solution(grid_id):
     grid = Grid.query.get(grid_id)
+    meta_condition = MetaCondition.query.get(grid.meta_condition_id)
 
     solutions = [
         [
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1, grid.meta_condition),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2, grid.meta_condition),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3, grid.meta_condition)
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1, meta_condition),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2, meta_condition),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3, meta_condition)
         ],
         [
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1, grid.meta_condition),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2, grid.meta_condition),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3, grid.meta_condition)
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1, meta_condition),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2, meta_condition),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3, meta_condition)
         ],
         [
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1, grid.meta_condition),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2, grid.meta_condition),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3, grid.meta_condition)
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1, meta_condition),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2, meta_condition),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3, meta_condition)
         ]
     ]
 
@@ -218,7 +223,7 @@ def get_solution(grid_id, row_condition_id, col_condition_id, grid_meta_conditio
     )
 
     if grid_meta_condition is not None:
-        query = query.filter(text(grid_meta_condition))
+        query = query.filter(text(grid_meta_condition.expression))
 
     solution_clubs = query.all()
 

@@ -5,15 +5,19 @@ from sqlalchemy import desc, text
 from sqlalchemy.dialects.mysql import insert
 
 from database import get_grid_answers, to_dict
-from models import Condition, Grid, Club, Answer
+from models import Condition, Grid, Club, Answer, MetaCondition
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=1, max_clubs_per_cell=30, max_common_conditions=2,
-                           previous_grids_number=3, grid_meta_condition=None):
+#TODO: fix the min_clubs_per_cell=1, as some grids might be uncompletable. Create an algorithm to assure that doesn't happen
+def create_and_insert_grid(db, app, meta_condition_id,
+                           min_clubs_per_cell=1, max_clubs_per_cell=30, max_common_conditions=2, previous_grids_number=3):
+
+    meta_condition = MetaCondition.query.get(meta_condition_id)
+
     row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
-                                                      previous_grids_number, grid_meta_condition)
+                                                      previous_grids_number, meta_condition)
 
-    insert_new_grid(db, app, row_conditions, column_conditions, grid_meta_condition)
+    insert_new_grid(db, app, row_conditions, column_conditions, meta_condition.id)
 
     ids = []
     for row_cond in row_conditions:
@@ -25,7 +29,7 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=1, max_clubs_per_cell=30,
 
 def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number, grid_meta_condition):
     all_conditions = Condition.query.filter(Condition.deprecated.is_(None)).all()
-    all_grids = Grid.query.order_by(desc(Grid.id)).all()
+    all_grids = Grid.query.filter_by(meta_condition_id=grid_meta_condition.id).order_by(desc(Grid.id)).all()
 
     conditions_weights = compute_weights(all_conditions, all_grids)
 
@@ -38,8 +42,8 @@ def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
         if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell, max_clubs_per_cell,
                                   grid_meta_condition) and \
                 check_grid_does_not_have_common_conditions_to_last_n_grids(conditions_sample, all_grids,
-                                                                           previous_grids_number, grid_meta_condition) and \
-                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions, grid_meta_condition) and \
+                                                                           previous_grids_number) and \
+                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
                 check_grid_has_different_conditions_tags(conditions_sample):
             return row_conditions, col_conditions
 
@@ -78,10 +82,7 @@ def check_grid_has_different_conditions_tags(conditions):
     return len(set(tags)) == 6
 
 
-def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids, n_grids, grid_meta_condition):
-    if grid_meta_condition is not None:
-        grids = [g for g in grids if g.meta_condition == grid_meta_condition]
-
+def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids, n_grids):
     conditions_ids = [condition.id for condition in conditions]
 
     for grid in grids[:n_grids]:
@@ -99,10 +100,7 @@ def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids
     return True
 
 
-def check_grid_is_not_too_similar(conditions, grids, max_conditions_number, grid_meta_condition):
-    if grid_meta_condition is not None:
-        grids = [g for g in grids if g.meta_condition == grid_meta_condition]
-
+def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
     conditions_ids = [condition.id for condition in conditions]
 
     for grid in grids:
@@ -129,7 +127,7 @@ def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell
             )
 
             if grid_meta_condition is not None:
-                query = query.filter(text(grid_meta_condition))
+                query = query.filter(text(grid_meta_condition.expression))
 
             possible_clubs = query.all()
 
@@ -139,14 +137,14 @@ def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell
     return True
 
 
-def insert_new_grid(db, app, row_conditions, column_conditions, grid_meta_condition):
+def insert_new_grid(db, app, row_conditions, column_conditions, grid_meta_condition_id):
     new_grid_id = Grid.query.order_by(desc(Grid.id)).first().id + 1
     new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
 
     new_grid = Grid(
         id=new_grid_id,
         starting_date=new_grid_date,
-        meta_condition=grid_meta_condition,
+        meta_condition_id=grid_meta_condition_id,
         row_condition_1=row_conditions[0].id,
         row_condition_2=row_conditions[1].id,
         row_condition_3=row_conditions[2].id,
@@ -161,7 +159,7 @@ def insert_new_grid(db, app, row_conditions, column_conditions, grid_meta_condit
         stmt = insert(Grid).values(
             id=new_grid_id,
             starting_date=new_grid_date,
-            meta_condition=grid_meta_condition,
+            meta_condition_id=grid_meta_condition_id,
             row_condition_1=row_conditions[0].id,
             row_condition_2=row_conditions[1].id,
             row_condition_3=row_conditions[2].id,
