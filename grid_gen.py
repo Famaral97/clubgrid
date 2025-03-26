@@ -6,10 +6,10 @@ from database import get_grid_solution, insert_grid
 from models import Condition, Grid, MetaCondition
 
 
-def create_and_insert_grid(db, app, meta_condition_id,
-                           min_clubs_per_cell=1, max_clubs_per_cell=30, max_common_conditions=2,
+def create_and_insert_grid(db, app, meta_condition_id, max_clubs_per_cell=30, max_common_conditions=2,
                            previous_grids_number=3):
     meta_condition = MetaCondition.query.get(meta_condition_id)
+    min_clubs_per_cell = 5 if meta_condition.id == 1 else 1
 
     row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
                                                       previous_grids_number, meta_condition, app)

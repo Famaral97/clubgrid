@@ -12,7 +12,7 @@ class Condition(db.Model):
     deprecated = db.Column(db.Boolean)
 
 
-# TODO: add min clubs per cell / excluding conditions
+# TODO: excluding conditions
 class MetaCondition(db.Model):
     __tablename__ = 'meta_conditions'
     id = db.Column(db.Integer, primary_key=True)
