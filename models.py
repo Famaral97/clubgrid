@@ -12,6 +12,7 @@ class Condition(db.Model):
     deprecated = db.Column(db.Boolean)
 
 
+# TODO: add min clubs per cell / excluding conditions
 class MetaCondition(db.Model):
     __tablename__ = 'meta_conditions'
     id = db.Column(db.Integer, primary_key=True)
@@ -74,6 +75,14 @@ class Club(db.Model):
     best_club_awards = db.Column(db.Integer)
     best_club_runner_up = db.Column(db.Integer)
     best_club_third_place = db.Column(db.Integer)
+
+    def __eq__(self, other):
+        if isinstance(other, Club):
+            return self.id == other.id
+        return False
+
+    def __hash__(self):
+        return hash(self.id)  # Ensures uniqueness in sets
 
 
 class Grid(db.Model):

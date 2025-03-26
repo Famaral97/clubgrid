@@ -1,7 +1,7 @@
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from sqlalchemy import text, inspect
+from sqlalchemy import text, inspect, desc
 from sqlalchemy.dialects.mysql import insert
 
 from models import Condition, Club, Grid, Answer, MetaCondition
@@ -217,9 +217,11 @@ def create_default_conditions(db, app):
         db.session.execute(stmt)
         db.session.commit()
 
+
 def create_default_meta_conditions(db, app):
     meta_conditions = [
-        MetaCondition(id=1, description='Big 6', expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')" ),
+        MetaCondition(id=1, description='Big 6',
+                      expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"),
         MetaCondition(id=2, description='Portugal', expression="clubs.country = 'Portugal'"),
         # MetaCondition(id=3, description='Germany', expression="clubs.country = 'Germany'"),
         # MetaCondition(id=4, description='England', expression="clubs.country = 'England'"),
@@ -797,7 +799,8 @@ def create_default_grids(db, app):
 
 def get_grid_answers(grid, app):
     with app.app_context():
-        meta_condition = MetaCondition.query.get(grid.meta_condition_id) if grid.meta_condition_id else MetaCondition.query.get(1)
+        meta_condition = MetaCondition.query.get(
+            grid.meta_condition_id) if grid.meta_condition_id else MetaCondition.query.get(1)
 
     grid_answers = []
     grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_1, meta_condition, app))
@@ -832,6 +835,38 @@ def get_answers(grid, column_condition_id, row_condition_id, meta_condition, app
         is_solution=True,
         count=0,
     ) for club in solution_clubs]
+
+
+def get_grid_solution(row_conditions, column_conditions, meta_condition, app):
+    return [
+        [
+            get_cell_solution(row_conditions[0], column_conditions[0], meta_condition, app),
+            get_cell_solution(row_conditions[0], column_conditions[1], meta_condition, app),
+            get_cell_solution(row_conditions[0], column_conditions[2], meta_condition, app)
+        ],
+        [
+            get_cell_solution(row_conditions[1], column_conditions[0], meta_condition, app),
+            get_cell_solution(row_conditions[1], column_conditions[1], meta_condition, app),
+            get_cell_solution(row_conditions[1], column_conditions[2], meta_condition, app)
+        ],
+        [
+            get_cell_solution(row_conditions[2], column_conditions[0], meta_condition, app),
+            get_cell_solution(row_conditions[2], column_conditions[1], meta_condition, app),
+            get_cell_solution(row_conditions[2], column_conditions[2], meta_condition, app)
+        ]
+    ]
+
+
+def get_cell_solution(row_condition, col_condition, grid_meta_condition, app):
+    with app.app_context():
+        query = Club.query.filter(text(row_condition.expression), text(col_condition.expression))
+
+        if grid_meta_condition is not None:
+            query = query.filter(text(grid_meta_condition.expression))
+
+        solution_clubs = query.all()
+
+    return solution_clubs
 
 
 def load_clubs():
@@ -903,6 +938,47 @@ def load_clubs():
             )
 
     return clubs
+
+
+def insert_grid(db, app, row_conditions, column_conditions, grid_meta_condition_id):
+    new_grid_id = Grid.query.order_by(desc(Grid.id)).first().id + 1
+    new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
+
+    new_grid = Grid(
+        id=new_grid_id,
+        starting_date=new_grid_date,
+        meta_condition_id=grid_meta_condition_id,
+        row_condition_1=row_conditions[0].id,
+        row_condition_2=row_conditions[1].id,
+        row_condition_3=row_conditions[2].id,
+        column_condition_1=column_conditions[0].id,
+        column_condition_2=column_conditions[1].id,
+        column_condition_3=column_conditions[2].id,
+    )
+
+    new_grid_answers = get_grid_answers(new_grid, app)
+
+    with app.app_context():
+        stmt = insert(Grid).values(
+            id=new_grid_id,
+            starting_date=new_grid_date,
+            meta_condition_id=grid_meta_condition_id,
+            row_condition_1=row_conditions[0].id,
+            row_condition_2=row_conditions[1].id,
+            row_condition_3=row_conditions[2].id,
+            column_condition_1=column_conditions[0].id,
+            column_condition_2=column_conditions[1].id,
+            column_condition_3=column_conditions[2].id,
+        )
+
+        stmt = stmt.on_duplicate_key_update(stmt.inserted)
+        db.session.execute(stmt)
+
+        stmt = insert(Answer).values([to_dict(answer) for answer in new_grid_answers])
+        stmt = stmt.on_duplicate_key_update(grid_id=stmt.inserted.grid_id)  # ignore update
+        db.session.execute(stmt)
+
+        db.session.commit()
 
 
 def create_default_clubs(db, app):

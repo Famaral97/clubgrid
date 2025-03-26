@@ -211,7 +211,7 @@ def get_grid_solution(grid_id):
         }
     )
 
-
+# TODO: move part of this logic to the database.py since it has a very similar method
 def get_solution(grid_id, row_condition_id, col_condition_id, grid_meta_condition):
     @dataclass
     class ClubRepresenter():
