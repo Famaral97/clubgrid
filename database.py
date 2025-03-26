@@ -221,8 +221,12 @@ def create_default_conditions(db, app):
 def create_default_meta_conditions(db, app):
     meta_conditions = [
         MetaCondition(id=1, description='Big 6',
-                      expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"),
-        MetaCondition(id=2, description='Portugal', expression="clubs.country = 'Portugal'"),
+                      expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"
+                      ),
+        MetaCondition(id=2, description='Portugal',
+                      expression="clubs.country = 'Portugal'",
+                      exclude_country_conditions=True
+                      ),
         # MetaCondition(id=3, description='Germany', expression="clubs.country = 'Germany'"),
         # MetaCondition(id=4, description='England', expression="clubs.country = 'England'"),
         # MetaCondition(id=5, description='Italy', expression="clubs.country = 'Italy'"),

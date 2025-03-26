@@ -24,6 +24,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(length=255), nullable=True),
     sa.Column('expression', sa.String(length=255), nullable=True),
+    sa.Column('exclude_country_conditions', sa.Boolean),
     sa.PrimaryKeyConstraint('id')
     )
     op.add_column('grids', sa.Column('meta_condition_id', sa.Integer(), nullable=True))
