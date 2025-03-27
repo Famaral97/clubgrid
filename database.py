@@ -807,19 +807,19 @@ def get_grid_answers(grid, app):
             grid.meta_condition_id) if grid.meta_condition_id else MetaCondition.query.get(1)
 
     grid_answers = []
-    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_1, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_2, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_3, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_1, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_2, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_3, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_1, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_2, meta_condition, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_3, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_1, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_2, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_3, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_1, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_2, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_3, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_1, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_2, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_3, meta_condition, app))
     return grid_answers
 
 
-def get_answers(grid, column_condition_id, row_condition_id, meta_condition, app):
+def get_cell_answers(grid, column_condition_id, row_condition_id, meta_condition, app):
     with app.app_context():
         query = Club.query.filter(
             text(Condition.query.get(row_condition_id).expression),
@@ -944,14 +944,14 @@ def load_clubs():
     return clubs
 
 
-def insert_grid(db, app, row_conditions, column_conditions, grid_meta_condition_id):
+def insert_grid(db, app, row_conditions, column_conditions, grid_meta_condition):
     new_grid_id = Grid.query.order_by(desc(Grid.id)).first().id + 1
     new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
 
     new_grid = Grid(
         id=new_grid_id,
         starting_date=new_grid_date,
-        meta_condition_id=grid_meta_condition_id,
+        meta_condition_id=grid_meta_condition.id,
         row_condition_1=row_conditions[0].id,
         row_condition_2=row_conditions[1].id,
         row_condition_3=row_conditions[2].id,

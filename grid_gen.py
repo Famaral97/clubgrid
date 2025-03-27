@@ -14,7 +14,7 @@ def create_and_insert_grid(db, app, meta_condition_id, max_clubs_per_cell=30, ma
     row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
                                                       previous_grids_number, meta_condition, app)
 
-    insert_grid(db, app, row_conditions, column_conditions, meta_condition.id)
+    insert_grid(db, app, row_conditions, column_conditions, meta_condition)
 
     ids = []
     for row_cond in row_conditions:

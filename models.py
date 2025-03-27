@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import PrimaryKeyConstraint
 
 db = SQLAlchemy()
 
@@ -87,7 +88,7 @@ class Club(db.Model):
 
 class Grid(db.Model):
     __tablename__ = 'grids'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, nullable=False)
     starting_date = db.Column(db.DateTime)
     meta_condition_id = db.Column(db.Integer, db.ForeignKey('meta_conditions.id'))
     row_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
@@ -96,6 +97,9 @@ class Grid(db.Model):
     column_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     column_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     column_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
+    __table_args__ = (
+        PrimaryKeyConstraint('id', 'meta_condition_id', name='pk_id_meta_condition_id'),  # Composite primary key
+    )
 
 
 class Answer(db.Model):
