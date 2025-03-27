@@ -36,6 +36,7 @@ db.init_app(app)
 create_default_conditions(db, app)
 create_default_meta_conditions(db, app)
 create_default_clubs(db, app)
+
 create_default_grids(db, app)
 
 
@@ -210,6 +211,7 @@ def get_grid_solution(grid_id):
             "col_conditions_descriptions": col_conditions
         }
     )
+
 
 # TODO: move part of this logic to the database.py since it has a very similar method
 def get_solution(grid_id, row_condition_id, col_condition_id, grid_meta_condition):
