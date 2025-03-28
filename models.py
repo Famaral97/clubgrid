@@ -88,7 +88,7 @@ class Club(db.Model):
 
 class Grid(db.Model):
     __tablename__ = 'grids'
-    id = db.Column(db.Integer, nullable=False, primary_key=True)
+    id = db.Column(db.Integer, nullable=False, primary_key=True, autoincrement=True)
     starting_date = db.Column(db.DateTime)
     meta_condition_id = db.Column(db.Integer, db.ForeignKey('meta_conditions.id'))
     local_id = db.Column(db.Integer)

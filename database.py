@@ -245,7 +245,8 @@ def create_default_grids(db, app):
     grids = [
         Grid(
             id=1,
-            # meta_condition_id=1,
+            meta_condition_id=1,
+            local_id=1,
             starting_date=datetime(2024, 12, 5, 0, 0),
             row_condition_1=3,
             row_condition_2=16,
@@ -256,7 +257,8 @@ def create_default_grids(db, app):
         ),
         Grid(
             id=2,
-            # meta_condition_id=2,
+            meta_condition_id=2,
+            local_id=1,
             starting_date=datetime(2024, 12, 4, 0, 0),
             row_condition_1=54,
             row_condition_2=67,
@@ -948,12 +950,9 @@ def insert_grid(db, app, row_conditions, column_conditions, grid_meta_condition)
     newest_local_grid = Grid.query.filter(Grid.meta_condition_id == grid_meta_condition.id).order_by(desc(Grid.local_id)).first()
     grid_local_id = (newest_local_grid.local_id if newest_local_grid else 0) + 1
 
-    grid_id = Grid.query.order_by(desc(Grid.id)).first().id + 1
-
     new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
 
     new_grid = Grid(
-        id=grid_id, # TODO: see how we can ignore this since it is an auto incremented column
         local_id=grid_local_id,
         meta_condition_id=grid_meta_condition.id,
         starting_date=new_grid_date,
@@ -965,13 +964,14 @@ def insert_grid(db, app, row_conditions, column_conditions, grid_meta_condition)
         column_condition_3=column_conditions[2].id,
     )
 
-    new_grid_answers = get_grid_answers(new_grid, app)
-
     with app.app_context():
         stmt = insert(Grid).values(to_dict(new_grid))
-        stmt = stmt.on_duplicate_key_update(stmt.inserted)
+        result = db.session.execute(stmt)
+        db.session.commit()
 
-        db.session.execute(stmt)
+        new_grid.id = result.lastrowid
+
+        new_grid_answers = get_grid_answers(new_grid, app)
 
         stmt = insert(Answer).values([to_dict(answer) for answer in new_grid_answers])
         stmt = stmt.on_duplicate_key_update(grid_id=stmt.inserted.grid_id)  # ignore update
