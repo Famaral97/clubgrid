@@ -88,18 +88,16 @@ class Club(db.Model):
 
 class Grid(db.Model):
     __tablename__ = 'grids'
-    id = db.Column(db.Integer, nullable=False)
+    id = db.Column(db.Integer, nullable=False, primary_key=True)
     starting_date = db.Column(db.DateTime)
     meta_condition_id = db.Column(db.Integer, db.ForeignKey('meta_conditions.id'))
+    local_id = db.Column(db.Integer)
     row_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     row_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     row_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     column_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     column_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     column_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-    __table_args__ = (
-        PrimaryKeyConstraint('id', 'meta_condition_id', name='pk_id_meta_condition_id'),  # Composite primary key
-    )
 
 
 class Answer(db.Model):

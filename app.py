@@ -37,7 +37,7 @@ create_default_conditions(db, app)
 create_default_meta_conditions(db, app)
 create_default_clubs(db, app)
 
-create_default_grids(db, app)
+# create_default_grids(db, app)
 
 
 @app.route('/health-check')
