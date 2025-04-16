@@ -6,7 +6,7 @@ import os
 
 from sqlalchemy import desc, text, func
 
-from flask import Flask, render_template, jsonify, redirect,  request
+from flask import Flask, render_template, jsonify, redirect, request
 
 from database import create_default_conditions, create_default_clubs, create_default_grids, \
     create_default_meta_conditions
@@ -64,7 +64,6 @@ def redirect_home():
 
 @app.route('/grid/<grid_id>', methods=['GET'])
 def index(grid_id):
-
     grid = Grid.query.get(grid_id)
 
     if grid.starting_date > datetime.now():
@@ -91,15 +90,29 @@ def index(grid_id):
 
 @app.route("/grids", methods=['GET'])
 def get_grids():
-    grids = Grid.query.order_by(desc(Grid.id)).filter(Grid.starting_date <= datetime.now())
+    result = (db.session.query(Grid, MetaCondition)
+              .join(MetaCondition, Grid.meta_condition_id == MetaCondition.id)
+              .filter(Grid.starting_date <= datetime.now())
+              .order_by(desc(Grid.id))
+              .all())
+
     @dataclass
     class GridRepresenter():
         id: int
+        local_id: int
+        meta_condition_id: int
+        meta_condition_description: str
         starting_date: str
 
-    grids_ids = [GridRepresenter(grid.id, grid.starting_date.strftime('%a, %d %b')) for grid in grids]
+    grids = [GridRepresenter(
+        id=grid.id,
+        local_id=grid.local_id,
+        meta_condition_id=meta_condition.id,
+        meta_condition_description=meta_condition.description,
+        starting_date=grid.starting_date.strftime('%a, %d %b')
+    ) for grid, meta_condition in result]
 
-    return jsonify(grids_ids)
+    return jsonify(grids)
 
 
 @app.route('/clubs', methods=['GET'])
@@ -114,7 +127,12 @@ def get_clubs():
     clubs = Club.query.all()
 
     clubs_basic_info = {
-        club.id: ClubRepresenter(id=club.id, name=club.name, shortName=club.short_name, logo=club.logo) for club in clubs
+        club.id: ClubRepresenter(
+            id=club.id,
+            name=club.name,
+            shortName=club.short_name,
+            logo=club.logo
+        ) for club in clubs
     }
 
     return jsonify(clubs_basic_info)
