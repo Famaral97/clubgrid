@@ -220,10 +220,10 @@ def create_default_conditions(db, app):
 
 def create_default_meta_conditions(db, app):
     meta_conditions = [
-        MetaCondition(id=1, description='Big 6',
+        MetaCondition(id=1, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷',
                       expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"
                       ),
-        MetaCondition(id=2, description='Portugal',
+        MetaCondition(id=2, description='🇵🇹',
                       expression="clubs.country = 'Portugal'",
                       exclude_country_conditions=True
                       ),

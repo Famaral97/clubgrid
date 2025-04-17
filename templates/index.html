@@ -41,7 +41,7 @@
             <h1>Club Grid - Daily</h1>
             <button class="accent" onclick="showInfoModal()">Info</button>
         </div>
-        <span class="intro">Test your knowledge of 🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷 1st division clubs.</span>
+        <span class="intro">Test your knowledge of first division football clubs:</span>
         </br>
         <span class="intro">Click on a cell and type a club which satisfies both the row's and column's condition!</span>
 
@@ -63,7 +63,7 @@
 
     <div class="container">
         <!-- Top-left corner is empty for the grid layout -->
-        <div class="empty-cell"></div>
+        <div class="grid-meta-condition-title">{{ grid_meta_condition_description }}</div>
         <div class="condition">{{ col_conditions[0].description }}</div>
         <div class="condition">{{ col_conditions[1].description }}</div>
         <div class="condition">{{ col_conditions[2].description }}</div>

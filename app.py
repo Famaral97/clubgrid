@@ -65,6 +65,7 @@ def redirect_home():
 @app.route('/grid/<grid_id>', methods=['GET'])
 def index(grid_id):
     grid = Grid.query.get(grid_id)
+    meta_condition = MetaCondition.query.get(grid.meta_condition_id)
 
     if grid.starting_date > datetime.now():
         return redirect(f"/", code=302)
@@ -84,7 +85,8 @@ def index(grid_id):
     return render_template('index.html',
                            row_conditions=row_conditions,
                            col_conditions=col_conditions,
-                           grid_id=grid.id
+                           grid_id=grid.id,
+                           grid_meta_condition_description=meta_condition.description
                            )
 
 
