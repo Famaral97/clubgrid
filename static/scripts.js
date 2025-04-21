@@ -94,8 +94,8 @@ function showGridSelectionModal() {
 
         const gridName = document.createElement('h4')
         gridName.textContent = `Grid #${grid.id} (${grid.starting_date})`
-        const gridMetaCondition = document.createElement('p')
-        gridMetaCondition.textContent = `${grid.meta_condition_description}`
+        const gridTypeDescription = document.createElement('p')
+        gridTypeDescription.textContent = `${grid.grid_type_description}`
 
         const selectGridButton = document.createElement('button')
 
@@ -122,7 +122,7 @@ function showGridSelectionModal() {
         }
 
         gridDetailsContainer.appendChild(gridName)
-        gridDetailsContainer.appendChild(gridMetaCondition)
+        gridDetailsContainer.appendChild(gridTypeDescription)
         gridOptionContainer.appendChild(gridDetailsContainer)
         gridOptionContainer.appendChild(selectGridButton)
 

@@ -13,8 +13,8 @@ class Condition(db.Model):
     deprecated = db.Column(db.Boolean)
 
 
-class MetaCondition(db.Model):
-    __tablename__ = 'meta_conditions'
+class GridType(db.Model):
+    __tablename__ = 'grid_types'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
     expression = db.Column(db.String(255))
@@ -90,7 +90,7 @@ class Grid(db.Model):
     __tablename__ = 'grids'
     id = db.Column(db.Integer, nullable=False, primary_key=True, autoincrement=True)
     starting_date = db.Column(db.DateTime)
-    meta_condition_id = db.Column(db.Integer, db.ForeignKey('meta_conditions.id'))
+    grid_type_id = db.Column(db.Integer, db.ForeignKey('grid_type.id'))
     local_id = db.Column(db.Integer)
     row_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     row_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))

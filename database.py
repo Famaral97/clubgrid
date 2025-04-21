@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import text, inspect, desc
 from sqlalchemy.dialects.mysql import insert
 
-from models import Condition, Club, Grid, Answer, MetaCondition
+from models import Condition, Club, Grid, Answer, GridType
 
 
 def create_default_conditions(db, app):
@@ -218,24 +218,24 @@ def create_default_conditions(db, app):
         db.session.commit()
 
 
-def create_default_meta_conditions(db, app):
-    meta_conditions = [
-        MetaCondition(id=1, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷',
-                      expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"
-                      ),
-        MetaCondition(id=2, description='🇵🇹',
-                      expression="clubs.country = 'Portugal'",
-                      exclude_country_conditions=True
-                      ),
-        # MetaCondition(id=3, description='Germany', expression="clubs.country = 'Germany'"),
-        # MetaCondition(id=4, description='England', expression="clubs.country = 'England'"),
-        # MetaCondition(id=5, description='Italy', expression="clubs.country = 'Italy'"),
-        # MetaCondition(id=6, description='Spain', expression="clubs.country = 'Spain'"),
-        # MetaCondition(id=7, description='France', expression="clubs.country = 'France'"),
+def create_default_grid_types(db, app):
+    grid_types = [
+        GridType(id=1, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷',
+                 expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"
+                 ),
+        GridType(id=2, description='🇵🇹',
+                 expression="clubs.country = 'Portugal'",
+                 exclude_country_conditions=True
+                 ),
+        # GridType(id=3, description='Germany', expression="clubs.country = 'Germany'"),
+        # GridType(id=4, description='England', expression="clubs.country = 'England'"),
+        # GridType(id=5, description='Italy', expression="clubs.country = 'Italy'"),
+        # GridType(id=6, description='Spain', expression="clubs.country = 'Spain'"),
+        # GridType(id=7, description='France', expression="clubs.country = 'France'"),
     ]
 
     with app.app_context():
-        stmt = insert(MetaCondition).values([to_dict(meta_condition) for meta_condition in meta_conditions])
+        stmt = insert(GridType).values([to_dict(grid_type) for grid_type in grid_types])
         stmt = stmt.on_duplicate_key_update(stmt.inserted)
         db.session.execute(stmt)
         db.session.commit()
@@ -245,7 +245,7 @@ def create_default_grids(db, app):
     grids = [
         Grid(
             id=1,
-            meta_condition_id=1,
+            grid_type_id=1,
             local_id=1,
             starting_date=datetime(2024, 12, 5, 0, 0),
             row_condition_1=3,
@@ -257,7 +257,7 @@ def create_default_grids(db, app):
         ),
         Grid(
             id=2,
-            meta_condition_id=2,
+            grid_type_id=2,
             local_id=1,
             starting_date=datetime(2024, 12, 4, 0, 0),
             row_condition_1=54,
@@ -269,7 +269,7 @@ def create_default_grids(db, app):
         ),
         # Grid(
         #     id=47,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 12, 3, 0, 0),
         #     row_condition_1=6,
         #     row_condition_2=49,
@@ -280,7 +280,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=46,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 12, 2, 0, 0),
         #     row_condition_1=70,
         #     row_condition_2=50,
@@ -291,7 +291,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=45,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 12, 1, 0, 0),
         #     row_condition_1=64,
         #     row_condition_2=23,
@@ -302,7 +302,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=44,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 30, 0, 0),
         #     row_condition_1=8,
         #     row_condition_2=13,
@@ -313,7 +313,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=43,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 29, 0, 0),
         #     row_condition_1=39,
         #     row_condition_2=83,
@@ -324,7 +324,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=42,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 28, 0, 0),
         #     row_condition_1=67,
         #     row_condition_2=85,
@@ -335,7 +335,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=41,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 27, 0, 0),
         #     row_condition_1=48,
         #     row_condition_2=38,
@@ -346,7 +346,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=40,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 26, 0, 0),
         #     row_condition_1=96,
         #     row_condition_2=2,
@@ -357,7 +357,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=39,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 25, 0, 0),
         #     row_condition_1=8,
         #     row_condition_2=74,
@@ -368,7 +368,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=38,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 24, 0, 0),
         #     row_condition_1=83,
         #     row_condition_2=22,
@@ -379,7 +379,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=37,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 23, 0, 0),
         #     row_condition_1=23,
         #     row_condition_2=88,
@@ -390,7 +390,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=36,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 22, 0, 0),
         #     row_condition_1=51,
         #     row_condition_2=62,
@@ -401,7 +401,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=35,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 21, 0, 0),
         #     row_condition_1=3,
         #     row_condition_2=76,
@@ -412,7 +412,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=34,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 20, 0, 0),
         #     row_condition_1=7,
         #     row_condition_2=30,
@@ -423,7 +423,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=33,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 19, 0, 0),
         #     row_condition_1=2,
         #     row_condition_2=92,
@@ -434,7 +434,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=32,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 18, 0, 0),
         #     row_condition_1=102,
         #     row_condition_2=75,
@@ -445,7 +445,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=31,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 17, 0, 0),
         #     row_condition_1=4,
         #     row_condition_2=55,
@@ -456,7 +456,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=30,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 16, 0, 0),
         #     row_condition_1=82,
         #     row_condition_2=96,
@@ -467,7 +467,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=29,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 15, 0, 0),
         #     row_condition_1=7,
         #     row_condition_2=18,
@@ -478,7 +478,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=28,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 14, 0, 0),
         #     row_condition_1=78,
         #     row_condition_2=40,
@@ -489,7 +489,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=27,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 13, 0, 0),
         #     row_condition_1=4,
         #     row_condition_2=69,
@@ -500,7 +500,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=26,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 12, 0, 0),
         #     row_condition_1=88,
         #     row_condition_2=99,
@@ -511,7 +511,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=25,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 11, 0, 0),
         #     row_condition_1=6,
         #     row_condition_2=85,
@@ -522,7 +522,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=24,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 10, 0, 0),
         #     row_condition_1=100,
         #     row_condition_2=66,
@@ -533,7 +533,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=23,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 9, 0, 0),
         #     row_condition_1=72,
         #     row_condition_2=91,
@@ -544,7 +544,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=22,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 8, 0, 0),
         #     row_condition_1=35,
         #     row_condition_2=8,
@@ -555,7 +555,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=21,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 7, 0, 0),
         #     row_condition_1=3,
         #     row_condition_2=12,
@@ -566,7 +566,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=20,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 6, 0, 0),
         #     row_condition_1=38,
         #     row_condition_2=79,
@@ -577,7 +577,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=19,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 5, 0, 0),
         #     row_condition_1=41,
         #     row_condition_2=77,
@@ -588,7 +588,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=18,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 4, 0, 0),
         #     row_condition_1=62,
         #     row_condition_2=21,
@@ -599,7 +599,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=17,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 3, 0, 0),
         #     row_condition_1=24,
         #     row_condition_2=32,
@@ -610,7 +610,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=16,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 2, 0, 0),
         #     row_condition_1=21,
         #     row_condition_2=68,
@@ -621,7 +621,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=15,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 11, 1, 0, 0),
         #     row_condition_1=50,
         #     row_condition_2=47,
@@ -632,7 +632,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=14,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 31, 0, 0),
         #     row_condition_1=65,
         #     row_condition_2=40,
@@ -643,7 +643,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=13,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 30, 0, 0),
         #     row_condition_1=73,
         #     row_condition_2=68,
@@ -654,7 +654,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=12,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 29, 0, 0),
         #     row_condition_1=67,
         #     row_condition_2=14,
@@ -665,7 +665,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=11,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 28, 0, 0),
         #     row_condition_1=50,
         #     row_condition_2=8,
@@ -676,7 +676,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=10,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 27, 0, 0),
         #     row_condition_1=24,
         #     row_condition_2=5,
@@ -687,7 +687,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=9,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 26, 0, 0),
         #     row_condition_1=74,
         #     row_condition_2=17,
@@ -698,7 +698,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=8,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 25, 0, 0),
         #     row_condition_1=70,
         #     row_condition_2=19,
@@ -709,7 +709,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=7,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 24, 0, 0),
         #     row_condition_1=32,
         #     row_condition_2=52,
@@ -720,7 +720,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=6,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 23, 0, 0),
         #     row_condition_1=30,
         #     row_condition_2=41,
@@ -731,7 +731,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=5,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 22, 0, 0),
         #     row_condition_1=36,
         #     row_condition_2=1,
@@ -742,7 +742,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=4,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 21, 0, 0),
         #     row_condition_1=63,
         #     row_condition_2=77,
@@ -753,7 +753,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=3,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 20, 0, 0),
         #     row_condition_1=32,
         #     row_condition_2=22,
@@ -764,7 +764,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=2,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 19, 0, 0),
         #     row_condition_1=1,
         #     row_condition_2=3,
@@ -775,7 +775,7 @@ def create_default_grids(db, app):
         # ),
         # Grid(
         #     id=1,
-        #     meta_condition_id=1,
+        #     grid_type_id=1,
         #     starting_date=datetime(2024, 10, 18, 0, 0),
         #     row_condition_1=30,
         #     row_condition_2=13,
@@ -805,31 +805,31 @@ def create_default_grids(db, app):
 
 def get_grid_answers(grid, app):
     with app.app_context():
-        meta_condition = MetaCondition.query.get(
-            grid.meta_condition_id) if grid.meta_condition_id else MetaCondition.query.get(1)
+        grid_type_id = grid.grid_type_id if grid.grid_type_id else 1
+        grid_type = GridType.query.get(grid_type_id)
 
     grid_answers = []
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_1, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_2, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_3, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_1, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_2, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_3, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_1, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_2, meta_condition, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_3, meta_condition, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_3, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_3, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_3, grid_type, app))
     return grid_answers
 
 
-def get_cell_answers(grid, column_condition_id, row_condition_id, meta_condition, app):
+def get_cell_answers(grid, column_condition_id, row_condition_id, grid_type, app):
     with app.app_context():
         query = Club.query.filter(
             text(Condition.query.get(row_condition_id).expression),
             text(Condition.query.get(column_condition_id).expression)
         )
 
-        if meta_condition is not None:
-            query = query.filter(text(meta_condition.expression))
+        if grid_type is not None:
+            query = query.filter(text(grid_type.expression))
 
         solution_clubs = query.all()
 
@@ -843,32 +843,32 @@ def get_cell_answers(grid, column_condition_id, row_condition_id, meta_condition
     ) for club in solution_clubs]
 
 
-def get_grid_solution(row_conditions, column_conditions, meta_condition, app):
+def get_grid_solution(row_conditions, column_conditions, grid_type, app):
     return [
         [
-            get_cell_solution(row_conditions[0], column_conditions[0], meta_condition, app),
-            get_cell_solution(row_conditions[0], column_conditions[1], meta_condition, app),
-            get_cell_solution(row_conditions[0], column_conditions[2], meta_condition, app)
+            get_cell_solution(row_conditions[0], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[0], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[0], column_conditions[2], grid_type, app)
         ],
         [
-            get_cell_solution(row_conditions[1], column_conditions[0], meta_condition, app),
-            get_cell_solution(row_conditions[1], column_conditions[1], meta_condition, app),
-            get_cell_solution(row_conditions[1], column_conditions[2], meta_condition, app)
+            get_cell_solution(row_conditions[1], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[1], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[1], column_conditions[2], grid_type, app)
         ],
         [
-            get_cell_solution(row_conditions[2], column_conditions[0], meta_condition, app),
-            get_cell_solution(row_conditions[2], column_conditions[1], meta_condition, app),
-            get_cell_solution(row_conditions[2], column_conditions[2], meta_condition, app)
+            get_cell_solution(row_conditions[2], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[2], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[2], column_conditions[2], grid_type, app)
         ]
     ]
 
 
-def get_cell_solution(row_condition, col_condition, grid_meta_condition, app):
+def get_cell_solution(row_condition, col_condition, grid_type, app):
     with app.app_context():
         query = Club.query.filter(text(row_condition.expression), text(col_condition.expression))
 
-        if grid_meta_condition is not None:
-            query = query.filter(text(grid_meta_condition.expression))
+        if grid_type is not None:
+            query = query.filter(text(grid_type.expression))
 
         solution_clubs = query.all()
 
@@ -946,15 +946,17 @@ def load_clubs():
     return clubs
 
 
-def insert_grid(db, app, row_conditions, column_conditions, grid_meta_condition):
-    newest_local_grid = Grid.query.filter(Grid.meta_condition_id == grid_meta_condition.id).order_by(desc(Grid.local_id)).first()
+def insert_grid(db, app, row_conditions, column_conditions, grid_type):
+    newest_local_grid = Grid.query.filter(Grid.grid_type_id == grid_type.id).order_by(desc(Grid.local_id)).first()
     grid_local_id = (newest_local_grid.local_id if newest_local_grid else 0) + 1
 
-    new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
+    latest_grid = Grid.query.order_by(desc(Grid.id)).first()
+    new_grid_date = latest_grid.starting_date + timedelta(days=1) if latest_grid \
+        else datetime.today().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
 
     new_grid = Grid(
         local_id=grid_local_id,
-        meta_condition_id=grid_meta_condition.id,
+        grid_type_id=grid_type.id,
         starting_date=new_grid_date,
         row_condition_1=row_conditions[0].id,
         row_condition_2=row_conditions[1].id,

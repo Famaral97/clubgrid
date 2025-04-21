@@ -9,9 +9,9 @@ from sqlalchemy import desc, text, func
 from flask import Flask, render_template, jsonify, redirect, request
 
 from database import create_default_conditions, create_default_clubs, create_default_grids, \
-    create_default_meta_conditions
+    create_default_grid_types
 from grid_gen import create_and_insert_grid
-from models import db, Condition, Club, Grid, Answer, MetaCondition
+from models import db, Condition, Club, Grid, Answer, GridType
 
 from sqlalchemy.dialects.mysql import insert
 
@@ -34,7 +34,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 db.init_app(app)
 
 create_default_conditions(db, app)
-create_default_meta_conditions(db, app)
+create_default_grid_types(db, app)
 create_default_clubs(db, app)
 
 # create_default_grids(db, app)
@@ -48,12 +48,12 @@ def health_check():
 # to test grid generation
 @app.route(f'/{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
 def generate_grid():
-    meta_condition_id = request.args.get('meta_condition_id')
+    grid_type_id = request.args.get('grid_type_id')
 
-    if meta_condition_id is None:
-        return jsonify({"error": "meta_condition_id is required"}), 400
+    if grid_type_id is None:
+        return jsonify({"error": "grid_type_id is required"}), 400
 
-    return f"{create_and_insert_grid(db, app, meta_condition_id)}"
+    return f"{create_and_insert_grid(db, app, grid_type_id)}"
 
 
 @app.route('/', methods=['GET'])
@@ -65,7 +65,7 @@ def redirect_home():
 @app.route('/grid/<grid_id>', methods=['GET'])
 def index(grid_id):
     grid = Grid.query.get(grid_id)
-    meta_condition = MetaCondition.query.get(grid.meta_condition_id)
+    grid_type = GridType.query.get(grid.grid_type_id)
 
     if grid.starting_date > datetime.now():
         return redirect(f"/", code=302)
@@ -86,14 +86,14 @@ def index(grid_id):
                            row_conditions=row_conditions,
                            col_conditions=col_conditions,
                            grid_id=grid.id,
-                           grid_meta_condition_description=meta_condition.description
+                           grid_type_description=grid_type.description
                            )
 
 
 @app.route("/grids", methods=['GET'])
 def get_grids():
-    result = (db.session.query(Grid, MetaCondition)
-              .join(MetaCondition, Grid.meta_condition_id == MetaCondition.id)
+    result = (db.session.query(Grid, GridType)
+              .join(GridType, Grid.grid_type_id == GridType.id)
               .filter(Grid.starting_date <= datetime.now())
               .order_by(desc(Grid.id))
               .all())
@@ -102,17 +102,17 @@ def get_grids():
     class GridRepresenter():
         id: int
         local_id: int
-        meta_condition_id: int
-        meta_condition_description: str
+        grid_type_id: int
+        grid_type_description: str
         starting_date: str
 
     grids = [GridRepresenter(
         id=grid.id,
         local_id=grid.local_id,
-        meta_condition_id=meta_condition.id,
-        meta_condition_description=meta_condition.description,
+        grid_type_id=grid_type.id,
+        grid_type_description=grid_type.description,
         starting_date=grid.starting_date.strftime('%a, %d %b')
-    ) for grid, meta_condition in result]
+    ) for grid, grid_type in result]
 
     return jsonify(grids)
 
@@ -192,23 +192,23 @@ def check_answer():
 @app.route('/grid/<grid_id>/end', methods=['GET'])
 def get_grid_solution(grid_id):
     grid = Grid.query.get(grid_id)
-    meta_condition = MetaCondition.query.get(grid.meta_condition_id)
+    grid_type = GridType.query.get(grid.grid_type_id)
 
     solutions = [
         [
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1, meta_condition),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2, meta_condition),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3, meta_condition)
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1, grid_type),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2, grid_type),
+            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3, grid_type)
         ],
         [
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1, meta_condition),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2, meta_condition),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3, meta_condition)
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1, grid_type),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2, grid_type),
+            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3, grid_type)
         ],
         [
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1, meta_condition),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2, meta_condition),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3, meta_condition)
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1, grid_type),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2, grid_type),
+            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3, grid_type)
         ]
     ]
 
@@ -234,7 +234,7 @@ def get_grid_solution(grid_id):
 
 
 # TODO: move part of this logic to the database.py since it has a very similar method
-def get_solution(grid_id, row_condition_id, col_condition_id, grid_meta_condition):
+def get_solution(grid_id, row_condition_id, col_condition_id, grid_type):
     @dataclass
     class ClubRepresenter():
         id: str
@@ -245,8 +245,8 @@ def get_solution(grid_id, row_condition_id, col_condition_id, grid_meta_conditio
         text(Condition.query.get(col_condition_id).expression)
     )
 
-    if grid_meta_condition is not None:
-        query = query.filter(text(grid_meta_condition.expression))
+    if grid_type is not None:
+        query = query.filter(text(grid_type.expression))
 
     solution_clubs = query.all()
 

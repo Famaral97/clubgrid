@@ -67,7 +67,7 @@ a:hover {
   text-align: center;
 }
 
-.grid-meta-condition-title {
+.grid-type-title {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -362,7 +362,7 @@ a:hover {
     padding: 10px;
   }
 
-  .grid-meta-condition-title {
+  .grid-type-title {
     font-size: 38px;
   }
 

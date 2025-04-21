@@ -1,20 +1,20 @@
 import random
 
-from sqlalchemy import desc, text
+from sqlalchemy import desc
 
 from database import get_grid_solution, insert_grid
-from models import Condition, Grid, MetaCondition
+from models import Condition, Grid, GridType
 
 
-def create_and_insert_grid(db, app, meta_condition_id, max_clubs_per_cell=30, max_common_conditions=2,
+def create_and_insert_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_conditions=2,
                            previous_grids_number=3):
-    meta_condition = MetaCondition.query.get(meta_condition_id)
-    min_clubs_per_cell = 5 if meta_condition.id == 1 else 1
+    grid_type = GridType.query.get(grid_type_id)
+    min_clubs_per_cell = 5 if grid_type.id == 1 else 1
 
     row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
-                                                      previous_grids_number, meta_condition, app)
+                                                      previous_grids_number, grid_type, app)
 
-    insert_grid(db, app, row_conditions, column_conditions, meta_condition)
+    insert_grid(db, app, row_conditions, column_conditions, grid_type)
 
     ids = []
     for row_cond in row_conditions:
@@ -24,14 +24,14 @@ def create_and_insert_grid(db, app, meta_condition_id, max_clubs_per_cell=30, ma
     return ids
 
 
-def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number, meta_condition,
+def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number, grid_type,
                   app):
     conditions_query = Condition.query.filter(Condition.deprecated.is_(None))
-    if meta_condition.exclude_country_conditions:
+    if grid_type.exclude_country_conditions:
         conditions_query = conditions_query.filter(Condition.id.notin_(range(3, 9)))
     all_conditions = conditions_query.all()
 
-    all_grids = Grid.query.filter_by(meta_condition_id=meta_condition.id).order_by(desc(Grid.id)).all()
+    all_grids = Grid.query.filter_by(grid_type_id=grid_type.id).order_by(desc(Grid.id)).all()
 
     conditions_weights = compute_weights(all_conditions, all_grids)
 
@@ -46,7 +46,7 @@ def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
-        grid_solution = get_grid_solution(row_conditions, col_conditions, meta_condition, app)
+        grid_solution = get_grid_solution(row_conditions, col_conditions, grid_type, app)
 
         print("- Checking if solution is valid: ", row_conditions, col_conditions, flush=True)
 
