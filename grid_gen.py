@@ -48,8 +48,6 @@ def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
 
         grid_solution = get_grid_solution(row_conditions, col_conditions, grid_type, app)
 
-        print("- Checking if solution is valid: ", row_conditions, col_conditions, flush=True)
-
         if grid_has_enough_solutions(grid_solution, min_clubs_per_cell, max_clubs_per_cell):
             if grid_is_completable(grid_solution):
                 if grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
