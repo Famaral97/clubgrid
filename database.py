@@ -227,11 +227,26 @@ def create_default_grid_types(db, app):
                  expression="clubs.country = 'Portugal'",
                  exclude_country_conditions=True
                  ),
-        # GridType(id=3, description='Germany', expression="clubs.country = 'Germany'"),
-        # GridType(id=4, description='England', expression="clubs.country = 'England'"),
-        # GridType(id=5, description='Italy', expression="clubs.country = 'Italy'"),
-        # GridType(id=6, description='Spain', expression="clubs.country = 'Spain'"),
-        # GridType(id=7, description='France', expression="clubs.country = 'France'"),
+        GridType(id=3, description='🇩🇪',
+                 expression="clubs.country = 'Germany'",
+                 exclude_country_conditions=True
+                 ),
+        GridType(id=4, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+                 expression="clubs.country = 'England'",
+                 exclude_country_conditions=True
+                 ),
+        GridType(id=5, description='🇮🇹',
+                 expression="clubs.country = 'Italy'",
+                 exclude_country_conditions=True
+                 ),
+        GridType(id=6, description='🇪🇸',
+                 expression="clubs.country = 'Spain'",
+                 exclude_country_conditions=True
+                 ),
+        GridType(id=7, description='🇫🇷',
+                 expression="clubs.country = 'France'",
+                 exclude_country_conditions=True
+                 ),
     ]
 
     with app.app_context():
@@ -805,7 +820,7 @@ def create_default_grids(db, app):
 
 def get_grid_answers(grid, app):
     with app.app_context():
-        grid_type_id = grid.grid_type_id if grid.grid_type_id else 1
+        grid_type_id = grid.type_id if grid.type_id else 1
         grid_type = GridType.query.get(grid_type_id)
 
     grid_answers = []
@@ -947,16 +962,16 @@ def load_clubs():
 
 
 def insert_grid(db, app, row_conditions, column_conditions, grid_type):
-    newest_local_grid = Grid.query.filter(Grid.grid_type_id == grid_type.id).order_by(desc(Grid.local_id)).first()
+    newest_local_grid = Grid.query.filter(Grid.type_id == grid_type.id).order_by(desc(Grid.local_id)).first()
     grid_local_id = (newest_local_grid.local_id if newest_local_grid else 0) + 1
 
-    latest_grid = Grid.query.order_by(desc(Grid.id)).first()
+    latest_grid = Grid.query.order_by(desc(Grid.id)).filter(Grid.type_id == grid_type.id).first()
     new_grid_date = latest_grid.starting_date + timedelta(days=1) if latest_grid \
         else datetime.today().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
 
     new_grid = Grid(
         local_id=grid_local_id,
-        grid_type_id=grid_type.id,
+        type_id=grid_type.id,
         starting_date=new_grid_date,
         row_condition_1=row_conditions[0].id,
         row_condition_2=row_conditions[1].id,

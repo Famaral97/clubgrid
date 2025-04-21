@@ -31,7 +31,7 @@ def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
         conditions_query = conditions_query.filter(Condition.id.notin_(range(3, 9)))
     all_conditions = conditions_query.all()
 
-    all_grids = Grid.query.filter_by(grid_type_id=grid_type.id).order_by(desc(Grid.id)).all()
+    all_grids = Grid.query.filter_by(type_id=grid_type.id).order_by(desc(Grid.id)).all()
 
     conditions_weights = compute_weights(all_conditions, all_grids)
 

@@ -95,7 +95,7 @@ function showGridSelectionModal() {
         const gridName = document.createElement('h4')
         gridName.textContent = `Grid #${grid.id} (${grid.starting_date})`
         const gridTypeDescription = document.createElement('p')
-        gridTypeDescription.textContent = `${grid.grid_type_description}`
+        gridTypeDescription.textContent = `${grid.type_description}`
 
         const selectGridButton = document.createElement('button')
 

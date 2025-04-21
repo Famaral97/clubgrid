@@ -65,7 +65,7 @@ def redirect_home():
 @app.route('/grid/<grid_id>', methods=['GET'])
 def index(grid_id):
     grid = Grid.query.get(grid_id)
-    grid_type = GridType.query.get(grid.grid_type_id)
+    grid_type = GridType.query.get(grid.type_id)
 
     if grid.starting_date > datetime.now():
         return redirect(f"/", code=302)
@@ -93,7 +93,7 @@ def index(grid_id):
 @app.route("/grids", methods=['GET'])
 def get_grids():
     result = (db.session.query(Grid, GridType)
-              .join(GridType, Grid.grid_type_id == GridType.id)
+              .join(GridType, Grid.type_id == GridType.id)
               .filter(Grid.starting_date <= datetime.now())
               .order_by(desc(Grid.id))
               .all())
@@ -101,16 +101,12 @@ def get_grids():
     @dataclass
     class GridRepresenter():
         id: int
-        local_id: int
-        grid_type_id: int
-        grid_type_description: str
+        type_description: str
         starting_date: str
 
     grids = [GridRepresenter(
         id=grid.id,
-        local_id=grid.local_id,
-        grid_type_id=grid_type.id,
-        grid_type_description=grid_type.description,
+        type_description=grid_type.description,
         starting_date=grid.starting_date.strftime('%a, %d %b')
     ) for grid, grid_type in result]
 
@@ -192,7 +188,7 @@ def check_answer():
 @app.route('/grid/<grid_id>/end', methods=['GET'])
 def get_grid_solution(grid_id):
     grid = Grid.query.get(grid_id)
-    grid_type = GridType.query.get(grid.grid_type_id)
+    grid_type = GridType.query.get(grid.type_id)
 
     solutions = [
         [
