@@ -1,4 +1,6 @@
 .venv
+.env
+.gitconfig
 .DS_Store
 /data/data.csv
 /__pycache__
