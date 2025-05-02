@@ -1,19 +1,20 @@
 import random
 
-from datetime import timedelta
-from sqlalchemy import desc, text
-from sqlalchemy.dialects.mysql import insert
+from sqlalchemy import desc
 
-from database import get_grid_answers, to_dict
-from models import Condition, Grid, Club, Answer
+from database import get_grid_solution, insert_grid
+from models import Condition, Grid, GridType
 
 
-def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=30, max_common_conditions=2,
+def create_and_insert_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_conditions=2,
                            previous_grids_number=3):
-    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
-                                                      previous_grids_number)
+    grid_type = GridType.query.get(grid_type_id)
+    min_clubs_per_cell = 5 if grid_type.id == 1 else 1
 
-    insert_new_grid(db, app, row_conditions, column_conditions)
+    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
+                                                      previous_grids_number, grid_type, app)
+
+    insert_grid(db, app, row_conditions, column_conditions, grid_type)
 
     ids = []
     for row_cond in row_conditions:
@@ -23,24 +24,41 @@ def create_and_insert_grid(db, app, min_clubs_per_cell=5, max_clubs_per_cell=30,
     return ids
 
 
-def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number):
-    all_conditions = Condition.query.filter(Condition.deprecated.is_(None)).all()
-    all_grids = Grid.query.order_by(desc(Grid.id)).all()
+def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number, grid_type,
+                  app):
+    conditions_query = Condition.query.filter(Condition.deprecated.is_(None))
+    if grid_type.exclude_country_conditions:
+        conditions_query = conditions_query.filter(Condition.id.notin_(range(3, 9)))
+    all_conditions = conditions_query.all()
+
+    all_grids = Grid.query.filter_by(type_id=grid_type.id).order_by(desc(Grid.id)).all()
 
     conditions_weights = compute_weights(all_conditions, all_grids)
 
+    grid_attempt = 0
+
     while True:
+        grid_attempt += 1
+        print("Creating grid: attempt #", grid_attempt, flush=True)
+
         conditions_sample = get_weighted_sample_of_conditions(all_conditions, conditions_weights)
 
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
-        if check_grid_is_possible(row_conditions, col_conditions, min_clubs_per_cell, max_clubs_per_cell) and \
-                check_grid_does_not_have_common_conditions_to_last_n_grids(conditions_sample, all_grids,
-                                                                           previous_grids_number) and \
-                check_grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
-                check_grid_has_different_conditions_tags(conditions_sample):
-            return row_conditions, col_conditions
+        grid_solution = get_grid_solution(row_conditions, col_conditions, grid_type, app)
+
+        if grid_has_enough_solutions(grid_solution, min_clubs_per_cell, max_clubs_per_cell):
+            if grid_is_completable(grid_solution):
+                if grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
+                    print("--- ✅ SUCCESS!", flush=True)
+                    return row_conditions, col_conditions
+                else:
+                    print("--- 🟰❌ not different enough", flush=True)
+            else:
+                print("--- 📋❌ not completable", flush=True)
+        else:
+            print("--- 🤏❌ not enough solutions", flush=True)
 
 
 def get_weighted_sample_of_conditions(conditions, weights):
@@ -72,12 +90,19 @@ def compute_weights(conditions, grids):
     return weights_list
 
 
-def check_grid_has_different_conditions_tags(conditions):
+def grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
+    if grid_has_different_conditions_than_previous_grids(conditions_sample, all_grids, previous_grids_number) and \
+            grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
+            grid_has_different_conditions_tags(conditions_sample):
+        return True
+
+
+def grid_has_different_conditions_tags(conditions):
     tags = [condition.tags for condition in conditions]
     return len(set(tags)) == 6
 
 
-def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids, n_grids):
+def grid_has_different_conditions_than_previous_grids(conditions, grids, n_grids):
     conditions_ids = [condition.id for condition in conditions]
 
     for grid in grids[:n_grids]:
@@ -95,7 +120,7 @@ def check_grid_does_not_have_common_conditions_to_last_n_grids(conditions, grids
     return True
 
 
-def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
+def grid_is_not_too_similar(conditions, grids, max_conditions_number):
     conditions_ids = [condition.id for condition in conditions]
 
     for grid in grids:
@@ -113,52 +138,29 @@ def check_grid_is_not_too_similar(conditions, grids, max_conditions_number):
     return True
 
 
-def check_grid_is_possible(row_conditions, column_conditions, min_clubs_per_cell, max_clubs_per_cell):
-    for row_condition in row_conditions:
-        for col_condition in column_conditions:
-
-            possible_clubs = Club.query.filter(text(row_condition.expression), text(col_condition.expression)).all()
-
-            if len(possible_clubs) < min_clubs_per_cell or len(possible_clubs) > max_clubs_per_cell:
+def grid_has_enough_solutions(grid, min_clubs_per_cell, max_clubs_per_cell):
+    for row in grid:
+        for cell in row:
+            if len(cell) < min_clubs_per_cell or len(cell) > max_clubs_per_cell:
                 return False
 
     return True
 
 
-def insert_new_grid(db, app, row_conditions, column_conditions):
-    new_grid_id = Grid.query.order_by(desc(Grid.id)).first().id + 1
-    new_grid_date = Grid.query.order_by(desc(Grid.id)).first().starting_date + timedelta(days=1)
+def grid_is_completable(grid):
+    def backtrack(used, row, col):
+        if row == 3:
+            return True
 
-    new_grid = Grid(
-        id=new_grid_id,
-        starting_date=new_grid_date,
-        row_condition_1=row_conditions[0].id,
-        row_condition_2=row_conditions[1].id,
-        row_condition_3=row_conditions[2].id,
-        column_condition_1=column_conditions[0].id,
-        column_condition_2=column_conditions[1].id,
-        column_condition_3=column_conditions[2].id,
-    )
+        next_row, next_col = (row, col + 1) if col < 2 else (row + 1, 0)
 
-    new_grid_answers = get_grid_answers(new_grid, app)
+        for club in grid[row][col]:
+            if club not in used:
+                used.add(club)
+                if backtrack(used, next_row, next_col):
+                    return True
+                used.remove(club)
 
-    with app.app_context():
-        stmt = insert(Grid).values(
-            id=new_grid_id,
-            starting_date=new_grid_date,
-            row_condition_1=row_conditions[0].id,
-            row_condition_2=row_conditions[1].id,
-            row_condition_3=row_conditions[2].id,
-            column_condition_1=column_conditions[0].id,
-            column_condition_2=column_conditions[1].id,
-            column_condition_3=column_conditions[2].id,
-        )
+        return False
 
-        stmt = stmt.on_duplicate_key_update(stmt.inserted)
-        db.session.execute(stmt)
-
-        stmt = insert(Answer).values([to_dict(answer) for answer in new_grid_answers])
-        stmt = stmt.on_duplicate_key_update(grid_id=stmt.inserted.grid_id)  # ignore update
-        db.session.execute(stmt)
-
-        db.session.commit()
+    return backtrack(set(), 0, 0)

@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import PrimaryKeyConstraint
 
 db = SQLAlchemy()
 
@@ -10,6 +11,14 @@ class Condition(db.Model):
     expression = db.Column(db.String(255))
     tags = db.Column(db.String(255))
     deprecated = db.Column(db.Boolean)
+
+
+class GridType(db.Model):
+    __tablename__ = 'grid_types'
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(255))
+    expression = db.Column(db.String(255))
+    exclude_country_conditions = db.Column(db.Boolean)
 
 
 class Club(db.Model):
@@ -68,11 +77,21 @@ class Club(db.Model):
     best_club_runner_up = db.Column(db.Integer)
     best_club_third_place = db.Column(db.Integer)
 
+    def __eq__(self, other):
+        if isinstance(other, Club):
+            return self.id == other.id
+        return False
+
+    def __hash__(self):
+        return hash(self.id)  # Ensures uniqueness in sets
+
 
 class Grid(db.Model):
     __tablename__ = 'grids'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, nullable=False, primary_key=True, autoincrement=True)
     starting_date = db.Column(db.DateTime)
+    type_id = db.Column(db.Integer, db.ForeignKey('grid_type.id'))
+    local_id = db.Column(db.Integer)
     row_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     row_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
     row_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))

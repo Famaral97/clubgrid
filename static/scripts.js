@@ -89,8 +89,13 @@ function showGridSelectionModal() {
         const gridOptionContainer = document.createElement('div')
         gridOptionContainer.className = 'dropdown-option'
 
-        const gridName = document.createElement('span')
+        const gridDetailsContainer = document.createElement('div')
+        gridDetailsContainer.className = 'grid-details-container'
+
+        const gridName = document.createElement('h4')
         gridName.textContent = `Grid #${grid.id} (${grid.starting_date})`
+        const gridTypeDescription = document.createElement('p')
+        gridTypeDescription.textContent = `${grid.type_description}`
 
         const selectGridButton = document.createElement('button')
 
@@ -116,7 +121,9 @@ function showGridSelectionModal() {
             location.replace(`/grid/${grid.id}`)
         }
 
-        gridOptionContainer.appendChild(gridName)
+        gridDetailsContainer.appendChild(gridName)
+        gridDetailsContainer.appendChild(gridTypeDescription)
+        gridOptionContainer.appendChild(gridDetailsContainer)
         gridOptionContainer.appendChild(selectGridButton)
 
         gridSelectionModalContainer.appendChild(gridOptionContainer)

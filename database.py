@@ -1,10 +1,10 @@
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from sqlalchemy import text, inspect
+from sqlalchemy import text, inspect, desc
 from sqlalchemy.dialects.mysql import insert
 
-from models import Condition, Club, Grid, Answer
+from models import Condition, Club, Grid, Answer, GridType
 
 
 def create_default_conditions(db, app):
@@ -218,10 +218,50 @@ def create_default_conditions(db, app):
         db.session.commit()
 
 
+def create_default_grid_types(db, app):
+    grid_types = [
+        GridType(id=1, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷',
+                 expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"
+                 ),
+        # GridType(id=2, description='🇵🇹',
+        #          expression="clubs.country = 'Portugal'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=3, description='🇩🇪',
+        #          expression="clubs.country = 'Germany'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=4, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+        #          expression="clubs.country = 'England'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=5, description='🇮🇹',
+        #          expression="clubs.country = 'Italy'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=6, description='🇪🇸',
+        #          expression="clubs.country = 'Spain'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=7, description='🇫🇷',
+        #          expression="clubs.country = 'France'",
+        #          exclude_country_conditions=True
+        #          ),
+    ]
+
+    with app.app_context():
+        stmt = insert(GridType).values([to_dict(grid_type) for grid_type in grid_types])
+        stmt = stmt.on_duplicate_key_update(stmt.inserted)
+        db.session.execute(stmt)
+        db.session.commit()
+
+
 def create_default_grids(db, app):
     grids = [
         Grid(
-            id=49,
+            id=1,
+            grid_type_id=1,
+            local_id=1,
             starting_date=datetime(2024, 12, 5, 0, 0),
             row_condition_1=3,
             row_condition_2=16,
@@ -231,7 +271,9 @@ def create_default_grids(db, app):
             column_condition_3=92,
         ),
         Grid(
-            id=48,
+            id=2,
+            grid_type_id=2,
+            local_id=1,
             starting_date=datetime(2024, 12, 4, 0, 0),
             row_condition_1=54,
             row_condition_2=67,
@@ -239,477 +281,7 @@ def create_default_grids(db, app):
             column_condition_1=60,
             column_condition_2=79,
             column_condition_3=4,
-        ),
-        Grid(
-            id=47,
-            starting_date=datetime(2024, 12, 3, 0, 0),
-            row_condition_1=6,
-            row_condition_2=49,
-            row_condition_3=69,
-            column_condition_1=36,
-            column_condition_2=31,
-            column_condition_3=76,
-        ),
-        Grid(
-            id=46,
-            starting_date=datetime(2024, 12, 2, 0, 0),
-            row_condition_1=70,
-            row_condition_2=50,
-            row_condition_3=1,
-            column_condition_1=33,
-            column_condition_2=81,
-            column_condition_3=53,
-        ),
-        Grid(
-            id=45,
-            starting_date=datetime(2024, 12, 1, 0, 0),
-            row_condition_1=64,
-            row_condition_2=23,
-            row_condition_3=12,
-            column_condition_1=75,
-            column_condition_2=37,
-            column_condition_3=86,
-        ),
-        Grid(
-            id=44,
-            starting_date=datetime(2024, 11, 30, 0, 0),
-            row_condition_1=8,
-            row_condition_2=13,
-            row_condition_3=78,
-            column_condition_1=22,
-            column_condition_2=29,
-            column_condition_3=97,
-        ),
-        Grid(
-            id=43,
-            starting_date=datetime(2024, 11, 29, 0, 0),
-            row_condition_1=39,
-            row_condition_2=83,
-            row_condition_3=51,
-            column_condition_1=4,
-            column_condition_2=100,
-            column_condition_3=98,
-        ),
-        Grid(
-            id=42,
-            starting_date=datetime(2024, 11, 28, 0, 0),
-            row_condition_1=67,
-            row_condition_2=85,
-            row_condition_3=15,
-            column_condition_1=26,
-            column_condition_2=55,
-            column_condition_3=7,
-        ),
-        Grid(
-            id=41,
-            starting_date=datetime(2024, 11, 27, 0, 0),
-            row_condition_1=48,
-            row_condition_2=38,
-            row_condition_3=19,
-            column_condition_1=3,
-            column_condition_2=43,
-            column_condition_3=59,
-        ),
-        Grid(
-            id=40,
-            starting_date=datetime(2024, 11, 26, 0, 0),
-            row_condition_1=96,
-            row_condition_2=2,
-            row_condition_3=46,
-            column_condition_1=17,
-            column_condition_2=5,
-            column_condition_3=69,
-        ),
-        Grid(
-            id=39,
-            starting_date=datetime(2024, 11, 25, 0, 0),
-            row_condition_1=8,
-            row_condition_2=74,
-            row_condition_3=47,
-            column_condition_1=102,
-            column_condition_2=56,
-            column_condition_3=71,
-        ),
-        Grid(
-            id=38,
-            starting_date=datetime(2024, 11, 24, 0, 0),
-            row_condition_1=83,
-            row_condition_2=22,
-            row_condition_3=34,
-            column_condition_1=9,
-            column_condition_2=6,
-            column_condition_3=98,
-        ),
-        Grid(
-            id=37,
-            starting_date=datetime(2024, 11, 23, 0, 0),
-            row_condition_1=23,
-            row_condition_2=88,
-            row_condition_3=44,
-            column_condition_1=68,
-            column_condition_2=81,
-            column_condition_3=42,
-        ),
-        Grid(
-            id=36,
-            starting_date=datetime(2024, 11, 22, 0, 0),
-            row_condition_1=51,
-            row_condition_2=62,
-            row_condition_3=21,
-            column_condition_1=69,
-            column_condition_2=100,
-            column_condition_3=33,
-        ),
-        Grid(
-            id=35,
-            starting_date=datetime(2024, 11, 21, 0, 0),
-            row_condition_1=3,
-            row_condition_2=76,
-            row_condition_3=72,
-            column_condition_1=28,
-            column_condition_2=93,
-            column_condition_3=31,
-        ),
-        Grid(
-            id=34,
-            starting_date=datetime(2024, 11, 20, 0, 0),
-            row_condition_1=7,
-            row_condition_2=30,
-            row_condition_3=60,
-            column_condition_1=45,
-            column_condition_2=65,
-            column_condition_3=35,
-        ),
-        Grid(
-            id=33,
-            starting_date=datetime(2024, 11, 19, 0, 0),
-            row_condition_1=2,
-            row_condition_2=92,
-            row_condition_3=97,
-            column_condition_1=70,
-            column_condition_2=66,
-            column_condition_3=103,
-        ),
-        Grid(
-            id=32,
-            starting_date=datetime(2024, 11, 18, 0, 0),
-            row_condition_1=102,
-            row_condition_2=75,
-            row_condition_3=94,
-            column_condition_1=86,
-            column_condition_2=24,
-            column_condition_3=73,
-        ),
-        Grid(
-            id=31,
-            starting_date=datetime(2024, 11, 17, 0, 0),
-            row_condition_1=4,
-            row_condition_2=55,
-            row_condition_3=84,
-            column_condition_1=21,
-            column_condition_2=90,
-            column_condition_3=25,
-        ),
-        Grid(
-            id=30,
-            starting_date=datetime(2024, 11, 16, 0, 0),
-            row_condition_1=82,
-            row_condition_2=96,
-            row_condition_3=50,
-            column_condition_1=76,
-            column_condition_2=62,
-            column_condition_3=3,
-        ),
-        Grid(
-            id=29,
-            starting_date=datetime(2024, 11, 15, 0, 0),
-            row_condition_1=7,
-            row_condition_2=18,
-            row_condition_3=59,
-            column_condition_1=20,
-            column_condition_2=74,
-            column_condition_3=38,
-        ),
-        Grid(
-            id=28,
-            starting_date=datetime(2024, 11, 14, 0, 0),
-            row_condition_1=78,
-            row_condition_2=40,
-            row_condition_3=53,
-            column_condition_1=2,
-            column_condition_2=24,
-            column_condition_3=32,
-        ),
-        Grid(
-            id=27,
-            starting_date=datetime(2024, 11, 13, 0, 0),
-            row_condition_1=4,
-            row_condition_2=69,
-            row_condition_3=9,
-            column_condition_1=19,
-            column_condition_2=87,
-            column_condition_3=92,
-        ),
-        Grid(
-            id=26,
-            starting_date=datetime(2024, 11, 12, 0, 0),
-            row_condition_1=88,
-            row_condition_2=99,
-            row_condition_3=55,
-            column_condition_1=83,
-            column_condition_2=91,
-            column_condition_3=102,
-        ),
-        Grid(
-            id=25,
-            starting_date=datetime(2024, 11, 11, 0, 0),
-            row_condition_1=6,
-            row_condition_2=85,
-            row_condition_3=44,
-            column_condition_1=67,
-            column_condition_2=23,
-            column_condition_3=57,
-        ),
-        Grid(
-            id=24,
-            starting_date=datetime(2024, 11, 10, 0, 0),
-            row_condition_1=100,
-            row_condition_2=66,
-            row_condition_3=11,
-            column_condition_1=25,
-            column_condition_2=97,
-            column_condition_3=41,
-        ),
-        Grid(
-            id=23,
-            starting_date=datetime(2024, 11, 9, 0, 0),
-            row_condition_1=72,
-            row_condition_2=91,
-            row_condition_3=58,
-            column_condition_1=22,
-            column_condition_2=10,
-            column_condition_3=36,
-        ),
-        Grid(
-            id=22,
-            starting_date=datetime(2024, 11, 8, 0, 0),
-            row_condition_1=35,
-            row_condition_2=8,
-            row_condition_3=67,
-            column_condition_1=20,
-            column_condition_2=92,
-            column_condition_3=74,
-        ),
-        Grid(
-            id=21,
-            starting_date=datetime(2024, 11, 7, 0, 0),
-            row_condition_1=3,
-            row_condition_2=12,
-            row_condition_3=37,
-            column_condition_1=53,
-            column_condition_2=65,
-            column_condition_3=73,
-        ),
-        Grid(
-            id=20,
-            starting_date=datetime(2024, 11, 6, 0, 0),
-            row_condition_1=38,
-            row_condition_2=79,
-            row_condition_3=14,
-            column_condition_1=40,
-            column_condition_2=54,
-            column_condition_3=68,
-        ),
-        Grid(
-            id=19,
-            starting_date=datetime(2024, 11, 5, 0, 0),
-            row_condition_1=41,
-            row_condition_2=77,
-            row_condition_3=51,
-            column_condition_1=75,
-            column_condition_2=63,
-            column_condition_3=42,
-        ),
-        Grid(
-            id=18,
-            starting_date=datetime(2024, 11, 4, 0, 0),
-            row_condition_1=62,
-            row_condition_2=21,
-            row_condition_3=83,
-            column_condition_1=8,
-            column_condition_2=71,
-            column_condition_3=66,
-        ),
-        Grid(
-            id=17,
-            starting_date=datetime(2024, 11, 3, 0, 0),
-            row_condition_1=24,
-            row_condition_2=32,
-            row_condition_3=65,
-            column_condition_1=72,
-            column_condition_2=76,
-            column_condition_3=61,
-        ),
-        Grid(
-            id=16,
-            starting_date=datetime(2024, 11, 2, 0, 0),
-            row_condition_1=21,
-            row_condition_2=68,
-            row_condition_3=79,
-            column_condition_1=64,
-            column_condition_2=74,
-            column_condition_3=53,
-        ),
-        Grid(
-            id=15,
-            starting_date=datetime(2024, 11, 1, 0, 0),
-            row_condition_1=50,
-            row_condition_2=47,
-            row_condition_3=41,
-            column_condition_1=60,
-            column_condition_2=75,
-            column_condition_3=43,
-        ),
-        Grid(
-            id=14,
-            starting_date=datetime(2024, 10, 31, 0, 0),
-            row_condition_1=65,
-            row_condition_2=40,
-            row_condition_3=39,
-            column_condition_1=27,
-            column_condition_2=42,
-            column_condition_3=58,
-        ),
-        Grid(
-            id=13,
-            starting_date=datetime(2024, 10, 30, 0, 0),
-            row_condition_1=73,
-            row_condition_2=68,
-            row_condition_3=28,
-            column_condition_1=75,
-            column_condition_2=12,
-            column_condition_3=54,
-        ),
-        Grid(
-            id=12,
-            starting_date=datetime(2024, 10, 29, 0, 0),
-            row_condition_1=67,
-            row_condition_2=14,
-            row_condition_3=69,
-            column_condition_1=55,
-            column_condition_2=17,
-            column_condition_3=75,
-        ),
-        Grid(
-            id=11,
-            starting_date=datetime(2024, 10, 28, 0, 0),
-            row_condition_1=50,
-            row_condition_2=8,
-            row_condition_3=54,
-            column_condition_1=34,
-            column_condition_2=15,
-            column_condition_3=74,
-        ),
-        Grid(
-            id=10,
-            starting_date=datetime(2024, 10, 27, 0, 0),
-            row_condition_1=24,
-            row_condition_2=5,
-            row_condition_3=73,
-            column_condition_1=52,
-            column_condition_2=11,
-            column_condition_3=10,
-        ),
-        Grid(
-            id=9,
-            starting_date=datetime(2024, 10, 26, 0, 0),
-            row_condition_1=74,
-            row_condition_2=17,
-            row_condition_3=50,
-            column_condition_1=71,
-            column_condition_2=48,
-            column_condition_3=28,
-        ),
-        Grid(
-            id=8,
-            starting_date=datetime(2024, 10, 25, 0, 0),
-            row_condition_1=70,
-            row_condition_2=19,
-            row_condition_3=6,
-            column_condition_1=79,
-            column_condition_2=48,
-            column_condition_3=31,
-        ),
-        Grid(
-            id=7,
-            starting_date=datetime(2024, 10, 24, 0, 0),
-            row_condition_1=32,
-            row_condition_2=52,
-            row_condition_3=26,
-            column_condition_1=49,
-            column_condition_2=2,
-            column_condition_3=41,
-        ),
-        Grid(
-            id=6,
-            starting_date=datetime(2024, 10, 23, 0, 0),
-            row_condition_1=30,
-            row_condition_2=41,
-            row_condition_3=27,
-            column_condition_1=54,
-            column_condition_2=21,
-            column_condition_3=50,
-        ),
-        Grid(
-            id=5,
-            starting_date=datetime(2024, 10, 22, 0, 0),
-            row_condition_1=36,
-            row_condition_2=1,
-            row_condition_3=10,
-            column_condition_1=62,
-            column_condition_2=67,
-            column_condition_3=73,
-        ),
-        Grid(
-            id=4,
-            starting_date=datetime(2024, 10, 21, 0, 0),
-            row_condition_1=63,
-            row_condition_2=77,
-            row_condition_3=78,
-            column_condition_1=52,
-            column_condition_2=4,
-            column_condition_3=29,
-        ),
-        Grid(
-            id=3,
-            starting_date=datetime(2024, 10, 20, 0, 0),
-            row_condition_1=32,
-            row_condition_2=22,
-            row_condition_3=7,
-            column_condition_1=15,
-            column_condition_2=25,
-            column_condition_3=9,
-        ),
-        Grid(
-            id=2,
-            starting_date=datetime(2024, 10, 19, 0, 0),
-            row_condition_1=1,
-            row_condition_2=3,
-            row_condition_3=17,
-            column_condition_1=20,
-            column_condition_2=28,
-            column_condition_3=42,
-        ),
-        Grid(
-            id=1,
-            starting_date=datetime(2024, 10, 18, 0, 0),
-            row_condition_1=30,
-            row_condition_2=13,
-            row_condition_3=16,
-            column_condition_1=10,
-            column_condition_2=19,
-            column_condition_3=41,
-        ),
+        )
     ]
 
     answers = []
@@ -719,6 +291,7 @@ def create_default_grids(db, app):
     with app.app_context():
         stmt = insert(Grid).values([to_dict(grid) for grid in grids])
         stmt = stmt.on_duplicate_key_update(stmt.inserted)
+
         db.session.execute(stmt)
 
         stmt = insert(Answer).values([to_dict(answer) for answer in answers])
@@ -729,27 +302,34 @@ def create_default_grids(db, app):
 
 
 def get_grid_answers(grid, app):
+    with app.app_context():
+        grid_type_id = grid.type_id if grid.type_id else 1
+        grid_type = GridType.query.get(grid_type_id)
+
     grid_answers = []
-    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_1, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_2, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_1, grid.row_condition_3, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_1, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_2, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_2, grid.row_condition_3, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_1, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_2, app))
-    grid_answers.extend(get_answers(grid, grid.column_condition_3, grid.row_condition_3, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_3, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_3, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_3, grid_type, app))
     return grid_answers
 
 
-def get_answers(grid, column_condition_id, row_condition_id, app):
+def get_cell_answers(grid, column_condition_id, row_condition_id, grid_type, app):
     with app.app_context():
-        row_condition_expression = Condition.query.get(column_condition_id).expression
-        column_condition_expression = Condition.query.get(row_condition_id).expression
+        query = Club.query.filter(
+            text(Condition.query.get(row_condition_id).expression),
+            text(Condition.query.get(column_condition_id).expression)
+        )
 
-        solution_clubs = Club.query.filter(
-            text(row_condition_expression),
-            text(column_condition_expression)).all()
+        if grid_type is not None:
+            query = query.filter(text(grid_type.expression))
+
+        solution_clubs = query.all()
 
     return [Answer(
         grid_id=grid.id,
@@ -759,6 +339,38 @@ def get_answers(grid, column_condition_id, row_condition_id, app):
         is_solution=True,
         count=0,
     ) for club in solution_clubs]
+
+
+def get_grid_solution(row_conditions, column_conditions, grid_type, app):
+    return [
+        [
+            get_cell_solution(row_conditions[0], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[0], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[0], column_conditions[2], grid_type, app)
+        ],
+        [
+            get_cell_solution(row_conditions[1], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[1], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[1], column_conditions[2], grid_type, app)
+        ],
+        [
+            get_cell_solution(row_conditions[2], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[2], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[2], column_conditions[2], grid_type, app)
+        ]
+    ]
+
+
+def get_cell_solution(row_condition, col_condition, grid_type, app):
+    with app.app_context():
+        query = Club.query.filter(text(row_condition.expression), text(col_condition.expression))
+
+        if grid_type is not None:
+            query = query.filter(text(grid_type.expression))
+
+        solution_clubs = query.all()
+
+    return solution_clubs
 
 
 def load_clubs():
@@ -830,6 +442,42 @@ def load_clubs():
             )
 
     return clubs
+
+
+def insert_grid(db, app, row_conditions, column_conditions, grid_type):
+    newest_local_grid = Grid.query.filter(Grid.type_id == grid_type.id).order_by(desc(Grid.local_id)).first()
+    grid_local_id = (newest_local_grid.local_id if newest_local_grid else 0) + 1
+
+    latest_grid = Grid.query.order_by(desc(Grid.id)).filter(Grid.type_id == grid_type.id).first()
+    new_grid_date = latest_grid.starting_date + timedelta(days=1) if latest_grid \
+        else datetime.today().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
+
+    new_grid = Grid(
+        local_id=grid_local_id,
+        type_id=grid_type.id,
+        starting_date=new_grid_date,
+        row_condition_1=row_conditions[0].id,
+        row_condition_2=row_conditions[1].id,
+        row_condition_3=row_conditions[2].id,
+        column_condition_1=column_conditions[0].id,
+        column_condition_2=column_conditions[1].id,
+        column_condition_3=column_conditions[2].id,
+    )
+
+    with app.app_context():
+        stmt = insert(Grid).values(to_dict(new_grid))
+        result = db.session.execute(stmt)
+        db.session.commit()
+
+        new_grid.id = result.lastrowid
+
+        new_grid_answers = get_grid_answers(new_grid, app)
+
+        stmt = insert(Answer).values([to_dict(answer) for answer in new_grid_answers])
+        stmt = stmt.on_duplicate_key_update(grid_id=stmt.inserted.grid_id)  # ignore update
+        db.session.execute(stmt)
+
+        db.session.commit()
 
 
 def create_default_clubs(db, app):
