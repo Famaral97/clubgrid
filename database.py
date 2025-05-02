@@ -223,30 +223,30 @@ def create_default_grid_types(db, app):
         GridType(id=1, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷',
                  expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"
                  ),
-        GridType(id=2, description='🇵🇹',
-                 expression="clubs.country = 'Portugal'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=3, description='🇩🇪',
-                 expression="clubs.country = 'Germany'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=4, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-                 expression="clubs.country = 'England'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=5, description='🇮🇹',
-                 expression="clubs.country = 'Italy'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=6, description='🇪🇸',
-                 expression="clubs.country = 'Spain'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=7, description='🇫🇷',
-                 expression="clubs.country = 'France'",
-                 exclude_country_conditions=True
-                 ),
+        # GridType(id=2, description='🇵🇹',
+        #          expression="clubs.country = 'Portugal'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=3, description='🇩🇪',
+        #          expression="clubs.country = 'Germany'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=4, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+        #          expression="clubs.country = 'England'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=5, description='🇮🇹',
+        #          expression="clubs.country = 'Italy'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=6, description='🇪🇸',
+        #          expression="clubs.country = 'Spain'",
+        #          exclude_country_conditions=True
+        #          ),
+        # GridType(id=7, description='🇫🇷',
+        #          expression="clubs.country = 'France'",
+        #          exclude_country_conditions=True
+        #          ),
     ]
 
     with app.app_context():
