@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -10,12 +12,16 @@ def get_club_data(club_id):
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    data_header_items = soup.find('ul', class_='data-header__items')
-    li_elements = data_header_items.find_all('li')
+    club_data = {
+        'most_valuable_player': 0
+    }
 
-    club_data = {}
+    # club details on top
 
-    for li in li_elements:
+    data_header_items = soup.find_all('ul', class_='data-header__items')
+    left_items = data_header_items[0].find_all('li')
+
+    for li in left_items:
         label = li.contents[0].strip()  # Get the text before the <span> element
         content = li.find('span', class_='data-header__content').text.strip()
         if label == 'Squad size:':
@@ -27,6 +33,40 @@ def get_club_data(club_id):
             foreigners_percentage = li.find('span', class_='tabellenplatz').text.strip().replace(' ', '').replace('%', '')
             club_data['foreigners_count'] = int(foreigners_count)
             club_data['foreigners_percentage'] = float(foreigners_percentage)
+
+    right_items = data_header_items[1].find_all('li')
+
+    for li in right_items:
+        label = li.contents[0].strip()  # Get the text before the <span> element
+        content = li.find('span', class_='data-header__content').text.strip()
+        if label == 'National team players:':
+            club_data['national_team_players'] = int(content)
+        elif label == 'Stadium:':
+            pattern = r'(?P<name>[\w\s]+)\s+(?P<capacity>[\d\.]+)\s+Seats'
+            match = re.match(pattern, content)
+            if match:
+                club_data['stadium_name'] = match.group('name').strip()
+                club_data['stadium_capacity'] = match.group('capacity').replace('.', '').strip()
+
+    # club total value
+    data_market_value = soup.find('a', class_='data-header__market-value-wrapper').text.strip()
+
+    pattern = r'€(?P<value>[\d\.]+)m'
+    match = re.match(pattern, data_market_value)
+    if match:
+        club_data['total_market_value'] = float(match.group('value').strip())
+
+    # players table
+    players_table_entry = soup.find('table', class_='items').find_all('tr', {'class': ['odd', 'even']})
+
+    for player in players_table_entry:
+        player_values = player.find_all('td')[-1].text.strip()
+        pattern = r'€(?P<value>[\d\.]+)m'
+        match = re.match(pattern, player_values)
+        if match:
+            value = float(match.group('value').strip())
+            if club_data['most_valuable_player'] < value:
+                club_data['most_valuable_player'] = value
 
     print(club_data)
 
@@ -42,5 +82,3 @@ all_clubs_data.append(club_data)
 clubs_data_df = pd.DataFrame(all_clubs_data)
 
 clubs_data_df.to_csv('clubs_data.csv', index=False)
-
-print("Data collection complete. The data has been saved to 'clubs_data.csv'.")
