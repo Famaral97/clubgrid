@@ -1,9 +1,18 @@
+import json
 import re
 
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+
+def strip_monetary_value(content):
+    pattern = r'€(?P<value>[\d\.]+)m'
+    match = re.match(pattern, content)
+    if match:
+        return float(match.group('value').strip())
+    else:
+        return -1
 
 def get_club_data(club_id):
     url = f"https://www.transfermarkt.com/irrelevant/startseite/verein/{club_id}"
@@ -14,7 +23,9 @@ def get_club_data(club_id):
 
     club_data = {
         'most_valuable_player': -1,
-        'oldest_player': -1
+        'oldest_player': -1,
+        'most_expensive_entry': 0,
+        'most_expensive_exit': 0
     }
 
     # club details on top
@@ -52,22 +63,16 @@ def get_club_data(club_id):
     # club total value
     data_market_value = soup.find('a', class_='data-header__market-value-wrapper').text.strip()
 
-    pattern = r'€(?P<value>[\d\.]+)m'
-    match = re.match(pattern, data_market_value)
-    if match:
-        club_data['total_market_value'] = float(match.group('value').strip())
+    club_data['total_market_value'] = strip_monetary_value(data_market_value)
 
     # players table
     players_table_entry = soup.find('table', class_='items').find_all('tr', {'class': ['odd', 'even']})
 
     for player in players_table_entry:
         player_value = player.find_all('td')[-1].text.strip()
-        pattern = r'€(?P<value>[\d\.]+)m'
-        match = re.match(pattern, player_value)
-        if match:
-            value = float(match.group('value').strip())
-            if club_data['most_valuable_player'] < value:
-                club_data['most_valuable_player'] = value
+        value = strip_monetary_value(player_value)
+        if club_data['most_valuable_player'] < value:
+            club_data['most_valuable_player'] = value
 
         player_age = player.find_all('td')[5].text.strip()
         pattern = r'\((\d+)\)'
@@ -77,7 +82,23 @@ def get_club_data(club_id):
             if club_data['oldest_player'] < value:
                 club_data['oldest_player'] = value
 
-    print(club_data)
+    subcategories = soup.find_all('div', class_='sub-kategorie')
+
+    for subcategory in subcategories:
+        if subcategory.text.strip() == 'Top arrivals':
+            subcategory_entries = subcategory.parent.find_all('td', class_='rechts')
+            for subcategory_entry in subcategory_entries:
+                value = strip_monetary_value(subcategory_entry.text.strip())
+                if club_data['most_expensive_entry'] < value:
+                    club_data['most_expensive_entry'] = value
+        elif subcategory.text.strip() == 'Top departures':
+            subcategory_entries = subcategory.parent.find_all('td', class_='rechts')
+            for subcategory_entry in subcategory_entries:
+                value = strip_monetary_value(subcategory_entry.text.strip())
+                if club_data['most_expensive_exit'] < value:
+                    club_data['most_expensive_exit'] = value
+
+    print(json.dumps(club_data, sort_keys=True, indent=4))
 
     return club_data
 
