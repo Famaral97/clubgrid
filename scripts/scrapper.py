@@ -13,7 +13,8 @@ def get_club_data(club_id):
     soup = BeautifulSoup(response.content, 'html.parser')
 
     club_data = {
-        'most_valuable_player': 0
+        'most_valuable_player': -1,
+        'oldest_player': -1
     }
 
     # club details on top
@@ -60,13 +61,21 @@ def get_club_data(club_id):
     players_table_entry = soup.find('table', class_='items').find_all('tr', {'class': ['odd', 'even']})
 
     for player in players_table_entry:
-        player_values = player.find_all('td')[-1].text.strip()
+        player_value = player.find_all('td')[-1].text.strip()
         pattern = r'€(?P<value>[\d\.]+)m'
-        match = re.match(pattern, player_values)
+        match = re.match(pattern, player_value)
         if match:
             value = float(match.group('value').strip())
             if club_data['most_valuable_player'] < value:
                 club_data['most_valuable_player'] = value
+
+        player_age = player.find_all('td')[5].text.strip()
+        pattern = r'\((\d+)\)'
+        match = re.search(pattern, player_age)
+        if match:
+            value = int(match.group(1))
+            if club_data['oldest_player'] < value:
+                club_data['oldest_player'] = value
 
     print(club_data)
 
