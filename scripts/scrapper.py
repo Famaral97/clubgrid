@@ -82,6 +82,7 @@ def get_club_data(club_id):
             if club_data['oldest_player'] < value:
                 club_data['oldest_player'] = value
 
+    # in/out transfer values
     subcategories = soup.find_all('div', class_='sub-kategorie')
 
     for subcategory in subcategories:
@@ -97,6 +98,11 @@ def get_club_data(club_id):
                 value = strip_monetary_value(subcategory_entry.text.strip())
                 if club_data['most_expensive_exit'] < value:
                     club_data['most_expensive_exit'] = value
+
+    # club info
+    club_data['legal_name'] = soup.find('span', itemprop="legalName").text.strip()
+    club_data['name'] = soup.find('h1', class_='data-header__headline-wrapper').text.strip()
+    club_data['founding_date'] = soup.find('span', itemprop="foundingDate").text.strip()
 
     print(json.dumps(club_data, sort_keys=True, indent=4))
 
