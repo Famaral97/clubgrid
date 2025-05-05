@@ -27,4 +27,4 @@ Notes:
 ## Getting and merging transfermarket data
 1. Export the manually created excel data to `./transfermarket` as `ClubGrid Logo Labelling - ALL_DATA.csv`
 2. Run the `scrapper.py`
-3. This will scrap transfermarkt data and merge with the manual labels, creating a `merged_data.csv` in the same folder
+3. This will scrap transfermarkt data and merge with the manual labels, creating the final data file `./data/data.csv`

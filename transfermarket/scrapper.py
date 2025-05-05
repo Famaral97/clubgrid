@@ -132,6 +132,6 @@ tfmkt_data = pd.read_csv('scrapped_data.csv')
 
 merged_data = pd.merge(cg_data, tfmkt_data, left_on='Tfmk ID', right_on='id', how='inner')
 
-merged_data.to_csv('./merged_data.csv', index=False, encoding='utf-8')
+merged_data.to_csv('../data/data.csv', index=False, encoding='utf-8')
 
 print("Data merged successfully and saved ./merged_data.csv")
