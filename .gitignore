@@ -6,5 +6,6 @@
 /__pycache__
 **/__pycache__
 .idea
-/transfermarket/clubs.csv
+/transfermarket/TO_DELETE_clubs.csv
+/transfermarket/merged_data.csv
 /transfermarket/ClubGrid Logo Labelling - ALL_DATA.csv

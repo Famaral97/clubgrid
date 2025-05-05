@@ -24,7 +24,7 @@ Notes:
 1. not tested yet for deployment, but in theory we should just need to run `alembic upgrade head` before running flask.
 2. maybe there is a clever way to deal with the env vars. Problem is that we run `alembic revision` in the CLI.
 
-## Merging with transfermarket
-1. Add crawler's `club.csv to `/transfermarket` folder
-2. Export own .csv from the excel to same folder
-3. run `load_dataset.py`, which will create the `/data/data.csv`
+## Getting and merging transfermarket data
+1. Export the manually created excel data to `./transfermarket` as `ClubGrid Logo Labelling - ALL_DATA.csv`
+2. Run the `scrapper.py`
+3. This will scrap transfermarkt data and merge with the manual labels, creating a `merged_data.csv` in the same folder
