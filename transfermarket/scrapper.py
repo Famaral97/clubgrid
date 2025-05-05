@@ -1,5 +1,5 @@
-import csv
 import re
+from time import sleep
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -18,20 +18,28 @@ def get_club_data(club_id):
     url = f"https://www.transfermarkt.com/irrelevant/startseite/verein/{club_id}"
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
-    response = requests.get(url, headers=headers)
 
-    soup = BeautifulSoup(response.content, 'html.parser')
+    tries = 0
 
-    club_data = {
-        'id': club_id,
-        'legal_name': soup.find('span', itemprop="legalName").text.strip(),
-        'name': soup.find('h1', class_='data-header__headline-wrapper').text.strip(),
-        'founding_date': soup.find('span', itemprop="foundingDate").text.strip(),
-        'most_valuable_player': -1,
-        'oldest_player': -1,
-        'most_expensive_entry': -1,
-        'most_expensive_exit': -1,
-    }
+    while tries < 3:
+        try:
+            tries += 1
+            response = requests.get(url, headers=headers)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            club_data = {
+                'id': club_id,
+                'legal_name': soup.find('span', itemprop="legalName").text.strip(),
+                'name': soup.find('h1', class_='data-header__headline-wrapper').text.strip(),
+                'founding_date': int(soup.find('span', itemprop="foundingDate").text.strip()[-4:]),
+                'most_valuable_player': -1,
+                'oldest_player': -1,
+                'most_expensive_entry': -1,
+                'most_expensive_exit': -1,
+            }
+            break
+        except AttributeError:
+            print(f" retry #{tries} ", end="")
+            sleep(30)
 
     # club details on top
     data_header_items = soup.find_all('ul', class_='data-header__items')
@@ -107,31 +115,40 @@ def get_club_data(club_id):
     return club_data
 
 
-all_clubs_data = []
+def scrape(data_frame, output_file):
+    all_clubs_data = []
+    failed_clubs = []
+    club_number = 1
 
-# with open('./ClubGrid_test.csv') as csvfile:
-with open('./ClubGrid Logo Labelling - ALL_DATA.csv') as csvfile:
-    csvreader = csv.DictReader(csvfile, delimiter=',')
-
-    for club_row in csvreader:
+    for _, club_row in data_frame.iterrows():
         tfmkt_id = club_row['Tfmk ID']
         short_name = club_row['short_name']
 
-        print(f"\r🔍{short_name} [ID {tfmkt_id}]", end="")
+        print(f"\r🔍{short_name} [ID {tfmkt_id}] ({club_number})", end="")
         try:
             all_clubs_data.append(get_club_data(tfmkt_id))
-            print(f"\r✅{short_name} [ID {tfmkt_id}]")
+            print(f"\r✅{short_name} [ID {tfmkt_id}] ({club_number})")
         except Exception as error:
-            print(f"\r‼️{short_name} [ID {tfmkt_id}] -> {error}")
+            print(f"\r‼️{short_name} [ID {tfmkt_id}] ({club_number}) -> {error}")
+            failed_clubs.append({'Tfmk ID': tfmkt_id, 'short_name': short_name})
 
-clubs_data_df = pd.DataFrame(all_clubs_data)
-clubs_data_df.to_csv('scrapped_data.csv', index=False)
+        club_number += 1
 
-cg_data = pd.read_csv('ClubGrid Logo Labelling - ALL_DATA.csv')
-tfmkt_data = pd.read_csv('scrapped_data.csv')
+    clubs_data_df = pd.DataFrame(all_clubs_data)
+    clubs_data_df.to_csv(output_file, index=False)
 
-merged_data = pd.merge(cg_data, tfmkt_data, left_on='Tfmk ID', right_on='id', how='inner')
+    failed_clubs_df = pd.DataFrame(failed_clubs)
+    failed_clubs_df.to_csv('failed_clubs.csv', index=False)
 
-merged_data.to_csv('../data/data.csv', index=False, encoding='utf-8')
 
-print("Data merged successfully and saved ./merged_data.csv")
+# Run only this if the scrapper failed the first time
+# failed_df = pd.read_csv('failed_clubs.csv')
+# scrape(failed_df, 'scrapped_data_PT_2.csv')
+
+df = pd.read_csv('ClubGrid Logo Labelling - ALL_DATA.csv')
+
+england_df = df[df['Country'] == 'England']
+scrape(england_df, 'scrapped_data_EN.csv')
+
+portugal_df = df[df['Country'] == 'Portugal']
+scrape(portugal_df, 'scrapped_data_PT.csv')
