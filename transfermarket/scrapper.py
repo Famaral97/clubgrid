@@ -6,12 +6,27 @@ from bs4 import BeautifulSoup
 
 
 def strip_monetary_value(content):
-    pattern = r'€(?P<value>[\d\.]+)m'
-    match = re.match(pattern, content)
+    if content == "-" or content.lower().startswith("loan"):
+        return 0
+
+    if content == "free transfer":
+        return 0
+
+    match = re.search(r'€([0-9,.]+)(bn|m|k)', content)
     if match:
-        return float(match.group('value').strip())
-    else:
-        return -1
+        value = float(match.group(1).replace(',', ''))
+        if match.group(2) == 'bn':
+            return value * 1000
+        elif match.group(2) == 'm':
+            return value
+        elif match.group(2) == 'k':
+            return value / 1000
+        else:
+            Exception("failed to get units")
+
+    print("FAIL")
+    print(content)
+    Exception("failed to get monetary value")
 
 
 def get_club_data(club_id):
@@ -27,10 +42,9 @@ def get_club_data(club_id):
             response = requests.get(url, headers=headers)
             soup = BeautifulSoup(response.content, 'html.parser')
             club_data = {
-                'id': club_id,
+                'tfmk_id': club_id,
                 'legal_name': soup.find('span', itemprop="legalName").text.strip(),
-                'name': soup.find('h1', class_='data-header__headline-wrapper').text.strip(),
-                'founding_date': int(soup.find('span', itemprop="foundingDate").text.strip()[-4:]),
+                'foundation_year': int(soup.find('span', itemprop="foundingDate").text.strip()[-4:]),
                 'most_valuable_player': -1,
                 'oldest_player': -1,
                 'most_expensive_entry': -1,
@@ -121,34 +135,47 @@ def scrape(data_frame, output_file):
     club_number = 1
 
     for _, club_row in data_frame.iterrows():
-        tfmkt_id = club_row['Tfmk ID']
-        short_name = club_row['short_name']
+        tfmkt_id = club_row['tfmk_id']
+        name = club_row['name']
 
-        print(f"\r🔍{short_name} [ID {tfmkt_id}] ({club_number})", end="")
+        print(f"\r🔍{name} [ID {tfmkt_id}] ({club_number})", end="")
         try:
             all_clubs_data.append(get_club_data(tfmkt_id))
-            print(f"\r✅{short_name} [ID {tfmkt_id}] ({club_number})")
+            print(f"\r✅{name} [ID {tfmkt_id}] ({club_number})")
         except Exception as error:
-            print(f"\r‼️{short_name} [ID {tfmkt_id}] ({club_number}) -> {error}")
-            failed_clubs.append({'Tfmk ID': tfmkt_id, 'short_name': short_name})
+            print(f"\r‼️{name} [ID {tfmkt_id}] ({club_number}) -> {error}")
+            failed_clubs.append({'tfmk_id': tfmkt_id, 'name': name})
 
         club_number += 1
-
-    clubs_data_df = pd.DataFrame(all_clubs_data)
-    clubs_data_df.to_csv(output_file, index=False)
 
     failed_clubs_df = pd.DataFrame(failed_clubs)
     failed_clubs_df.to_csv('failed_clubs.csv', index=False)
 
+    clubs_data_df = pd.DataFrame(all_clubs_data)
+    clubs_data_df.to_csv(output_file, index=False)
 
-# Run only this if the scrapper failed the first time
-# failed_df = pd.read_csv('failed_clubs.csv')
-# scrape(failed_df, 'scrapped_data_PT_2.csv')
 
-df = pd.read_csv('ClubGrid Logo Labelling - ALL_DATA.csv')
+# df = pd.read_csv('ClubGrid Logo Labelling - ALL_DATA.csv')
 
-england_df = df[df['Country'] == 'England']
-scrape(england_df, 'scrapped_data_EN.csv')
+# england_df = df[df['Country'] == 'England']
+# scrape(england_df, 'scrapped_data_EN.csv')
+#
+# portugal_df = df[df['Country'] == 'Portugal']
+# scrape(portugal_df, 'scrapped_data_PT.csv')
 
-portugal_df = df[df['Country'] == 'Portugal']
-scrape(portugal_df, 'scrapped_data_PT.csv')
+# spain_df = df[df['Country'] == 'Spain']
+# scrape(spain_df, 'scrapped_data_ES.csv')
+
+# france_df = df[df['Country'] == 'France']
+# scrape(france_df, 'scrapped_data_FR.csv')
+
+# italy_df = df[df['Country'] == 'Italy']
+# scrape(italy_df, 'scrapped_data_IT.csv')
+
+# germany_df = df[df['Country'] == 'Germany']
+# scrape(germany_df, 'scrapped_data_DE.csv')
+#
+# sleep(120)
+
+failed_df = pd.read_csv('failed_total_value.csv')
+scrape(failed_df, 'scrapped_data_failed_total_value.csv')
