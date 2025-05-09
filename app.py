@@ -8,8 +8,8 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect, request
 
-from database import create_default_conditions, create_default_clubs, create_default_grids, \
-    create_default_grid_types
+from database import create_default_clubs, create_default_grids, \
+    create_default_grid_types, load_conditions
 from grid_gen import create_and_insert_grid
 from models import db, Condition, Club, Grid, Answer, GridType
 
@@ -33,7 +33,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 db.init_app(app)
 
-create_default_conditions(db, app)
+load_conditions(db, app)
 create_default_grid_types(db, app)
 create_default_clubs(db, app)
 
