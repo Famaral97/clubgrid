@@ -2,6 +2,7 @@ import csv
 import json
 from datetime import datetime, timedelta
 
+import yaml
 from sqlalchemy import text, inspect, desc
 from sqlalchemy.dialects.mysql import insert
 
@@ -9,8 +10,8 @@ from models import Condition, Club, Grid, Answer, GridType
 
 
 def load_conditions(db, app):
-    with open('./data/conditions.json', 'r') as file:
-        conditions_data = json.load(file)
+    with open('./data/conditions.yaml', 'r', encoding='utf-8') as file:
+        conditions_data = yaml.safe_load(file)
 
     all_conditions = []
     for tag, conditions in conditions_data.items():
@@ -32,39 +33,23 @@ def load_conditions(db, app):
         db.session.commit()
 
 
-def create_default_grid_types(db, app):
-    grid_types = [
-        GridType(id=1, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷',
-                 expression="clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')"
-                 ),
-        GridType(id=2, description='🇵🇹',
-                 expression="clubs.country = 'Portugal'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=3, description='🇩🇪',
-                 expression="clubs.country = 'Germany'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=4, description='🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-                 expression="clubs.country = 'England'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=5, description='🇮🇹',
-                 expression="clubs.country = 'Italy'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=6, description='🇪🇸',
-                 expression="clubs.country = 'Spain'",
-                 exclude_country_conditions=True
-                 ),
-        GridType(id=7, description='🇫🇷',
-                 expression="clubs.country = 'France'",
-                 exclude_country_conditions=True
-                 ),
-    ]
+def load_grid_types(db, app):
+    with open('./data/grid_types.yaml', 'r', encoding='utf-8') as file:
+        grid_types_data = yaml.safe_load(file)
+
+    all_grid_types = []
+    for grid_type in grid_types_data:
+        all_grid_types.append(
+            GridType(
+                id=grid_type['id'],
+                description=grid_type['description'],
+                expression=grid_type['expression'],
+                exclude_country_conditions=grid_type['exclude_country_conditions'],
+            )
+        )
 
     with app.app_context():
-        stmt = insert(GridType).values([to_dict(grid_type) for grid_type in grid_types])
+        stmt = insert(GridType).values([to_dict(grid_type) for grid_type in all_grid_types])
         stmt = stmt.on_duplicate_key_update(stmt.inserted)
         db.session.execute(stmt)
         db.session.commit()
@@ -74,27 +59,15 @@ def create_default_grids(db, app):
     grids = [
         Grid(
             id=1,
-            grid_type_id=1,
+            type_id=1,
             local_id=1,
             starting_date=datetime(2024, 12, 5, 0, 0),
-            row_condition_1=3,
-            row_condition_2=16,
-            row_condition_3=103,
-            column_condition_1=42,
-            column_condition_2=93,
-            column_condition_3=92,
-        ),
-        Grid(
-            id=2,
-            grid_type_id=2,
-            local_id=1,
-            starting_date=datetime(2024, 12, 4, 0, 0),
-            row_condition_1=54,
-            row_condition_2=67,
-            row_condition_3=2,
-            column_condition_1=60,
-            column_condition_2=79,
-            column_condition_3=4,
+            row_condition_1=1,
+            row_condition_2=2,
+            row_condition_3=3,
+            column_condition_1=4,
+            column_condition_2=5,
+            column_condition_3=6,
         )
     ]
 
@@ -115,80 +88,8 @@ def create_default_grids(db, app):
         db.session.commit()
 
 
-def get_grid_answers(grid, app):
-    with app.app_context():
-        grid_type_id = grid.type_id if grid.type_id else 1
-        grid_type = GridType.query.get(grid_type_id)
-
-    grid_answers = []
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_1, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_2, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_3, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_1, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_2, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_3, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_1, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_2, grid_type, app))
-    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_3, grid_type, app))
-    return grid_answers
-
-
-def get_cell_answers(grid, column_condition_id, row_condition_id, grid_type, app):
-    with app.app_context():
-        query = Club.query.filter(
-            text(Condition.query.get(row_condition_id).expression),
-            text(Condition.query.get(column_condition_id).expression)
-        )
-
-        if grid_type is not None:
-            query = query.filter(text(grid_type.expression))
-
-        solution_clubs = query.all()
-
-    return [Answer(
-        grid_id=grid.id,
-        column_condition_id=column_condition_id,
-        row_condition_id=row_condition_id,
-        club_id=club.id,
-        is_solution=True,
-        count=0,
-    ) for club in solution_clubs]
-
-
-def get_grid_solution(row_conditions, column_conditions, grid_type, app):
-    return [
-        [
-            get_cell_solution(row_conditions[0], column_conditions[0], grid_type, app),
-            get_cell_solution(row_conditions[0], column_conditions[1], grid_type, app),
-            get_cell_solution(row_conditions[0], column_conditions[2], grid_type, app)
-        ],
-        [
-            get_cell_solution(row_conditions[1], column_conditions[0], grid_type, app),
-            get_cell_solution(row_conditions[1], column_conditions[1], grid_type, app),
-            get_cell_solution(row_conditions[1], column_conditions[2], grid_type, app)
-        ],
-        [
-            get_cell_solution(row_conditions[2], column_conditions[0], grid_type, app),
-            get_cell_solution(row_conditions[2], column_conditions[1], grid_type, app),
-            get_cell_solution(row_conditions[2], column_conditions[2], grid_type, app)
-        ]
-    ]
-
-
-def get_cell_solution(row_condition, col_condition, grid_type, app):
-    with app.app_context():
-        query = Club.query.filter(text(row_condition.expression), text(col_condition.expression))
-
-        if grid_type is not None:
-            query = query.filter(text(grid_type.expression))
-
-        solution_clubs = query.all()
-
-    return solution_clubs
-
-
-def load_clubs():
-    clubs = []
+def load_clubs(db, app):
+    all_clubs = []
 
     with open('./data/data.csv') as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=',')
@@ -196,7 +97,7 @@ def load_clubs():
         for club_row in csvreader:
             name = club_row["name"]
             league = club_row["league_2024_25"]
-            clubs.append(
+            all_clubs.append(
                 Club(
                     id=club_row["id"],
                     name=club_row['name'],
@@ -274,7 +175,83 @@ def load_clubs():
                 )
             )
 
-    return clubs
+    with app.app_context():
+        stmt = insert(Club).values([to_dict(club) for club in all_clubs])
+        stmt = stmt.on_duplicate_key_update(stmt.inserted)
+        db.session.execute(stmt)
+        db.session.commit()
+
+
+def get_grid_answers(grid, app):
+    with app.app_context():
+        grid_type_id = grid.type_id if grid.type_id else 1
+        grid_type = GridType.query.get(grid_type_id)
+
+    grid_answers = []
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_1, grid.row_condition_3, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_2, grid.row_condition_3, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_1, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_2, grid_type, app))
+    grid_answers.extend(get_cell_answers(grid, grid.column_condition_3, grid.row_condition_3, grid_type, app))
+    return grid_answers
+
+
+def get_cell_answers(grid, column_condition_id, row_condition_id, grid_type, app):
+    with app.app_context():
+        query = Club.query.filter(
+            text(Condition.query.get(row_condition_id).expression),
+            text(Condition.query.get(column_condition_id).expression)
+        )
+
+        if grid_type is not None:
+            query = query.filter(text(grid_type.expression))
+
+        solution_clubs = query.all()
+
+    return [Answer(
+        grid_id=grid.id,
+        column_condition_id=column_condition_id,
+        row_condition_id=row_condition_id,
+        club_id=club.id,
+        is_solution=True,
+        count=0,
+    ) for club in solution_clubs]
+
+
+def get_grid_solution(row_conditions, column_conditions, grid_type, app):
+    return [
+        [
+            get_cell_solution(row_conditions[0], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[0], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[0], column_conditions[2], grid_type, app)
+        ],
+        [
+            get_cell_solution(row_conditions[1], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[1], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[1], column_conditions[2], grid_type, app)
+        ],
+        [
+            get_cell_solution(row_conditions[2], column_conditions[0], grid_type, app),
+            get_cell_solution(row_conditions[2], column_conditions[1], grid_type, app),
+            get_cell_solution(row_conditions[2], column_conditions[2], grid_type, app)
+        ]
+    ]
+
+
+def get_cell_solution(row_condition, col_condition, grid_type, app):
+    with app.app_context():
+        query = Club.query.filter(text(row_condition.expression), text(col_condition.expression))
+
+        if grid_type is not None:
+            query = query.filter(text(grid_type.expression))
+
+        solution_clubs = query.all()
+
+    return solution_clubs
 
 
 def insert_grid(db, app, row_conditions, column_conditions, grid_type):
@@ -310,16 +287,6 @@ def insert_grid(db, app, row_conditions, column_conditions, grid_type):
         stmt = stmt.on_duplicate_key_update(grid_id=stmt.inserted.grid_id)  # ignore update
         db.session.execute(stmt)
 
-        db.session.commit()
-
-
-def create_default_clubs(db, app):
-    clubs = load_clubs()
-
-    with app.app_context():
-        stmt = insert(Club).values([to_dict(club) for club in clubs])
-        stmt = stmt.on_duplicate_key_update(stmt.inserted)
-        db.session.execute(stmt)
         db.session.commit()
 
 

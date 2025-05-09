@@ -8,8 +8,7 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect, request
 
-from database import create_default_clubs, create_default_grids, \
-    create_default_grid_types, load_conditions
+from database import create_default_grids, load_conditions, load_grid_types, load_clubs
 from grid_gen import create_and_insert_grid
 from models import db, Condition, Club, Grid, Answer, GridType
 
@@ -34,10 +33,10 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 db.init_app(app)
 
 load_conditions(db, app)
-create_default_grid_types(db, app)
-create_default_clubs(db, app)
+load_grid_types(db, app)
+load_clubs(db, app)
 
-# create_default_grids(db, app)
+create_default_grids(db, app)
 
 
 @app.route('/health-check')
@@ -128,7 +127,7 @@ def get_clubs():
         club.id: ClubRepresenter(
             id=club.id,
             name=club.name,
-            shortName=club.short_name,
+            shortName=club.name,
             logo=club.logo
         ) for club in clubs
     }
