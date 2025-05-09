@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 
 def strip_monetary_value(content):
-    if content == "-" or content.lower().startswith("loan"):
+    if content == "-" or content == "?" or content.lower().startswith("loan"):
         return 0
 
     if content == "free transfer":
@@ -22,11 +22,9 @@ def strip_monetary_value(content):
         elif match.group(2) == 'k':
             return value / 1000
         else:
-            Exception("failed to get units")
+            Exception("failed to get units: ", content)
 
-    print("FAIL")
-    print(content)
-    Exception("failed to get monetary value")
+    Exception("failed to get monetary value: ", content)
 
 
 def get_club_data(club_id):
@@ -81,11 +79,13 @@ def get_club_data(club_id):
         if label == 'National team players:':
             club_data['national_team_players'] = int(content)
         elif label == 'Stadium:':
-            pattern = r'(?P<name>[\w\s]+)\s+(?P<capacity>[\d\.]+)\s+Seats'
-            match = re.match(pattern, content)
+            pattern = re.compile(r'(?P<name>[\w\s\'’.-]+)\s+(?P<capacity>[\d.]+)\s+Seats', re.UNICODE)
+            match = pattern.search(content)
             if match:
                 club_data['stadium_name'] = match.group('name').strip()
                 club_data['stadium_capacity'] = match.group('capacity').replace('.', '').strip()
+            else:
+                Exception("failed to get stadium data: ", content)
 
     # club total value
     data_market_value = soup.find('a', class_='data-header__market-value-wrapper').text.strip()
@@ -156,7 +156,7 @@ def scrape(data_frame, output_file):
 
 
 # df = pd.read_csv('ClubGrid Logo Labelling - ALL_DATA.csv')
-
+#
 # england_df = df[df['Country'] == 'England']
 # scrape(england_df, 'scrapped_data_EN.csv')
 #
@@ -177,5 +177,5 @@ def scrape(data_frame, output_file):
 #
 # sleep(120)
 
-failed_df = pd.read_csv('failed_total_value.csv')
-scrape(failed_df, 'scrapped_data_failed_total_value.csv')
+failed_df = pd.read_csv('failed_stadium_name.csv')
+scrape(failed_df, 'scrapped_data_failed_stadium_name.csv')
