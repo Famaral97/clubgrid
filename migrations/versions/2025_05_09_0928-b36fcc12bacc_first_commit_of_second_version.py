@@ -120,7 +120,6 @@ def upgrade() -> None:
     sa.Column('row_condition_id', sa.Integer(), nullable=False),
     sa.Column('column_condition_id', sa.Integer(), nullable=False),
     sa.Column('club_id', sa.String(length=255), nullable=False),
-    sa.Column('is_solution', sa.Boolean(), nullable=True),
     sa.Column('count', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['club_id'], ['clubs.id'], ),
     sa.ForeignKeyConstraint(['column_condition_id'], ['conditions.id'], ),

@@ -71,18 +71,12 @@ def create_default_grids(db, app):
         )
     ]
 
-    answers = []
-    for grid in grids:
-        answers.extend(get_grid_answers(grid, app))
+
 
     with app.app_context():
         stmt = insert(Grid).values([to_dict(grid) for grid in grids])
         stmt = stmt.on_duplicate_key_update(stmt.inserted)
 
-        db.session.execute(stmt)
-
-        stmt = insert(Answer).values([to_dict(answer) for answer in answers])
-        stmt = stmt.on_duplicate_key_update(grid_id=stmt.inserted.grid_id)  # ignore update
         db.session.execute(stmt)
 
         db.session.commit()
@@ -280,12 +274,6 @@ def insert_grid(db, app, row_conditions, column_conditions, grid_type):
         db.session.commit()
 
         new_grid.id = result.lastrowid
-
-        new_grid_answers = get_grid_answers(new_grid, app)
-
-        stmt = insert(Answer).values([to_dict(answer) for answer in new_grid_answers])
-        stmt = stmt.on_duplicate_key_update(grid_id=stmt.inserted.grid_id)  # ignore update
-        db.session.execute(stmt)
 
         db.session.commit()
 

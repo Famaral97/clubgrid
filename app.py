@@ -8,7 +8,8 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect, request
 
-from database import create_default_grids, load_conditions, load_grid_types, load_clubs
+from database import create_default_grids, load_conditions, load_grid_types, load_clubs, \
+    get_cell_solution
 from grid_gen import create_and_insert_grid
 from models import db, Condition, Club, Grid, Answer, GridType
 
@@ -148,7 +149,10 @@ def check_answer():
 
     answer = Answer.query.get((grid_id, row_condition_id, column_condition_id, club.id))
 
-    is_correct = answer.is_solution if answer is not None else False
+    row_condition = Condition.query.get(row_condition_id)
+    column_condition = Condition.query.get(column_condition_id)
+    grid_type = GridType.query.get(Grid.query.get(grid_id).type_id)
+    is_correct = club in get_cell_solution(row_condition, column_condition, grid_type, app)
 
     total_answers = -1
     total_club_answered = -1
@@ -165,7 +169,6 @@ def check_answer():
         club_id=club.id,
         row_condition_id=row_condition_id,
         column_condition_id=column_condition_id,
-        is_solution=is_correct,
         count=1,
     )
 
@@ -177,7 +180,7 @@ def check_answer():
 
     return jsonify({
         "correct": is_correct,
-        "clubShortName": club.short_name,
+        "clubShortName": club.name,
         "logo": club.logo,
         "total_club_answered": total_club_answered,
         "total_answers": total_answers
@@ -231,7 +234,7 @@ def get_grid_solution(grid_id):
 # TODO: move part of this logic to the database.py since it has a very similar method
 def get_solution(grid_id, row_condition_id, col_condition_id, grid_type):
     @dataclass
-    class ClubRepresenter():
+    class ClubRepresenter:
         id: str
         total_club_answered: int
 
