@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from grid_gen import grid_is_completable
-from models import Grid, Club
+from src.grid_gen import grid_is_completable
+from src.models import Grid, Club
 
 
 class Test(TestCase):

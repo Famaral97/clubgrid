@@ -1,6 +1,6 @@
 import yaml
 
-from models import Condition, GridType
+from src.models import Condition, GridType
 
 
 def load_conditions():

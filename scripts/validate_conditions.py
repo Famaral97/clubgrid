@@ -1,10 +1,11 @@
-from sqlalchemy import create_engine, insert, text
+from sqlalchemy import create_engine, text
+from sqlalchemy.dialects.mysql import insert
 from sqlalchemy.orm import sessionmaker
 from prettytable import PrettyTable
 
-from database import to_dict
-from models import Condition, Club
-from yaml_adapter import load_conditions
+from src.database import to_dict
+from src.models import Condition, Club
+from src.yaml_adapter import load_conditions
 
 
 def validate_conditions(session):

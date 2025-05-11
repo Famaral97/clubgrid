@@ -2,8 +2,8 @@ import random
 
 from sqlalchemy import desc
 
-from database import get_grid_solution, insert_grid
-from models import Condition, Grid, GridType
+from src.database import get_grid_solution, insert_grid
+from src.models import Condition, Grid, GridType
 
 
 def create_and_insert_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_conditions=2,
