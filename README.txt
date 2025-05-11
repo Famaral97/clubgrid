@@ -33,3 +33,7 @@ Notes:
 6. Manually merge all of the scraped data into a single .csv
 7. Run the `merge_data` function, concatenating all the .csv from transfermarkt scraped data
 8. This will merge with the manual labels, creating the final data file `./data/data.csv`
+
+## Validating Conditions
+1. Run the whole Club Grid locally, with docker, so that it loads clubs and conditions to the database
+2. Run `scripts/validate_conditions.py` which will print a table to the terminal with a report, including # solutions, errors, etc.
