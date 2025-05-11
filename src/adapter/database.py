@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import text, inspect, desc
 from sqlalchemy.dialects.mysql import insert
 
-from src.models import Condition, Club, Grid, Answer, GridType
+from src.adapter.models import Condition, Club, Grid, Answer, GridType
 
 
 def insert_conditions(all_conditions, db, app):
