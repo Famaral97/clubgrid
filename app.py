@@ -162,12 +162,12 @@ def check_answer():
     total_answers = -1
     total_club_answered = -1
     if is_correct:
-        total_club_answered = answer.count
+        total_club_answered = 0 if answer is None else answer.count
         total_answers = int(Answer.query.with_entities(func.sum(Answer.count)).filter(
             Answer.grid_id == grid_id,
             Answer.row_condition_id == row_condition_id,
             Answer.column_condition_id == column_condition_id
-        ).scalar())
+        ).scalar() or 0)
 
     stmt = insert(Answer).values(
         grid_id=grid_id,
