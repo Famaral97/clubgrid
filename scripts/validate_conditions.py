@@ -2,16 +2,16 @@ from sqlalchemy import create_engine, insert, text
 from sqlalchemy.orm import sessionmaker
 from prettytable import PrettyTable
 
+from database import to_dict
 from models import Condition, Club
+from yaml_adapter import load_conditions
 
 
 def validate_conditions(session):
-    all_conditions = session.query(Condition).all()
-
     validation_table = PrettyTable(["ID", 'Status', '# Solutions', "Description", "Error Msg"])
     validation_table.align = "l"
 
-    for condition in all_conditions:
+    for condition in session.query(Condition).all():
         try:
             results = session.query(Club).filter(text(condition.expression)).all()
 
@@ -34,6 +34,7 @@ def validate_conditions(session):
             ])
     return validation_table
 
+
 url = "mysql+mysqlconnector://flaskuser:flaskpassword@localhost:3306/flaskdb"
 engine = create_engine(url)
 
@@ -41,8 +42,14 @@ Session = sessionmaker(bind=engine)
 
 session = Session()
 
-# Condition.query.delete()
+all_conditions = load_conditions()
+stmt = insert(Condition).values([to_dict(condition) for condition in all_conditions])
+stmt = stmt.on_duplicate_key_update(stmt.inserted)
+session.execute(stmt)
+session.commit()
 
 report = validate_conditions(session)
 
 print(report)
+
+session.close()

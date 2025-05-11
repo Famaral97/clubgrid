@@ -1,30 +1,13 @@
 import csv
 from datetime import datetime, timedelta
 
-import yaml
 from sqlalchemy import text, inspect, desc
 from sqlalchemy.dialects.mysql import insert
 
 from models import Condition, Club, Grid, Answer, GridType
 
 
-def load_conditions(db, app):
-    with open('./data/conditions.yaml', 'r', encoding='utf-8') as file:
-        conditions_data = yaml.safe_load(file)
-
-    all_conditions = []
-    for tag, conditions in conditions_data.items():
-        for condition in conditions:
-            all_conditions.append(
-                Condition(
-                    id=condition['id'],
-                    description=condition['description'],
-                    expression=condition['expression'],
-                    tags=tag,
-                    deprecated=False
-                )
-            )
-
+def insert_conditions(all_conditions, db, app):
     with app.app_context():
         stmt = insert(Condition).values([to_dict(condition) for condition in all_conditions])
         stmt = stmt.on_duplicate_key_update(stmt.inserted)
@@ -32,21 +15,7 @@ def load_conditions(db, app):
         db.session.commit()
 
 
-def load_grid_types(db, app):
-    with open('./data/grid_types.yaml', 'r', encoding='utf-8') as file:
-        grid_types_data = yaml.safe_load(file)
-
-    all_grid_types = []
-    for grid_type in grid_types_data:
-        all_grid_types.append(
-            GridType(
-                id=grid_type['id'],
-                description=grid_type['description'],
-                expression=grid_type['expression'],
-                exclude_country_conditions=grid_type['exclude_country_conditions'],
-            )
-        )
-
+def insert_grid_types(all_grid_types, db, app):
     with app.app_context():
         stmt = insert(GridType).values([to_dict(grid_type) for grid_type in all_grid_types])
         stmt = stmt.on_duplicate_key_update(stmt.inserted)

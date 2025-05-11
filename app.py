@@ -8,12 +8,14 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect, request
 
-from database import create_default_grids, load_conditions, load_grid_types, load_clubs, \
-    get_cell_solution
+from database import create_default_grids, load_clubs, \
+    get_cell_solution, insert_conditions, insert_grid_types
 from grid_gen import create_and_insert_grid
 from models import db, Condition, Club, Grid, Answer, GridType
 
 from sqlalchemy.dialects.mysql import insert
+
+from yaml_adapter import load_conditions, load_grid_types
 
 app = Flask(__name__)
 
@@ -33,8 +35,11 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 db.init_app(app)
 
-load_conditions(db, app)
-load_grid_types(db, app)
+conditions = load_conditions()
+insert_conditions(conditions, db, app)
+grid_types = load_grid_types()
+insert_grid_types(grid_types, db, app)
+
 load_clubs(db, app)
 
 create_default_grids(db, app)
