@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.grid_gen import grid_is_completable
+from src.usecases.generate_grid import grid_is_completable
 from src.models.club import Club
 
 

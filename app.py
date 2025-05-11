@@ -10,12 +10,11 @@ from flask import Flask, render_template, jsonify, redirect, request
 
 
 from src.adapters.csv import load_clubs
-from src.adapters.database import get_cell_solution
 from src.adapters.sql.clubs import insert_clubs
 from src.adapters.sql.conditions import insert_conditions
 from src.adapters.sql.grid_types import insert_grid_types
-from src.adapters.sql.grids import insert_grids
-from src.grid_gen import create_and_insert_grid
+from src.adapters.sql.grids import insert_grids, get_cell_solution
+from src.usecases.generate_grid import generate_grid
 from src.adapters.sql import db
 from src.models.answer import Answer
 from src.models.club import Club
@@ -70,7 +69,7 @@ def generate_grid():
     if grid_type_id is None:
         return jsonify({"error": "grid_type_id is required"}), 400
 
-    return f"{create_and_insert_grid(db, app, grid_type_id)}"
+    return f"{generate_grid(db, app, grid_type_id)}"
 
 
 @app.route('/', methods=['GET'])

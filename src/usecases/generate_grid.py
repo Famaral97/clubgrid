@@ -2,18 +2,19 @@ import random
 
 from sqlalchemy import desc
 
-from src.adapters.database import get_grid_solution, insert_grid
+from src.adapters.database import insert_grid
+from src.adapters.sql.grids import get_grid_solution
 from src.models.condition import Condition
 from src.models.grid import Grid
 from src.models.grid_type import GridType
 
 
-def create_and_insert_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_conditions=2,
-                           previous_grids_number=3):
+def generate_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_conditions=2,
+                  previous_grids_number=3):
     grid_type = GridType.query.get(grid_type_id)
     min_clubs_per_cell = 5 if grid_type.id == 1 else 1
 
-    row_conditions, column_conditions = generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
+    row_conditions, column_conditions = generate_grid_with_conditions(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
                                                       previous_grids_number, grid_type, app)
 
     insert_grid(db, app, row_conditions, column_conditions, grid_type)
@@ -26,8 +27,8 @@ def create_and_insert_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_com
     return ids
 
 
-def generate_grid(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions, previous_grids_number, grid_type,
-                  app):
+def generate_grid_with_conditions(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
+                                  previous_grids_number, grid_type, app):
     conditions_query = Condition.query.filter(Condition.deprecated.is_(None))
     if grid_type.exclude_country_conditions:
         conditions_query = conditions_query.filter(Condition.id.notin_(range(3, 9)))
