@@ -3,9 +3,9 @@ from sqlalchemy.dialects.mysql import insert
 from sqlalchemy.orm import sessionmaker
 from prettytable import PrettyTable
 
-from src.database import to_dict
-from src.models import Condition, Club
-from src.yaml_adapter import load_conditions
+from src.adapters.yaml import load_conditions
+from src.models.club import Club
+from src.models.condition import Condition
 
 
 def validate_conditions(session):

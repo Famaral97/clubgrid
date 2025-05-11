@@ -8,14 +8,24 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect, request
 
-from src.adapter.database import create_default_grids, load_clubs, \
-    get_cell_solution, insert_conditions, insert_grid_types
-from src.grid_gen import create_and_insert_grid
-from src.adapter.models import db, Condition, Club, Grid, Answer, GridType
 
+from src.adapters.csv import load_clubs
+from src.adapters.database import get_cell_solution
+from src.adapters.sql.clubs import insert_clubs
+from src.adapters.sql.conditions import insert_conditions
+from src.adapters.sql.grid_types import insert_grid_types
+from src.adapters.sql.grids import insert_grids
+from src.grid_gen import create_and_insert_grid
+from src.adapters.sql import db
+from src.models.answer import Answer
+from src.models.club import Club
+from src.models.condition import Condition
+from src.models.grid import Grid
+from src.models.grid_type import GridType
 from sqlalchemy.dialects.mysql import insert
 
-from src.adapter.yaml_adapter import load_conditions, load_grid_types
+from src.adapters.yaml import load_conditions, load_grid_types
+from src.adapters import local_memory
 
 app = Flask(__name__)
 
@@ -36,13 +46,15 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 db.init_app(app)
 
 conditions = load_conditions()
-insert_conditions(conditions, db, app)
+insert_conditions(conditions, app)
+
 grid_types = load_grid_types()
-insert_grid_types(grid_types, db, app)
+insert_grid_types(grid_types, app)
 
-load_clubs(db, app)
+clubs = load_clubs()
+insert_clubs(clubs, app)
 
-create_default_grids(db, app)
+insert_grids(local_memory.grids, app)
 
 
 @app.route('/health-check')

@@ -1,23 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
-
-
-class Condition(db.Model):
-    __tablename__ = 'conditions'
-    id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(255))
-    expression = db.Column(db.String(255))
-    tags = db.Column(db.String(255))
-    deprecated = db.Column(db.Boolean)
-
-
-class GridType(db.Model):
-    __tablename__ = 'grid_types'
-    id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(255))
-    expression = db.Column(db.String(255))
-    exclude_country_conditions = db.Column(db.Boolean)
+from src.adapters.sql import db
 
 
 class Club(db.Model):
@@ -103,26 +84,3 @@ class Club(db.Model):
     def __hash__(self):
         return hash(self.id)  # Ensures uniqueness in sets
 
-
-class Grid(db.Model):
-    __tablename__ = 'grids'
-    id = db.Column(db.Integer, nullable=False, primary_key=True, autoincrement=True)
-    starting_date = db.Column(db.DateTime)
-    type_id = db.Column(db.Integer, db.ForeignKey('grid_types.id'))
-    local_id = db.Column(db.Integer)
-    row_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-    row_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-    row_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-    column_condition_1 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-    column_condition_2 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-    column_condition_3 = db.Column(db.Integer, db.ForeignKey('conditions.id'))
-
-
-class Answer(db.Model):
-    __tablename__ = 'answers'
-
-    grid_id = db.Column(db.Integer, db.ForeignKey('grids.id'), primary_key=True)
-    row_condition_id = db.Column(db.Integer, db.ForeignKey('conditions.id'), primary_key=True)
-    column_condition_id = db.Column(db.Integer, db.ForeignKey('conditions.id'), primary_key=True)
-    club_id = db.Column(db.String(255), db.ForeignKey('clubs.id'), primary_key=True)
-    count = db.Column(db.Integer)
