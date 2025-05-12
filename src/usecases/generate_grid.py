@@ -14,8 +14,9 @@ def generate_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_condi
     grid_type = GridType.query.get(grid_type_id)
     min_clubs_per_cell = 5 if grid_type.id == 1 else 1
 
-    row_conditions, column_conditions = generate_grid_with_conditions(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
-                                                      previous_grids_number, grid_type, app)
+    row_conditions, column_conditions = _generate_grid_with_conditions(
+        min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
+        previous_grids_number, grid_type, app)
 
     insert_grid(db, app, row_conditions, column_conditions, grid_type)
 
@@ -27,8 +28,14 @@ def generate_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_condi
     return ids
 
 
-def generate_grid_with_conditions(min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
-                                  previous_grids_number, grid_type, app):
+def _generate_grid_with_conditions(
+        min_clubs_per_cell,
+        max_clubs_per_cell,
+        max_common_conditions,
+        previous_grids_number,
+        grid_type,
+        app
+):
     conditions_query = Condition.query.filter(Condition.deprecated.is_(None))
     if grid_type.exclude_country_conditions:
         conditions_query = conditions_query.filter(Condition.id.notin_(range(3, 9)))
@@ -36,7 +43,7 @@ def generate_grid_with_conditions(min_clubs_per_cell, max_clubs_per_cell, max_co
 
     all_grids = Grid.query.filter_by(type_id=grid_type.id).order_by(desc(Grid.id)).all()
 
-    conditions_weights = compute_weights(all_conditions, all_grids)
+    conditions_weights = _compute_weights(all_conditions, all_grids)
 
     grid_attempt = 0
 
@@ -44,16 +51,16 @@ def generate_grid_with_conditions(min_clubs_per_cell, max_clubs_per_cell, max_co
         grid_attempt += 1
         print("Creating grid: attempt #", grid_attempt, flush=True)
 
-        conditions_sample = get_weighted_sample_of_conditions(all_conditions, conditions_weights)
+        conditions_sample = _get_weighted_sample_of_conditions(all_conditions, conditions_weights)
 
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
         grid_solution = get_grid_solution(row_conditions, col_conditions, grid_type, app)
 
-        if grid_has_enough_solutions(grid_solution, min_clubs_per_cell, max_clubs_per_cell):
-            if grid_is_completable(grid_solution):
-                if grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
+        if _grid_has_enough_solutions(grid_solution, min_clubs_per_cell, max_clubs_per_cell):
+            if _grid_is_completable(grid_solution):
+                if _grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
                     print("--- ✅ SUCCESS!", flush=True)
                     return row_conditions, col_conditions
                 else:
@@ -64,7 +71,7 @@ def generate_grid_with_conditions(min_clubs_per_cell, max_clubs_per_cell, max_co
             print("--- 🤏❌ not enough solutions", flush=True)
 
 
-def get_weighted_sample_of_conditions(conditions, weights):
+def _get_weighted_sample_of_conditions(conditions, weights):
     selected_conditions = []
 
     while len(selected_conditions) < 6:
@@ -74,7 +81,7 @@ def get_weighted_sample_of_conditions(conditions, weights):
     return selected_conditions
 
 
-def compute_weights(conditions, grids):
+def _compute_weights(conditions, grids):
     weights_by_condition_id = {}
     for grid in grids:
         weights_by_condition_id[grid.row_condition_1] = weights_by_condition_id.get(grid.row_condition_1, 0) + 1
@@ -93,7 +100,7 @@ def compute_weights(conditions, grids):
     return weights_list
 
 
-def grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
+def _grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
     if grid_has_different_conditions_than_previous_grids(conditions_sample, all_grids, previous_grids_number) and \
             grid_is_not_too_similar(conditions_sample, all_grids, max_common_conditions) and \
             grid_has_different_conditions_tags(conditions_sample):
@@ -141,7 +148,7 @@ def grid_is_not_too_similar(conditions, grids, max_conditions_number):
     return True
 
 
-def grid_has_enough_solutions(grid, min_clubs_per_cell, max_clubs_per_cell):
+def _grid_has_enough_solutions(grid, min_clubs_per_cell, max_clubs_per_cell):
     for row in grid:
         for cell in row:
             if len(cell) < min_clubs_per_cell or len(cell) > max_clubs_per_cell:
@@ -150,7 +157,7 @@ def grid_has_enough_solutions(grid, min_clubs_per_cell, max_clubs_per_cell):
     return True
 
 
-def grid_is_completable(grid):
+def _grid_is_completable(grid):
     def backtrack(used, row, col):
         if row == 3:
             return True

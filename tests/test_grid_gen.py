@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.usecases.generate_grid import grid_is_completable
+from src.usecases.generate_grid import _grid_is_completable
 from src.models.club import Club
 
 
@@ -24,7 +24,7 @@ class Test(TestCase):
             ],
         ]
 
-        result = grid_is_completable(grid_solution)
+        result = _grid_is_completable(grid_solution)
 
         self.assertTrue(result)
 
@@ -47,7 +47,7 @@ class Test(TestCase):
             ],
         ]
 
-        result = grid_is_completable(grid_solution)
+        result = _grid_is_completable(grid_solution)
 
         self.assertTrue(result)
 
@@ -70,7 +70,7 @@ class Test(TestCase):
             ],
         ]
 
-        result = grid_is_completable(grid_solution)
+        result = _grid_is_completable(grid_solution)
 
         self.assertFalse(result)
 
@@ -93,7 +93,7 @@ class Test(TestCase):
             ],
         ]
 
-        result = grid_is_completable(grid_solution)
+        result = _grid_is_completable(grid_solution)
 
         self.assertFalse(result)
 
@@ -116,6 +116,6 @@ class Test(TestCase):
             ],
         ]
 
-        result = grid_is_completable(grid_solution)
+        result = _grid_is_completable(grid_solution)
 
         self.assertFalse(result)
