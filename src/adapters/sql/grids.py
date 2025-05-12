@@ -1,10 +1,10 @@
 
-from src.adapters.database import to_dict
 from src.adapters.sql import db
 
 from sqlalchemy import text
 from sqlalchemy.dialects.mysql import insert
 
+from src.helpers import to_dict
 from src.models.club import Club
 from src.models.grid import Grid
 
@@ -15,6 +15,17 @@ def insert_grids(grids, app):
         stmt = stmt.on_duplicate_key_update(stmt.inserted)
 
         db.session.execute(stmt)
+
+        db.session.commit()
+
+
+def insert_grid_without_id(grid, app):
+    with app.app_context():
+        stmt = insert(Grid).values(to_dict(grid))
+        result = db.session.execute(stmt)
+        db.session.commit()
+
+        grid.id = result.lastrowid
 
         db.session.commit()
 

@@ -63,13 +63,13 @@ def health_check():
 
 # to test grid generation
 @app.route(f'/{os.getenv("GRID_GENERATION_ENDPOINT")}', methods=['POST'])
-def generate_grid():
+def generate_grid_handler():
     grid_type_id = request.args.get('grid_type_id')
 
     if grid_type_id is None:
         return jsonify({"error": "grid_type_id is required"}), 400
 
-    return f"{generate_grid(db, app, grid_type_id)}"
+    return f"{generate_grid(app, grid_type_id)}"
 
 
 @app.route('/', methods=['GET'])

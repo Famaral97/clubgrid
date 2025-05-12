@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.mysql import insert
 
-from src.adapters.database import to_dict
 from src.adapters.sql import db
+from src.helpers import to_dict
 from src.models.grid_type import GridType
 
 

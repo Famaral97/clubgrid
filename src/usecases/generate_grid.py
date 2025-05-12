@@ -2,15 +2,20 @@ import random
 
 from sqlalchemy import desc
 
-from src.adapters.database import insert_grid
-from src.adapters.sql.grids import get_grid_solution
+from src.adapters.sql.grids import get_grid_solution, insert_grid_without_id
 from src.models.condition import Condition
 from src.models.grid import Grid
 from src.models.grid_type import GridType
+from datetime import datetime, timedelta
 
 
-def generate_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_conditions=2,
-                  previous_grids_number=3):
+def generate_grid(
+        app,
+        grid_type_id,
+        max_clubs_per_cell=30,
+        max_common_conditions=2,
+        previous_grids_number=3
+):
     grid_type = GridType.query.get(grid_type_id)
     min_clubs_per_cell = 5 if grid_type.id == 1 else 1
 
@@ -18,7 +23,7 @@ def generate_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_condi
         min_clubs_per_cell, max_clubs_per_cell, max_common_conditions,
         previous_grids_number, grid_type, app)
 
-    insert_grid(db, app, row_conditions, column_conditions, grid_type)
+    insert_grid(app, row_conditions, column_conditions, grid_type)
 
     ids = []
     for row_cond in row_conditions:
@@ -26,6 +31,29 @@ def generate_grid(db, app, grid_type_id, max_clubs_per_cell=30, max_common_condi
     for column_cond in column_conditions:
         ids.append(column_cond.id)
     return ids
+
+
+def insert_grid(app, row_conditions, column_conditions, grid_type):
+    newest_local_grid = Grid.query.filter(Grid.type_id == grid_type.id).order_by(desc(Grid.local_id)).first()
+    grid_local_id = (newest_local_grid.local_id if newest_local_grid else 0) + 1
+
+    latest_grid = Grid.query.order_by(desc(Grid.id)).filter(Grid.type_id == grid_type.id).first()
+    new_grid_date = latest_grid.starting_date + timedelta(days=1) if latest_grid \
+        else datetime.today().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
+
+    new_grid = Grid(
+        local_id=grid_local_id,
+        type_id=grid_type.id,
+        starting_date=new_grid_date,
+        row_condition_1=row_conditions[0].id,
+        row_condition_2=row_conditions[1].id,
+        row_condition_3=row_conditions[2].id,
+        column_condition_1=column_conditions[0].id,
+        column_condition_2=column_conditions[1].id,
+        column_condition_3=column_conditions[2].id,
+    )
+
+    insert_grid_without_id(new_grid, app)
 
 
 def _generate_grid_with_conditions(
@@ -36,7 +64,7 @@ def _generate_grid_with_conditions(
         grid_type,
         app
 ):
-    conditions_query = Condition.query.filter(Condition.deprecated.is_(None))
+    conditions_query = Condition.query.filter(Condition.deprecated.is_(False))
     if grid_type.exclude_country_conditions:
         conditions_query = conditions_query.filter(Condition.id.notin_(range(3, 9)))
     all_conditions = conditions_query.all()
