@@ -8,12 +8,12 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect, request
 
-
 from src.adapters.csv import load_clubs
 from src.adapters.sql.clubs import insert_clubs
-from src.adapters.sql.conditions import insert_conditions
+import src.adapters.sql.conditions as conditions_adapter
 from src.adapters.sql.grid_types import insert_grid_types
 from src.adapters.sql.grids import insert_grids, get_cell_solution
+from src.models.UnauthorizedGridException import UnauthorizedGridException
 from src.usecases.generate_grid import generate_grid
 from src.adapters.sql import db
 from src.models.answer import Answer
@@ -25,6 +25,7 @@ from sqlalchemy.dialects.mysql import insert
 
 from src.adapters.yaml import load_conditions, load_grid_types
 from src.adapters import local_memory
+from src.usecases.render_index import render_index
 
 app = Flask(__name__)
 
@@ -45,7 +46,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 db.init_app(app)
 
 conditions = load_conditions()
-insert_conditions(conditions, app)
+conditions_adapter.insert_all(conditions, app)
 
 grid_types = load_grid_types()
 insert_grid_types(grid_types, app)
@@ -80,30 +81,18 @@ def redirect_home():
 
 @app.route('/grid/<grid_id>', methods=['GET'])
 def index(grid_id):
-    grid = Grid.query.get(grid_id)
-    grid_type = GridType.query.get(grid.type_id)
-
-    if grid.starting_date > datetime.now():
+    try:
+        grid, grid_type, grid_conditions = render_index(grid_id)
+    except UnauthorizedGridException as e:
         return redirect(f"/", code=302)
 
-    row_conditions = [
-        Condition.query.get(grid.row_condition_1),
-        Condition.query.get(grid.row_condition_2),
-        Condition.query.get(grid.row_condition_3),
-    ]
-
-    col_conditions = [
-        Condition.query.get(grid.column_condition_1),
-        Condition.query.get(grid.column_condition_2),
-        Condition.query.get(grid.column_condition_3),
-    ]
-
-    return render_template('index.html',
-                           row_conditions=row_conditions,
-                           col_conditions=col_conditions,
-                           grid_id=grid.id,
-                           grid_type_description=grid_type.description
-                           )
+    return render_template(
+        template_name_or_list='index.html',
+        row_conditions=grid_conditions['rows'],
+        col_conditions=grid_conditions['cols'],
+        grid_id=grid.id,
+        grid_type_description=grid_type.description
+    )
 
 
 @app.route("/grids", methods=['GET'])

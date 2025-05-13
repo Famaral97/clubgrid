@@ -1,0 +1,2 @@
+class UnauthorizedGridException(BaseException):
+    pass
