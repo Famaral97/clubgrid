@@ -25,6 +25,7 @@ from sqlalchemy.dialects.mysql import insert
 
 import src.adapters.yaml as yaml_adapter
 from src.adapters import local_memory
+from src.usecases.get_grid_solution import get_grid_solution
 from src.usecases.render_index import render_index
 
 app = Flask(__name__)
@@ -193,86 +194,13 @@ def check_answer():
 
 
 @app.route('/grid/<grid_id>/end', methods=['GET'])
-def get_grid_solution(grid_id):
-    grid = Grid.query.get(grid_id)
-    grid_type = GridType.query.get(grid.type_id)
-
-    solutions = [
-        [
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_1, grid_type),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_2, grid_type),
-            get_solution(grid_id, grid.row_condition_1, grid.column_condition_3, grid_type)
-        ],
-        [
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_1, grid_type),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_2, grid_type),
-            get_solution(grid_id, grid.row_condition_2, grid.column_condition_3, grid_type)
-        ],
-        [
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_1, grid_type),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_2, grid_type),
-            get_solution(grid_id, grid.row_condition_3, grid.column_condition_3, grid_type)
-        ]
-    ]
-
-    row_conditions = [
-        Condition.query.get(grid.row_condition_1).description,
-        Condition.query.get(grid.row_condition_2).description,
-        Condition.query.get(grid.row_condition_3).description,
-    ]
-
-    col_conditions = [
-        Condition.query.get(grid.column_condition_1).description,
-        Condition.query.get(grid.column_condition_2).description,
-        Condition.query.get(grid.column_condition_3).description,
-    ]
+def get_grid_solution_handler(grid_id):
+    solutions, grid_conditions = get_grid_solution(grid_id)
 
     return jsonify(
         {
             "solutions": solutions,
-            "row_conditions_descriptions": row_conditions,
-            "col_conditions_descriptions": col_conditions
+            "row_conditions_descriptions": [row_condition.description for row_condition in grid_conditions['rows']],
+            "col_conditions_descriptions": [col_condition.description for col_condition in grid_conditions['cols']],
         }
     )
-
-
-# TODO: move part of this logic to the database.py since it has a very similar method
-def get_solution(grid_id, row_condition_id, col_condition_id, grid_type):
-    @dataclass
-    class ClubRepresenter:
-        id: str
-        total_club_answered: int
-
-    query = Club.query.filter(
-        text(Condition.query.get(row_condition_id).expression),
-        text(Condition.query.get(col_condition_id).expression)
-    )
-
-    if grid_type is not None:
-        query = query.filter(text(grid_type.expression))
-
-    solution_clubs = query.all()
-
-    clubs_representers = []
-
-    total_correct_answers = 0
-
-    for club in solution_clubs:
-        answer = Answer.query.filter(
-            Answer.grid_id == grid_id,
-            Answer.club_id == club.id,
-            Answer.row_condition_id == row_condition_id,
-            Answer.column_condition_id == col_condition_id,
-        ).one_or_none()
-
-        total_club_answered = answer.count if answer is not None else 0
-
-        clubs_representers.append(
-            ClubRepresenter(id=club.id, total_club_answered=total_club_answered)
-        )
-
-        total_correct_answers += total_club_answered
-
-    sorted_club_representers = sorted(clubs_representers, key=lambda c: c.total_club_answered, reverse=True)
-
-    return {"solution_clubs": sorted_club_representers, "total_correct_answers": total_correct_answers}
