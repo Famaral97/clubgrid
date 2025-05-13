@@ -2,7 +2,7 @@ import random
 
 from sqlalchemy import desc
 
-from src.adapters.sql.grids import get_grid_solution, insert_grid_without_id
+import src.adapters.sql.grids as grids_adapter
 from src.models.condition import Condition
 from src.models.grid import Grid
 from src.models.grid_type import GridType
@@ -53,7 +53,7 @@ def insert_grid(app, row_conditions, column_conditions, grid_type):
         column_condition_3=column_conditions[2].id,
     )
 
-    insert_grid_without_id(new_grid, app)
+    grids_adapter.insert_without_id(new_grid, app)
 
 
 def _generate_grid_with_conditions(
@@ -84,7 +84,7 @@ def _generate_grid_with_conditions(
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
-        grid_solution = get_grid_solution(row_conditions, col_conditions, grid_type, app)
+        grid_solution = grids_adapter.get_grid_solution(row_conditions, col_conditions, grid_type, app)
 
         if _grid_has_enough_solutions(grid_solution, min_clubs_per_cell, max_clubs_per_cell):
             if _grid_is_completable(grid_solution):

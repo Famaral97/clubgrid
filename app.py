@@ -8,11 +8,11 @@ from sqlalchemy import desc, text, func
 
 from flask import Flask, render_template, jsonify, redirect, request
 
-from src.adapters.csv import load_clubs
-from src.adapters.sql.clubs import insert_clubs
+import src.adapters.csv as csv_adapter
+import src.adapters.sql.clubs as clubs_adapter
 import src.adapters.sql.conditions as conditions_adapter
-from src.adapters.sql.grid_types import insert_grid_types
-from src.adapters.sql.grids import insert_grids, get_cell_solution
+import src.adapters.sql.grid_types as grid_types_adapter
+import src.adapters.sql.grids as grids_adapter
 from src.models.UnauthorizedGridException import UnauthorizedGridException
 from src.usecases.generate_grid import generate_grid
 from src.adapters.sql import db
@@ -23,7 +23,7 @@ from src.models.grid import Grid
 from src.models.grid_type import GridType
 from sqlalchemy.dialects.mysql import insert
 
-from src.adapters.yaml import load_conditions, load_grid_types
+import src.adapters.yaml as yaml_adapter
 from src.adapters import local_memory
 from src.usecases.render_index import render_index
 
@@ -45,16 +45,16 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 db.init_app(app)
 
-conditions = load_conditions()
+conditions = yaml_adapter.load_conditions()
 conditions_adapter.insert_all(conditions, app)
 
-grid_types = load_grid_types()
-insert_grid_types(grid_types, app)
+grid_types = yaml_adapter.load_grid_types()
+grid_types_adapter.insert_all(grid_types, app)
 
-clubs = load_clubs()
-insert_clubs(clubs, app)
+clubs = csv_adapter.load_clubs()
+clubs_adapter.insert_all(clubs, app)
 
-insert_grids(local_memory.grids, app)
+grids_adapter.insert_all(local_memory.grids, app)
 
 
 @app.route('/health-check')
@@ -157,7 +157,7 @@ def check_answer():
     row_condition = Condition.query.get(row_condition_id)
     column_condition = Condition.query.get(column_condition_id)
     grid_type = GridType.query.get(Grid.query.get(grid_id).type_id)
-    is_correct = club in get_cell_solution(row_condition, column_condition, grid_type, app)
+    is_correct = club in grids_adapter.get_cell_solution(row_condition, column_condition, grid_type, app)
 
     total_answers = -1
     total_club_answered = -1

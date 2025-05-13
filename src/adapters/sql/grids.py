@@ -9,7 +9,7 @@ from src.models.club import Club
 from src.models.grid import Grid
 
 
-def insert_grids(grids, app):
+def insert_all(grids, app):
     with app.app_context():
         stmt = insert(Grid).values([to_dict(grid) for grid in grids])
         stmt = stmt.on_duplicate_key_update(stmt.inserted)
@@ -19,7 +19,7 @@ def insert_grids(grids, app):
         db.session.commit()
 
 
-def insert_grid_without_id(grid, app):
+def insert_without_id(grid, app):
     with app.app_context():
         stmt = insert(Grid).values(to_dict(grid))
         result = db.session.execute(stmt)
