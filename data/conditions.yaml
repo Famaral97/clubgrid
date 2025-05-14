@@ -266,12 +266,6 @@ squad:
   - id: 56
     description: Squad size more than 29 players
     expression: clubs.squad_size >= 30
-  - id: 57
-    description: Squad average age at most 25y
-    expression: clubs.average_age <= 25
-  - id: 58
-    description: Squad average age at least 27y
-    expression: clubs.average_age >= 27
   - id: 59
     description: Squad has fewer than 13 foreigners
     expression: clubs.foreigners_count < 13
@@ -305,8 +299,8 @@ social:
     description: Has at least 10M Instagram followers
     expression: clubs.instagram_followers >= 10000000
   - id: 92
-    description: Has fewer than 10M Instagram followers
-    expression: clubs.instagram_followers < 10000000
+    description: Has fewer than 1M Instagram followers
+    expression: clubs.instagram_followers < 1000000
 awards:
   - id: 100
     description: IFFHS Best Club award winner
@@ -314,3 +308,61 @@ awards:
   - id: 103
     description: Was in the podium of the IFFHS Best Club award
     expression: (clubs.best_club_awards + clubs.best_club_runner_up + clubs.best_club_third_place) > 0
+transfers:
+  - id: 106
+    description: Bought player for more than 50M EUR in a player this season
+    expression: clubs.most_expensive_entry > 50
+  - id: 107
+    description: Sold player for more than 50M EUR in a player this season
+    expression: clubs.most_expensive_exit > 50
+  - id: 108
+    description: Bought player for more than 20M EUR in a player this season
+    expression: clubs.most_expensive_entry > 20
+  - id: 109
+    description: Sold player for more than 20M EUR in a player this season
+    expression: clubs.most_expensive_exit > 20
+  - id: 110
+    description: Didn't spend more than 5M EUR in a player this season
+    expression: clubs.most_expensive_entry < 5
+  - id: 111
+    description: Didn't sell player for more than 5M EUR this season
+    expression: clubs.most_expensive_exit < 5
+player-value:
+  - id: 112
+    description: Has a player worth more than 50M EUR
+    expression: clubs.most_valuable_player > 50
+  - id: 113
+    description: Does not have a player valued more than 10M EUR
+    expression: clubs.most_valuable_player < 10
+  - id: 114
+    description: Does not have a player valued more than 5M EUR
+    expression: clubs.most_valuable_player < 5
+age:
+  - id: 115
+    description: Squad average age 26y or lower
+    expression: clubs.average_age <= 26
+  - id: 116
+    description: Squad average age is 27y or older
+    expression: clubs.average_age > 27
+  - id: 117
+    description: Oldest player is 37y or older
+    expression: clubs.oldest_player >= 37
+  - id: 118
+    description: Oldest player is 40y or older
+    expression: clubs.oldest_player >= 40
+  - id: 119
+    description: Oldest player is 33y or younger
+    expression: clubs.oldest_player <= 33
+market-value:
+  - id: 120
+    description: Squad market value more than 400M EUR
+    expression: clubs.total_market_value > 400
+  - id: 121
+    description: Squad market value more than 800M EUR
+    expression: clubs.total_market_value > 800
+  - id: 122
+    description: Squad market value more than 100M EUR
+    expression: clubs.total_market_value < 100
+  - id: 123
+    description: Squad market value more than 50M EUR
+    expression: clubs.total_market_value < 50
