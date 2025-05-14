@@ -195,12 +195,42 @@ def check_answer():
 
 @app.route('/grid/<grid_id>/end', methods=['GET'])
 def get_grid_solution_handler(grid_id):
-    solutions, grid_conditions = get_grid_solution(grid_id)
+    solutions_with_answers, grid_conditions = get_grid_solution(grid_id, app)
+
+    @dataclass
+    class ClubSolutionRepresenter:
+        id: str
+        total_club_answered: int
+
+    @dataclass
+    class CellSolutionRepresenter:
+        solution_clubs: list[ClubSolutionRepresenter]
+        total_correct_answers: int
+
+    @dataclass
+    class GridSolutionRepresenter:
+        col_conditions_descriptions: list[str]
+        row_conditions_descriptions: list[str]
+        solutions: list[list[CellSolutionRepresenter]]
+
+    solutions_representer = [
+        [
+            CellSolutionRepresenter(
+                solution_clubs=[
+                    ClubSolutionRepresenter(
+                        id=club.id,
+                        total_club_answered=answer.count if answer is not None else 0
+                    ) for club, answer in cell
+                ],
+                total_correct_answers=sum(answer.count if answer is not None else 0 for _, answer in cell)
+            ) for cell in row
+        ] for row in solutions_with_answers
+    ]
 
     return jsonify(
-        {
-            "solutions": solutions,
-            "row_conditions_descriptions": [row_condition.description for row_condition in grid_conditions['rows']],
-            "col_conditions_descriptions": [col_condition.description for col_condition in grid_conditions['cols']],
-        }
+        GridSolutionRepresenter(
+            col_conditions_descriptions=[col_condition.description for col_condition in grid_conditions['cols']],
+            row_conditions_descriptions=[row_condition.description for row_condition in grid_conditions['rows']],
+            solutions=solutions_representer
+        )
     )

@@ -84,7 +84,7 @@ def _generate_grid_with_conditions(
         row_conditions = conditions_sample[:3]
         col_conditions = conditions_sample[3:]
 
-        grid_solution = grids_adapter.get_grid_solution(row_conditions, col_conditions, grid_type, app)
+        grid_solution = grids_adapter.get_solutions(row_conditions, col_conditions, grid_type, app)
 
         if _grid_has_enough_solutions(grid_solution, min_clubs_per_cell, max_clubs_per_cell):
             if _grid_is_completable(grid_solution):
