@@ -1,30 +1,25 @@
+import os
 from dataclasses import dataclass
 from datetime import datetime
 
 from dotenv import load_dotenv
-import os
-
-from sqlalchemy import desc, text, func
-
 from flask import Flask, render_template, jsonify, redirect, request
+from sqlalchemy import desc
 
 import src.adapters.csv as csv_adapter
 import src.adapters.sql.clubs as clubs_adapter
 import src.adapters.sql.conditions as conditions_adapter
 import src.adapters.sql.grid_types as grid_types_adapter
 import src.adapters.sql.grids as grids_adapter
-from src.models.UnauthorizedGridException import UnauthorizedGridException
-from src.usecases.generate_grid import generate_grid
-from src.adapters.sql import db
-from src.models.answer import Answer
-from src.models.club import Club
-from src.models.condition import Condition
-from src.models.grid import Grid
-from src.models.grid_type import GridType
-from sqlalchemy.dialects.mysql import insert
-
 import src.adapters.yaml as yaml_adapter
 from src.adapters import local_memory
+from src.adapters.sql import db
+from src.models.UnauthorizedGridException import UnauthorizedGridException
+from src.models.club import Club
+from src.models.grid import Grid
+from src.models.grid_type import GridType
+from src.usecases.check_answers import check_answer
+from src.usecases.generate_grid import generate_grid
 from src.usecases.get_grid_solution import get_grid_solution
 from src.usecases.render_index import render_index
 
@@ -143,7 +138,7 @@ def get_clubs():
 
 
 @app.route('/answer', methods=['POST'])
-def check_answer():
+def check_answer_handler():
     data = request.get_json()
 
     club_id = data["club-id"]
@@ -151,46 +146,27 @@ def check_answer():
     column_condition_id = int(data["column-condition-id"])
     grid_id = int(data["grid-id"])
 
-    club = Club.query.get(club_id)
-
-    answer = Answer.query.get((grid_id, row_condition_id, column_condition_id, club.id))
-
-    row_condition = Condition.query.get(row_condition_id)
-    column_condition = Condition.query.get(column_condition_id)
-    grid_type = GridType.query.get(Grid.query.get(grid_id).type_id)
-    is_correct = club in grids_adapter.get_cell_solution(row_condition, column_condition, grid_type, app)
-
-    total_answers = -1
-    total_club_answered = -1
-    if is_correct:
-        total_club_answered = 0 if answer is None else answer.count
-        total_answers = int(Answer.query.with_entities(func.sum(Answer.count)).filter(
-            Answer.grid_id == grid_id,
-            Answer.row_condition_id == row_condition_id,
-            Answer.column_condition_id == column_condition_id
-        ).scalar() or 0)
-
-    stmt = insert(Answer).values(
-        grid_id=grid_id,
-        club_id=club.id,
-        row_condition_id=row_condition_id,
-        column_condition_id=column_condition_id,
-        count=1,
+    is_correct, club, total_club_answered, total_answers = check_answer(
+        club_id, row_condition_id, column_condition_id, grid_id, app
     )
 
-    stmt = stmt.on_duplicate_key_update(count=Answer.count + 1)
+    @dataclass
+    class AnswerRepresenter:
+        correct: bool
+        clubShortName: str
+        logo: str
+        total_club_answered: int
+        total_answers: int
 
-    with app.app_context():
-        db.session.execute(stmt)
-        db.session.commit()
-
-    return jsonify({
-        "correct": is_correct,
-        "clubShortName": club.name,
-        "logo": club.logo,
-        "total_club_answered": total_club_answered,
-        "total_answers": total_answers
-    })
+    return jsonify(
+        AnswerRepresenter(
+            correct=is_correct,
+            clubShortName=club.name,
+            logo=club.logo,
+            total_club_answered=total_club_answered,
+            total_answers=total_answers
+        )
+    )
 
 
 @app.route('/grid/<grid_id>/end', methods=['GET'])
