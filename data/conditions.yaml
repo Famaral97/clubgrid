@@ -61,11 +61,11 @@ logo-items:
     expression: clubs.logo_has_football = False
   - id: 15
     description: Logo doesn't have stars
-    expression: clubs.stars_number = 0
+    expression: clubs.num_stars_in_logo = 0
     tags: logo-items
   - id: 16
     description: Logo has stars
-    expression: clubs.stars_number != 0
+    expression: clubs.num_stars_in_logo != 0
   - id: 20
     description: Logo has numbers
     expression: clubs.logo_has_numbers = True
@@ -84,40 +84,40 @@ logo-items:
 logo-colors:
   - id: 17
     description: Logo has exactly 1 or 2 colors
-    expression: (clubs.colors_number = '1' or clubs.colors_number = '2')
+    expression: (clubs.num_colors_in_logo = '1' or clubs.num_colors_in_logo = '2')
   - id: 18
     description: Logo has exactly 3 colors
-    expression: clubs.colors_number = '3'
+    expression: clubs.num_colors_in_logo = '3'
   - id: 19
     description: Logo has 4 or more colors
-    expression: clubs.colors_number = '4+'
+    expression: clubs.num_colors_in_logo = '4+'
   - id: 22
     description: Logo has red
-    expression: clubs.has_color_red = True
+    expression: clubs.logo_has_red = True
     tags: logo-colors
   - id: 23
     description: Logo doesn't have red
-    expression: clubs.has_color_red = False
+    expression: clubs.logo_has_red = False
     tags: logo-colors
   - id: 24
     description: Logo has blue
-    expression: clubs.has_color_blue = True
+    expression: clubs.logo_has_blue = True
     tags: logo-colors
   - id: 25
     description: Logo doesn't have blue
-    expression: clubs.has_color_blue = False
+    expression: clubs.logo_has_blue = False
   - id: 26
     description: Logo has green
-    expression: clubs.has_color_green = True
+    expression: clubs.logo_has_green = True
   - id: 27
     description: Logo doesn't have green
-    expression: clubs.has_color_green = False
+    expression: clubs.logo_has_green = False
   - id: 50
     description: Logo has black
-    expression: clubs.has_color_black = True
+    expression: clubs.logo_has_black = True
   - id: 51
     description: Logo doesn't have black
-    expression: clubs.has_color_black = False
+    expression: clubs.logo_has_black = False
 titles-domestic:
   - id: 81
     description: Has at least 5 league titles
@@ -130,34 +130,34 @@ titles-domestic:
     expression: clubs.league_titles = 0
   - id: 45
     description: Never won a domestic Cup
-    expression: clubs.cup_titles = 0
+    expression: clubs.domestic_cup_titles = 0
   - id: 46
     description: Never a domestic Cup finalist
-    expression: (clubs.cup_titles = 0 and clubs.cup_runner_up = 0)
+    expression: (clubs.domestic_cup_titles = 0 and clubs.domestic_cup_runner_up = 0)
   - id: 47
     description: Won a domestic Cup
-    expression: clubs.cup_titles > 0
+    expression: clubs.domestic_cup_titles > 0
   - id: 48
     description: Won domestic Cup 5 or more times
-    expression: clubs.cup_titles >= 5
+    expression: clubs.domestic_cup_titles >= 5
   - id: 49
     description: Domestic Cup finalist but never won
-    expression: (clubs.cup_titles = 0 and clubs.cup_runner_up > 0)
+    expression: (clubs.domestic_cup_titles = 0 and clubs.domestic_cup_runner_up > 0)
   - id: 82
     description: Never won a domestic Super Cup
-    expression: clubs.national_supercup_titles = 0
+    expression: clubs.domestic_supercup_titles = 0
   - id: 83
     description: Won a domestic Super Cup
-    expression: clubs.national_supercup_titles > 0
+    expression: clubs.domestic_supercup_titles > 0
   - id: 84
     description: Domestic Super Cup finalist but never won
-    expression: clubs.national_supercup_titles = 0 and clubs.national_supercup_runner_up > 0
+    expression: clubs.domestic_supercup_titles = 0 and clubs.domestic_supercup_runner_up > 0
   - id: 85
     description: Never a domestic Super Cup finalist
-    expression: clubs.national_supercup_titles = 0 and clubs.national_supercup_runner_up = 0
+    expression: clubs.domestic_supercup_titles = 0 and clubs.domestic_supercup_runner_up = 0
   - id: 86
     description: Won domestic Super Cup 5 or more times
-    expression: clubs.national_supercup_titles > 5
+    expression: clubs.domestic_supercup_titles > 5
 titles-uefa:
   - id: 32
     description: Never won UEFA Champions League / European Cup
@@ -246,9 +246,6 @@ name:
   - id: 78
     description: Name ends with A
     expression: clubs.name like '%a'
-  - id: 79
-    description: Name ends with B
-    expression: clubs.name like '%b'
   - id: 80
     description: Name ends with E
     expression: clubs.name like '%e'
@@ -277,10 +274,10 @@ squad:
     expression: clubs.average_age >= 27
   - id: 59
     description: Squad has fewer than 13 foreigners
-    expression: clubs.foreigners_number < 13
+    expression: clubs.foreigners_count < 13
   - id: 60
     description: Squad has at least 20 foreigners
-    expression: clubs.foreigners_number >= 20
+    expression: clubs.foreigners_count >= 20
   - id: 61
     description: Squad with under 50% foreign players
     expression: clubs.foreigners_percentage < 50
@@ -293,29 +290,16 @@ squad:
   - id: 64
     description: Squad has at least 14 national team players
     expression: clubs.national_team_players >= 14
-transfers:
-  - id: 65
-    description: Positive net transfer record
-    expression: clubs.net_transfer_record > 0
-  - id: 66
-    description: Net transfer record over +20M euros
-    expression: clubs.net_transfer_record > 20000000
-  - id: 67
-    description: Negative net transfer record
-    expression: clubs.net_transfer_record < 0
-  - id: 68
-    description: Net transfer record under -30M euros
-    expression: clubs.net_transfer_record < -30000000
 foundation:
   - id: 74
     description: Founded in the 19th century
-    expression: clubs.year_founded < 1901
+    expression: clubs.foundation_year < 1901
   - id: 75
     description: Founded before 1890
-    expression: clubs.year_founded < 1890
+    expression: clubs.foundation_year < 1890
   - id: 76
     description: Founded after 1930
-    expression: clubs.year_founded > 1930
+    expression: clubs.foundation_year > 1930
 social:
   - id: 91
     description: Has at least 10M Instagram followers
@@ -329,4 +313,4 @@ awards:
     expression: clubs.best_club_awards > 0
   - id: 103
     description: Was in the podium of the IFFHS Best Club award
-    expression: (clubs.best_club_awards + clubs.best_club_runner_up clubs.best_club_third_place) > 0
+    expression: (clubs.best_club_awards + clubs.best_club_runner_up + clubs.best_club_third_place) > 0
