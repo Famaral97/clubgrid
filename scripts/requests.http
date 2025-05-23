@@ -1,4 +1,4 @@
-POST http://localhost:5000/grid_generation_test_endpoint?grid_type_id=1
+POST http://{{base_url}}/grid_generation_test_endpoint?grid_type_id=2
 Content-Type: application/json
 
 {}

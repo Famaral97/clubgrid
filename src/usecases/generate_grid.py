@@ -8,6 +8,8 @@ from src.models.grid import Grid
 from src.models.grid_type import GridType
 from datetime import datetime, timedelta
 
+from src.models.tag_exclusion import TagExclusion
+
 
 def generate_grid(
         app,
@@ -65,8 +67,13 @@ def _generate_grid_with_conditions(
         app
 ):
     conditions_query = Condition.query.filter(Condition.deprecated.is_(False))
-    if grid_type.exclude_country_conditions:
-        conditions_query = conditions_query.filter(Condition.id.notin_(range(3, 9)))
+    excluding_tags = TagExclusion.query.filter(TagExclusion.grid_type_id == grid_type.id).all()
+
+    if len(excluding_tags) > 0:
+        conditions_query = conditions_query.filter(
+            Condition.tags.notin_([excluding_tag.tag for excluding_tag in excluding_tags])
+        )
+
     all_conditions = conditions_query.all()
 
     all_grids = Grid.query.filter_by(type_id=grid_type.id).order_by(desc(Grid.id)).all()
@@ -88,7 +95,8 @@ def _generate_grid_with_conditions(
 
         if _grid_has_enough_solutions(grid_solution, min_clubs_per_cell, max_clubs_per_cell):
             if _grid_is_completable(grid_solution):
-                if _grid_is_different_enough(conditions_sample, all_grids, previous_grids_number, max_common_conditions):
+                if _grid_is_different_enough(conditions_sample, all_grids, previous_grids_number,
+                                             max_common_conditions):
                     print("--- ✅ SUCCESS!", flush=True)
                     return row_conditions, col_conditions
                 else:

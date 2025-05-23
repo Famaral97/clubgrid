@@ -37,7 +37,6 @@ def load_grid_types_and_tag_exclusions():
                 id=grid_type['id'],
                 description=grid_type['description'],
                 expression=grid_type['expression'],
-                exclude_country_conditions=grid_type['exclude_country_conditions'],
             )
         )
         if 'exclude_tags' in grid_type:

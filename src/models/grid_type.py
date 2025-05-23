@@ -6,4 +6,3 @@ class GridType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
     expression = db.Column(db.String(255))
-    exclude_country_conditions = db.Column(db.Boolean)

@@ -1,37 +1,40 @@
 - id: 1
   description: 🏴󠁧󠁢󠁥󠁮󠁧󠁿🇵🇹🇩🇪🇮🇹🇪🇸🇫🇷
   expression: clubs.country in ('Italy', 'Portugal', 'England', 'Spain', 'France', 'Germany')
-  exclude_country_conditions: false
 
 - id: 2
   description: 🇵🇹
   expression: clubs.country = 'Portugal'
-  exclude_country_conditions: true
   exclude_tags:
     - league
-    - titles-uefa
 
 #- id: 3
 #  description: 🇩🇪
 #  expression: clubs.country = 'Germany'
-#  exclude_country_conditions: true
+#  exclude_tags:
+#    - league
 #
 #- id: 4
 #  description: 🏴
 #  expression: clubs.country = 'England'
-#  exclude_country_conditions: true
+#  exclude_tags:
+#    - league
 #
 #- id: 5
 #  description: 🇮🇹
 #  expression: clubs.country = 'Italy'
-#  exclude_country_conditions: true
+#  exclude_tags:
+#    - league
 #
 #- id: 6
 #  description: 🇪🇸
 #  expression: clubs.country = 'Spain'
-#  exclude_country_conditions: true
+#  exclude_tags:
+#    - league
 #
 #- id: 7
 #  description: 🇫🇷
 #  expression: clubs.country = 'France'
-#  exclude_country_conditions: true
+#  exclude_tags:
+#    - league
+#

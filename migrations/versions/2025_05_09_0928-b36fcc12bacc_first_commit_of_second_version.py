@@ -91,7 +91,6 @@ def upgrade() -> None:
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('description', sa.String(length=255), nullable=True),
                     sa.Column('expression', sa.String(length=255), nullable=True),
-                    sa.Column('exclude_country_conditions', sa.Boolean(), nullable=True),
                     sa.PrimaryKeyConstraint('id')
                     )
     op.create_table('grids',
