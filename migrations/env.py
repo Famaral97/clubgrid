@@ -6,6 +6,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+from src.models import grid, grid_type, club, answer, tag_exclusion, condition
 
 from src.adapters.sql import db
 
@@ -36,6 +37,7 @@ url = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".f
     databasename=os.getenv("DB_NAME") if os.getenv("FLASK_ENV") == "development" else "flaskdb",
 )
 config.set_main_option("sqlalchemy.url", url)
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

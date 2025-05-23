@@ -7,6 +7,9 @@
   description: 🇵🇹
   expression: clubs.country = 'Portugal'
   exclude_country_conditions: true
+  exclude_tags:
+    - league
+    - titles-uefa
 
 #- id: 3
 #  description: 🇩🇪

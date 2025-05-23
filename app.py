@@ -10,6 +10,7 @@ import src.adapters.csv as csv_adapter
 import src.adapters.sql.clubs as clubs_adapter
 import src.adapters.sql.conditions as conditions_adapter
 import src.adapters.sql.grid_types as grid_types_adapter
+import src.adapters.sql.tag_exclusions as tag_exclusions_adapter
 import src.adapters.sql.grids as grids_adapter
 import src.adapters.yaml as yaml_adapter
 from src.adapters import local_memory
@@ -44,8 +45,9 @@ db.init_app(app)
 conditions = yaml_adapter.load_conditions()
 conditions_adapter.insert_all(conditions, app)
 
-grid_types = yaml_adapter.load_grid_types()
+grid_types, tag_exclusions = yaml_adapter.load_grid_types_and_tag_exclusions()
 grid_types_adapter.insert_all(grid_types, app)
+tag_exclusions_adapter.insert_all(tag_exclusions, app)
 
 clubs = csv_adapter.load_clubs()
 clubs_adapter.insert_all(clubs, app)
