@@ -71,7 +71,7 @@ def _generate_grid_with_conditions(
 
     if len(excluding_tags) > 0:
         conditions_query = conditions_query.filter(
-            Condition.tags.notin_([excluding_tag.tag for excluding_tag in excluding_tags])
+            Condition.tag.notin_([excluding_tag.tag for excluding_tag in excluding_tags])
         )
 
     all_conditions = conditions_query.all()
@@ -144,7 +144,7 @@ def _grid_is_different_enough(conditions_sample, all_grids, previous_grids_numbe
 
 
 def grid_has_different_conditions_tags(conditions):
-    tags = [condition.tags for condition in conditions]
+    tags = [condition.tag for condition in conditions]
     return len(set(tags)) == 6
 
 

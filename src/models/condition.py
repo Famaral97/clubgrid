@@ -6,5 +6,5 @@ class Condition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
     expression = db.Column(db.String(255))
-    tags = db.Column(db.String(255))
+    tag = db.Column(db.String(255))
     deprecated = db.Column(db.Boolean)

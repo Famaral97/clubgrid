@@ -25,7 +25,7 @@ def validate_conditions(session):
                 condition.id,
                 status,
                 len(results),
-                condition.tags,
+                condition.tag,
                 condition.description,
                 ""
             ])
@@ -34,7 +34,7 @@ def validate_conditions(session):
                 condition.id,
                 "🟥",
                 "-",
-                condition.tags,
+                condition.tag,
                 condition.description,
                 error.orig.msg
             ])

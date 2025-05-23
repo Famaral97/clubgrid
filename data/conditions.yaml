@@ -2,27 +2,21 @@ league:
   - id: 3
     description: In Premier League
     expression: clubs.league_2024_25 = 'EN1'
-    tags: league
   - id: 4
     description: In La Liga
     expression: clubs.league_2024_25 = 'ES1'
-    tags: league
   - id: 5
     description: In Liga Portugal
     expression: clubs.league_2024_25 = 'PT1'
-    tags: league
   - id: 6
     description: In Ligue 1
     expression: clubs.league_2024_25 = 'FR1'
-    tags: league
   - id: 7
     description: In Bundesliga
     expression: clubs.league_2024_25 = 'DE1'
-    tags: league
   - id: 8
     description: In Italian Serie A
     expression: clubs.league_2024_25 = 'IT1'
-    tags: league
 promotions:
   - id: 77
     description: Was promoted in the last 2 seasons
@@ -62,7 +56,6 @@ logo-items:
   - id: 15
     description: Logo doesn't have stars
     expression: clubs.num_stars_in_logo = 0
-    tags: logo-items
   - id: 16
     description: Logo has stars
     expression: clubs.num_stars_in_logo != 0
@@ -94,15 +87,12 @@ logo-colors:
   - id: 22
     description: Logo has red
     expression: clubs.logo_has_red = True
-    tags: logo-colors
   - id: 23
     description: Logo doesn't have red
     expression: clubs.logo_has_red = False
-    tags: logo-colors
   - id: 24
     description: Logo has blue
     expression: clubs.logo_has_blue = True
-    tags: logo-colors
   - id: 25
     description: Logo doesn't have blue
     expression: clubs.logo_has_blue = False

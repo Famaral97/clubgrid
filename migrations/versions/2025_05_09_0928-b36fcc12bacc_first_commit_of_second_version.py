@@ -83,7 +83,7 @@ def upgrade() -> None:
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('description', sa.String(length=255), nullable=True),
                     sa.Column('expression', sa.String(length=255), nullable=True),
-                    sa.Column('tags', sa.String(length=255), nullable=True),
+                    sa.Column('tag', sa.String(length=255), nullable=True),
                     sa.Column('deprecated', sa.Boolean(), nullable=True),
                     sa.PrimaryKeyConstraint('id')
                     )
