@@ -129,7 +129,7 @@ def get_club_data(club_id):
     return club_data
 
 
-def scrape(data_frame, output_file):
+def scrape(data_frame, output_file, country):
     all_clubs_data = []
     failed_clubs = []
     club_number = 1
@@ -149,33 +149,20 @@ def scrape(data_frame, output_file):
         club_number += 1
 
     failed_clubs_df = pd.DataFrame(failed_clubs)
-    failed_clubs_df.to_csv('failed_clubs.csv', index=False)
+    failed_clubs_df.to_csv(f'failed_{country}.csv', index=False)
 
     clubs_data_df = pd.DataFrame(all_clubs_data)
     clubs_data_df.to_csv(output_file, index=False)
 
 
-# df = pd.read_csv('ClubGrid Logo Labelling - ALL_DATA.csv')
-#
-# england_df = df[df['Country'] == 'England']
-# scrape(england_df, 'scrapped_data_EN.csv')
-#
-# portugal_df = df[df['Country'] == 'Portugal']
-# scrape(portugal_df, 'scrapped_data_PT.csv')
+country = 'Brazil'
 
-# spain_df = df[df['Country'] == 'Spain']
-# scrape(spain_df, 'scrapped_data_ES.csv')
+df = pd.read_csv('ClubGrid Logo Labelling - ALL_DATA.csv')
 
-# france_df = df[df['Country'] == 'France']
-# scrape(france_df, 'scrapped_data_FR.csv')
+brazil_df = df[df['country'] == country]
+scrape(brazil_df, f'scrapped_data_{country}.csv', country)
 
-# italy_df = df[df['Country'] == 'Italy']
-# scrape(italy_df, 'scrapped_data_IT.csv')
+sleep(120)
 
-# germany_df = df[df['Country'] == 'Germany']
-# scrape(germany_df, 'scrapped_data_DE.csv')
-#
-# sleep(120)
-
-failed_df = pd.read_csv('failed_stadium_name.csv')
-scrape(failed_df, 'scrapped_data_failed_stadium_name.csv')
+failed_df = pd.read_csv(f'failed_{country}.csv')
+scrape(failed_df, f'scrapped_data_failed_{country}.csv', country)

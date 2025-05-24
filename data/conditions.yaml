@@ -21,7 +21,7 @@ promotions:
   - id: 77
     description: Was promoted in the last 2 seasons
     expression: (clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2') or clubs.league_2022_23 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2'))
-continental:
+participation-uefa:
   - id: 104
     description: In 2024/25 UEFA Champions League
     expression: clubs.champions_league_2024_25 = True

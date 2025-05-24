@@ -38,3 +38,10 @@
 #  exclude_tags:
 #    - league
 #
+- id: 8
+  description: 🇧🇷
+  expression: clubs.country = 'Brazil'
+  exclude_tags:
+    - league
+    - participation-uefa
+    - titles-uefa

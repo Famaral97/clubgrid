@@ -9,6 +9,7 @@ tfmkt_data = pd.concat([
     pd.read_csv('scrapped_data_FR.csv'),
     pd.read_csv('scrapped_data_IT.csv'),
     pd.read_csv('scrapped_data_PT.csv'),
+    pd.read_csv('scrapped_data_BR.csv'),
 ])
 
 merged_data = pd.merge(cg_data, tfmkt_data, left_on='tfmk_id', right_on='tfmk_id', how='inner')
