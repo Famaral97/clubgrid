@@ -9,10 +9,19 @@ from src.models.club import Club
 from src.models.grid import Grid
 from src.models.answer import Answer
 from src.models.condition import Condition
+from src.models.grid_type import GridType
 
 
 def validate_conditions(session):
-    validation_table = PrettyTable(["ID", 'Sts', '# Sols', "Tags", "Description", "Error Message"])
+
+    grid_types = session.query(GridType).all()
+
+    columns = ["ID", 'Sts', "Tags", "Description", "Error Message", "Total"]
+
+    for grid_type in grid_types:
+        columns.append(grid_type.id)
+
+    validation_table = PrettyTable(columns)
     validation_table.align = "l"
 
     for condition in session.query(Condition).all():
@@ -21,14 +30,20 @@ def validate_conditions(session):
 
             status = "🟩" if len(results) > 5 else "⚠️" if len(results) > 0 else "🟨"
 
-            validation_table.add_row([
+            base_row = [
                 condition.id,
                 status,
-                len(results),
                 condition.tag,
                 condition.description,
-                ""
-            ])
+                "",
+                len(results),
+            ]
+
+            for grid_type in grid_types:
+                base_row.append(len(session.query(Club).filter(text(grid_type.expression)).filter(text(condition.expression)).all()))
+
+
+            validation_table.add_row(base_row)
         except Exception as error:
             validation_table.add_row([
                 condition.id,
