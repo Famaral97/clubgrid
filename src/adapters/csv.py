@@ -7,9 +7,9 @@ def load_clubs():
     def _to_bool(value):
         return value.strip().upper() == "YES"
 
-    def _build_url(league, name):
+    def _build_url(country, name):
         base_url = "https://github.com/Famaral97/clubgrid/blob/main/data/logos"
-        return f"{base_url}/{league}/{name}.png?raw=true".replace(" ", "%20")
+        return f"{base_url}/{country}/{name}.png?raw=true".replace(" ", "%20")
 
     with open('./data/data.csv') as csvfile:
         csvreader = csv.DictReader(csvfile, delimiter=',')
@@ -18,7 +18,7 @@ def load_clubs():
             Club(
                 id=club_row["id"],
                 name=club_row['name'],
-                logo=_build_url(league=club_row["league_2024_25"], name=club_row["name"]),
+                logo=_build_url(country=club_row['country'], name=club_row["name"]),
                 country=club_row['country'],
 
                 name_has_number=_to_bool(club_row['name_has_number']),
@@ -40,9 +40,9 @@ def load_clubs():
                 in_capital=_to_bool(club_row['in_capital']),
 
                 league_titles=club_row['league_titles'],
-                league_2024_25=club_row['league_2024_25'],
-                league_2023_24=club_row['league_2023_24'],
-                league_2022_23=club_row['league_2022_23'],
+                tier_2024_25=club_row['tier_2024_25'],
+                tier_2023_24=club_row['tier_2023_24'],
+                tier_2022_23=club_row['tier_2022_23'],
 
                 domestic_cup_titles=club_row['domestic_cup_titles'],
                 domestic_cup_runner_up=club_row['domestic_cup_runner_up'],

@@ -27,9 +27,9 @@ class Club(db.Model):
     in_capital = db.Column(db.Boolean)
 
     league_titles = db.Column(db.Integer)
-    league_2024_25 = db.Column(db.String(255))
-    league_2023_24 = db.Column(db.String(255))
-    league_2022_23 = db.Column(db.String(255))
+    tier_2024_25 = db.Column(db.Integer)
+    tier_2023_24 = db.Column(db.Integer)
+    tier_2022_23 = db.Column(db.Integer)
 
     domestic_cup_titles = db.Column(db.Integer)
     domestic_cup_runner_up = db.Column(db.Integer)
