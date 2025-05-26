@@ -17,10 +17,35 @@ league:
   - id: 8
     description: In Italian Serie A
     expression: clubs.league_2024_25 = 'IT1'
+tier:
+  - id: 129
+    description: Played in second tier in the previous two seasons
+    expression: (clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2') or clubs.league_2022_23 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2'))
+  - id: 130
+    description: Played in third tier in the previous two seasons
+    expression: (clubs.league_2023_24 in ('IT3', 'PT3', 'EN3', 'ES3', 'FR3', 'DE3', 'BR3') or clubs.league_2022_23 in ('IT3', 'PT3', 'EN3', 'ES3', 'FR3', 'DE3', 'BR3'))
 promotions:
   - id: 77
-    description: Was promoted in the last 2 seasons
-    expression: (clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2') or clubs.league_2022_23 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2'))
+    description: Was promoted to first tier in 2024 or 2023
+    expression: (clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2') and clubs.league_2024_25 in ('IT1', 'PT1', 'EN1', 'ES1', 'FR1', 'DE1', 'BR1'))
+      or (clubs.league_2022_23 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2') and clubs.league_2023_24 in ('IT1', 'PT1', 'EN1', 'ES1', 'FR1', 'DE1', 'BR1'))
+  - id: 124
+    description: Was promoted to second tier in 2024 or 2023
+    expression: (clubs.league_2023_24 in ('IT3', 'PT3', 'EN3', 'ES3', 'FR3', 'DE3', 'BR3') and clubs.league_2024_25 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2'))
+      or (clubs.league_2022_23 in ('IT3', 'PT3', 'EN3', 'ES3', 'FR3', 'DE3', 'BR3') and clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2'))
+  - id: 125
+    description: Was promoted last season
+    expression: (clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2') and clubs.league_2024_25 in ('IT1', 'PT1', 'EN1', 'ES1', 'FR1', 'DE1', 'BR1'))
+      or (clubs.league_2023_24 in ('IT3', 'PT3', 'EN3', 'ES3', 'FR3', 'DE3', 'BR3') and clubs.league_2024_25 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2'))
+relegations:
+  - id: 126
+    description: Was relegated to second tier in 2024 or 2023
+    expression: (clubs.league_2023_24 in ('IT1', 'PT1', 'EN1', 'ES1', 'FR1', 'DE1', 'BR1') and clubs.league_2024_25 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2'))
+      or (clubs.league_2022_23 in ('IT1', 'PT1', 'EN1', 'ES1', 'FR1', 'DE1', 'BR1') and clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2'))
+  - id: 128
+    description: Was relegated last season
+    expression: (clubs.league_2023_24 in ('IT1', 'PT1', 'EN1', 'ES1', 'FR1', 'DE1', 'BR1') and clubs.league_2024_25 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2'))
+      or (clubs.league_2023_24 in ('IT2', 'PT2', 'EN2', 'ES2', 'FR2', 'DE2', 'BR2') and clubs.league_2024_25 in ('IT3', 'PT3', 'EN3', 'ES3', 'FR3', 'DE3', 'BR3'))
 participation-uefa:
   - id: 104
     description: In 2024/25 UEFA Champions League
