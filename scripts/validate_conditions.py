@@ -16,10 +16,14 @@ def validate_conditions(session):
 
     grid_types = session.query(GridType).all()
 
-    columns = ["ID", 'Sts', "Tags", "Description", "Error Message", "Total"]
+    columns = ["ID", 'Sts', "Tags", "Description", "Error Message"]
 
+    print()
+    print("Grid Types")
     for grid_type in grid_types:
+        print(f"{grid_type.id}: {grid_type.description}")
         columns.append(grid_type.id)
+    print()
 
     validation_table = PrettyTable(columns)
     validation_table.align = "l"
@@ -36,7 +40,6 @@ def validate_conditions(session):
                 condition.tag,
                 condition.description,
                 "",
-                len(results),
             ]
 
             for grid_type in grid_types:

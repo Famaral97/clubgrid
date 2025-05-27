@@ -89,7 +89,7 @@ def upgrade() -> None:
                     )
     op.create_table('grid_types',
                     sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('description', sa.String(length=255), nullable=True),
+                    sa.Column('description', sa.UnicodeText(), nullable=True),
                     sa.Column('expression', sa.String(length=255), nullable=True),
                     sa.PrimaryKeyConstraint('id')
                     )
