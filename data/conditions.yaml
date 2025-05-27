@@ -237,19 +237,19 @@ geography:
 name:
   - id: 42
     description: Name starts with A, B or C
-    expression: (clubs.name like 'a%' or clubs.name like 'b%' or clubs.name like 'c%')
+    expression: clubs.name REGEXP '^[a-c]'
   - id: 43
     description: Name starts with R or S
-    expression: (clubs.name like 'r%' or clubs.name like 's%')
+    expression: clubs.name REGEXP '^[r-s]'
   - id: 69
     description: Name starts with D, E, F or G
-    expression: (clubs.name like 'd%' or clubs.name like 'e%' or clubs.name like 'f%' or clubs.name like 'g%')
+    expression: clubs.name REGEXP '^[d-g]'
   - id: 70
     description: Name starts with L, M, N, O or P
-    expression: (clubs.name like 'l%' or clubs.name like 'm%' or clubs.name like 'n%' or clubs.name like 'o%' or clubs.name like 'p%')
+    expression: clubs.name REGEXP '^[l-p]'
   - id: 71
     description: Name starts with T, U or V
-    expression: (clubs.name like 't%' or clubs.name like 'u%' or clubs.name like 'v%')
+    expression: clubs.name REGEXP '^[t-v]'
   - id: 72
     description: Name has a number
     expression: clubs.name_has_number = True
@@ -274,18 +274,16 @@ stadium-capacity:
     expression: clubs.stadium_capacity between 20000 and 50000
 stadium-name:
   - id: 131
-    description: Stadium name has the word Stadium (in any language)
-    expression: clubs.stadium_name LIKE '%stadium%' or clubs.stadium_name LIKE '%stade%'
-      or clubs.stadium_name LIKE '%estádio%' or clubs.stadium_name LIKE '%stadion%'
-      or clubs.stadium_name LIKE '%estadio%'
+    description: Stadium name contains Stadium (in any language)
+    expression: clubs.stadium_name REGEXP 'stadium|stade|estádio|stadion|estadio'
   - id: 132
-    description: Stadium name has the word Park or Arena
-    expression: clubs.stadium_name LIKE '%park%' or clubs.stadium_name LIKE '%arena%'
+    description: Stadium name contains Park or Arena
+    expression: clubs.stadium_name REGEXP 'park|arena'
   - id: 133
-    description: Stadium name has the word Park
+    description: Stadium name contains Park
     expression: clubs.stadium_name LIKE '%park%'
   - id: 134
-    description: Stadium name has the word Arena
+    description: Stadium name contains Arena
     expression: clubs.stadium_name LIKE '%arena%'
 squad:
   - id: 55
