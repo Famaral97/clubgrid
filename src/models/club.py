@@ -72,7 +72,7 @@ class Club(db.Model):
     foreigners_count = db.Column(db.Integer)
     foreigners_percentage = db.Column(db.Float)
     national_team_players = db.Column(db.Integer)
-    stadium_name = db.Column(db.String(255))
+    stadium_name = db.Column(db.UnicodeText)
     stadium_capacity = db.Column(db.Integer)
     total_market_value = db.Column(db.Float)
 

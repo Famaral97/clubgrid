@@ -74,7 +74,7 @@ def upgrade() -> None:
                     sa.Column('foreigners_count', sa.Integer(), nullable=True),
                     sa.Column('foreigners_percentage', sa.Float(), nullable=True),
                     sa.Column('national_team_players', sa.Integer(), nullable=True),
-                    sa.Column('stadium_name', sa.String(length=255), nullable=True),
+                    sa.Column('stadium_name', sa.UnicodeText(), nullable=True),
                     sa.Column('stadium_capacity', sa.Integer(), nullable=True),
                     sa.Column('total_market_value', sa.Float(), nullable=True),
                     sa.PrimaryKeyConstraint('id')

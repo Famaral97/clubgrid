@@ -85,7 +85,7 @@ def load_clubs():
                 foreigners_count=club_row['foreigners_count'],
                 foreigners_percentage=club_row['foreigners_percentage'],
                 national_team_players=club_row['national_team_players'],
-                stadium_name=club_row['stadium_name'],
+                stadium_name=club_row['stadium_name'].lower(),
                 stadium_capacity=club_row['stadium_capacity'],
                 total_market_value=club_row['total_market_value']
             )

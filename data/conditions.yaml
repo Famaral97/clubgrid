@@ -262,7 +262,7 @@ name:
   - id: 80
     description: Name ends with E
     expression: clubs.name like '%e'
-stadium:
+stadium-capacity:
   - id: 52
     description: Stadium capacity under 20k
     expression: clubs.stadium_capacity < 20000
@@ -272,6 +272,21 @@ stadium:
   - id: 54
     description: Stadium capacity between 20k and 50k
     expression: clubs.stadium_capacity between 20000 and 50000
+stadium-name:
+  - id: 131
+    description: Stadium name has the word Stadium (in any language)
+    expression: clubs.stadium_name LIKE '%stadium%' or clubs.stadium_name LIKE '%stade%'
+      or clubs.stadium_name LIKE '%estádio%' or clubs.stadium_name LIKE '%stadion%'
+      or clubs.stadium_name LIKE '%estadio%'
+  - id: 132
+    description: Stadium name has the word Park or Arena
+    expression: clubs.stadium_name LIKE '%park%' or clubs.stadium_name LIKE '%arena%'
+  - id: 133
+    description: Stadium name has the word Park
+    expression: clubs.stadium_name LIKE '%park%'
+  - id: 134
+    description: Stadium name has the word Arena
+    expression: clubs.stadium_name LIKE '%arena%'
 squad:
   - id: 55
     description: Squad size fewer than 25 players
